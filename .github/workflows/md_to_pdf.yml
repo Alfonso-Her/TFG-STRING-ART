@@ -1,0 +1,52 @@
+name: Convert MD to PDF
+
+on:
+  push:
+    branches:
+      - main   
+
+jobs:
+  build:
+
+    if: ${{github.actor}} == "Alfonso-Her"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}  # necesario para poder pushear
+
+      - name: Set up Pandoc
+        run: sudo apt-get update && sudo apt-get install -y pandoc texlive-xetex
+
+      - name: Detect modified .md files
+        id: changes
+        run: |
+          MODIFIED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '\.md$' || true)
+          echo "modified=$MODIFIED" >> $GITHUB_OUTPUT
+
+      - name: Convert to PDF
+        if: steps.changes.outputs.modified != ''
+        run: |
+          for file in ${{ steps.changes.outputs.modified }}; do
+            pdf_name="${file%.md}.pdf"
+            echo "Convirtiendo $file -> $pdf_name"
+            pandoc "$file" -o "$pdf_name"
+          done
+
+      - name: Commit and push PDFs
+        if: steps.changes.outputs.modified != ''
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Evitar bucle infinito: no ejecutar si el commit ya viene del bot
+          if git log -1 --pretty=%B | grep -q "\[skip-pdf\]"; then
+            echo "Commit generado por el bot, no volvemos a lanzar"
+            exit 0
+          fi
+
+          git add *.pdf
+          git commit -m "Auto-update PDF from MD [skip-pdf]" || echo "No changes to commit"
+          git push
