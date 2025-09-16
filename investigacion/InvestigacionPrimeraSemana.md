@@ -23,7 +23,6 @@ Para hacer la investigacion use perplexity para buscar de manera mas eficiente, 
 
 - Paper sobre resolucion mediante algoritmos que usan paralelismo [SolucionandoParalelismo.pdf](SolucionandoParalelismo.pdf): 
     - Le heche un vistazo rapido pero usa c++ y paralelismo con CUDA y aunque consigue reducir mucho los tiempos no consigue resultados satisfactorios visualmente hablando
-    - # (Para ALfonso) Lee este con mas profundidad
 
 # Sobre la implementacion
  
