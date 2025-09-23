@@ -43,5 +43,5 @@ if __name__ == "__main__":
 
     t = np.linspace(0, 2*np.pi, 256, endpoint=False)
     coords = np.column_stack([np.cos(t), np.sin(t)])
-    order = [randint(0,255) for _ in range(10000)]
+    order = [randint(0,255) for _ in range(300)]
     draw_string_art_svg(coords, order, filename="string_art.svg")
