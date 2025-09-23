@@ -40,7 +40,7 @@ para ello fijamos dos pares de cordenadas (x0,y0) y (x1,y1),
 obtenemos la distancia euclidea entre los pines y la truncamos convieritendola en entero,
 por ultimo generamos puntos equidistantes entre x0 y x1 tomando tantas mediciones como distancia obtuvimos antes (idem para y0, y1),
 almacenamos en nuestras matrices de pasos con la siguiente logica
-linea_cache_y[llegando_a * numero_pines + llegado a]
+linea_cache_y[llegando_a * numero_pines + saliendo_de]
 
 Creo que se podria mejorar evitando recalcular alguna solucion pero no lo se seguro TODO
 
