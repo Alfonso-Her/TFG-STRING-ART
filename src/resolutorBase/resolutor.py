@@ -31,21 +31,21 @@ def obtener_camino(numero_pines:int,maximo_lineas:int,
                 continue
             else:
                 index_interno = pin_a_probar*numero_pines + pin_actual
-                error_en_la_linea = get_line_err(error_acumulado, coords1, coords2, ancho)
+                error_en_la_linea = get_line_err(error_acumulado, linea_cache_y[index_interno],linea_cache_x[index_interno], ancho)
                 if (error_en_la_linea > error_maximo):
                     error_maximo = error_en_la_linea
                     mejor_pin = pin_a_probar
                     index = index_interno
         
-        secuencia_pines.append(mejor_pin)
+        secuencia_pines = np.append(secuencia_pines,mejor_pin)
         coords1 = linea_cache_y[index]
         coords2 = linea_cache_x[index]
 
-        for i in range(coords1):
-            v = int(coords1[i] * ancho) +coords2[i]
+        for i in range(coords1.shape[0]):
+            v = int(coords1[i] * ancho +coords2[i])
             error_acumulado[v] -= peso_de_la_linea 
 
-        ultimos_pines.append(mejor_pin)
+        ultimos_pines= np.append(ultimos_pines, mejor_pin)
         ultimos_pines = ultimos_pines[1:]
         pin_actual = mejor_pin
     return secuencia_pines

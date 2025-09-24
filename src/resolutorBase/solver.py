@@ -1,5 +1,6 @@
 from pathlib import Path
 import time
+import numpy as np
 from preprocesado import tuberia_preprocesado
 from resolutor import obtener_camino
 from reconstruccion import draw_string_art_svg
@@ -21,7 +22,6 @@ def string_art(ruta_imagen:str,ruta_salida:str,
                    vector_de_la_imagen= vector_de_la_imagen, peso_de_la_linea= peso_de_linea)
     
     print(f"Creando y guardando la imagen {ruta_salida}")
-
     draw_string_art_svg(posiciones_pines, secuencia_pines, filename=ruta_salida,
                         size_px=px_imagen_resultado,
                         nail_r=nail_r,
@@ -35,6 +35,8 @@ def string_art(ruta_imagen:str,ruta_salida:str,
 if __name__ == "__main__":
     ruta_carpeta="../../ejemplos/"
     st = time.time()
-    string_art(ruta_imagen = ruta_carpeta+"ae300.jpg",ruta_salida=ruta_carpeta+"sol.svg")
+    string_art(ruta_imagen = ruta_carpeta+"ae300.jpg",ruta_salida=ruta_carpeta+"sol.svg", 
+               numero_de_pines=256,distancia_minima=2,maximo_lineas=40000,ancho_linea=0.1,
+               px_imagen_resultado=3000)
     en = time.time()
     print(f"He tardado: {en-st}")       
