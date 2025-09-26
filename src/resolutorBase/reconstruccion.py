@@ -1,8 +1,6 @@
 import numpy as np
-import matplotlib.pyplot as plt
 from random import randint
 import svgwrite
-from matplotlib.patches import Circle
 
 def draw_string_art_svg(coords, order, filename="string_art.svg",
                         size_px=3000,
@@ -24,11 +22,13 @@ def draw_string_art_svg(coords, order, filename="string_art.svg",
         x = (p[0]-mn[0])/(mx[0]-mn[0]) * size_px
         y = (1 - (p[1]-mn[1])/(mx[1]-mn[1])) * size_px
         return (x,y)
-
+    
+    centro_img= map_pt((0,0))
     dwg = svgwrite.Drawing(filename, size=(size_px, size_px))
     
     # fondo (rectángulo que cubre todo el lienzo)
-    dwg.add(dwg.rect(insert=(0, 0), size=(size_px, size_px), fill=background_color))
+    # dwg.add(dwg.rect(insert=(0, 0), size=(size_px, size_px), fill=background_color))
+    dwg.add(dwg.circle(center=(size_px/2,size_px/2), r=sum(mx), fill=background_color))
     # hilo
     path_pts = [map_pt(coords[i]) for i in order]
     dwg.add(dwg.polyline(points=path_pts, stroke=thread_color, fill='none',
