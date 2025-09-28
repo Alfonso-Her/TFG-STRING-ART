@@ -29,7 +29,7 @@ def string_art(ruta_imagen:str,ruta_salida:str,
                         ratio_distancia=0.5,
                         color_de_fondo=color_bg)
     
-
+##TESTING
 if __name__ == "__main__":
     ruta_carpeta="../../ejemplos/"
     st = time.time()
