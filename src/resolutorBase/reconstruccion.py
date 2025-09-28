@@ -1,5 +1,4 @@
 import numpy as np
-from random import randint
 import svgwrite
 
 def draw_string_art_svg(coords, order, filename="string_art.svg",

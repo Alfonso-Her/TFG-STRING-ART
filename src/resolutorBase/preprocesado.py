@@ -90,7 +90,10 @@ def tuberia_preprocesado(ruta_a_la_imagen:Path, numero_de_pines:int, distancia_m
     vector_de_la_imagen = construir_vector_imagen(imagen)
     posiciones_pines =  calcular_posicion_pins(numero_de_pines, ancho = imagen.shape[1], alto = imagen.shape[0])
     cache_linea_x, cache_linea_y = precaluclar_todas_las_posibles_lineas(numero_de_pines,posiciones_pines[0],posiciones_pines[1],distancia_minima)
-    return imagen.shape[0],vector_de_la_imagen, np.column_stack(posiciones_pines) ,(cache_linea_x,cache_linea_y)
+    return {"ancho":imagen.shape[0],
+            "vector_de_la_imagen":vector_de_la_imagen,
+            "posiciones_pines":np.column_stack(posiciones_pines),
+            "cache_linea":(cache_linea_x,cache_linea_y)}
 
 # testing
 if __name__ == "__main__":

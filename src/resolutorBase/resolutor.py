@@ -48,4 +48,4 @@ def obtener_camino(numero_pines:int,maximo_lineas:int,
         ultimos_pines= np.append(ultimos_pines, mejor_pin)
         ultimos_pines = ultimos_pines[1:]
         pin_actual = mejor_pin
-    return secuencia_pines
+    return {"secuencia_pines":secuencia_pines}
