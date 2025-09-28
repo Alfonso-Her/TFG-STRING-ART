@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visor de Ejecuciones</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .contenedor-ejecuciones {
+            display: flex;
+            flex-wrap: wrap;  
+            gap: 16px;           
+            padding: 16px;
+            height: 70%;
+            justify-content: flex-start; 
+        }
+
+        .tarjeta {
+            background-color: #fffa8b; 
+            padding: 16px;
+            border-radius: 8px;
+            width: 200px;        /* Ancho fijo de la tarjeta */
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            flex: 1 1 200px;     /* Flex-grow, flex-shrink, base width */
+            min-width: 150px;    /* Para que no se hagan demasiado pequeñas en pantallas pequeñas */
+        }   
+    </style>
+</head>
+<body>
+    <div class="contenedor-ejecuciones">
+        <!-- Aquí se agregarán las tarjetas -->
+        <div class="tarjeta">Ejecución 1</div>
+        <div class="tarjeta">Ejecución 2</div>
+        <div class="tarjeta">Ejecución 3</div>
+    </div>
+</body>
+</html>

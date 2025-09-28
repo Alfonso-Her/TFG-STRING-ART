@@ -161,7 +161,7 @@ def estudioParametrico(output_dir:Path, estudio_web:bool,continuacion_estudio:bo
         metadatos[str(nombre_foto+hora_proceso)]["distancia_minima"] = datos_solucion_problema["distancia_minima"]
         metadatos[str(nombre_foto+hora_proceso)]["maximo_lineas"] = datos_solucion_problema["maximo_lineas"]
         metadatos[str(nombre_foto+hora_proceso)]["peso_de_linea"] = datos_solucion_problema["peso_de_linea"]
-        metadatos[str(nombre_foto+hora_proceso)]["error_total"] = datos_solucion_problema["error_total"]
+        metadatos[str(nombre_foto+hora_proceso)]["error_total"] = np.sum(datos_solucion_problema["error_total"])
         metadatos[str(nombre_foto+hora_proceso)]["tiempo_ejecucion"] = fin - inicio
         metadatos[str(nombre_foto+hora_proceso)]["ruta_resultado"] = datos_sol_final["ruta_resultado"]
 
@@ -175,5 +175,5 @@ if __name__ == "__main__":
     # estudioParametrico(output_dir=Path("../ejemplos/local/prueba"), estudio_web= False,ruta_a_la_imagen= "HOLA",
     #                     numero_de_pines= 25, peso_de_linea= [2,20], ancho_clavos = list(range(2)))
     estudioParametrico(output_dir=Path("../ejemplos/local/prueba"), estudio_web= False, continuacion_estudio=False,
-                       ruta_a_la_imagen="../ejemplos/raya.png", numero_de_pines= [140,256],
-                       peso_de_linea= [30], ancho_clavos = 10)
+                       ruta_a_la_imagen="../ejemplos/ae300.jpg", numero_de_pines= [30,100,256,370],
+                       peso_de_linea= 20, ancho_clavos = 10)
