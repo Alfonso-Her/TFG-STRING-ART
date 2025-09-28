@@ -1,46 +1,46 @@
 import numpy as np
 import svgwrite
 
-def draw_string_art_svg(coords, order, filename="string_art.svg",
-                        size_px=3000,
-                        nail_r=6,
-                        thread_width=1,
-                        nail_color="#929191",
-                        thread_color='white',
-                        padding_ratio=0.01,
-                        background_color="black"):
+def draw_string_art_svg(posiciones_pines, secuencia_pines, ruta_a_resultado="string_art.svg",
+                        tamano_lado_px=3000,
+                        ancho_clavos=6,
+                        ancho_de_hilo=1,
+                        color_de_clavo="#929191",
+                        color_de_hilo='white',
+                        ratio_distancia=0.01,
+                        color_de_fondo="black"):
 
-    coords = np.asarray(coords)
-    # Normaliza coords al rango 0..size_px con margen
-    mn = coords.min(axis=0)
-    mx = coords.max(axis=0)
-    pad = padding_ratio * (mx - mn).max()
+    posiciones_pines = np.asarray(posiciones_pines)
+    # Normaliza posiciones_pines al rango 0..tamano_lado_px con margen
+    mn = posiciones_pines.min(axis=0)
+    mx = posiciones_pines.max(axis=0)
+    pad = ratio_distancia * (mx - mn).max()
     mn -= pad
     mx += pad
     def map_pt(p):
-        x = (p[0]-mn[0])/(mx[0]-mn[0]) * size_px
-        y = (1 - (p[1]-mn[1])/(mx[1]-mn[1])) * size_px
+        x = (p[0]-mn[0])/(mx[0]-mn[0]) * tamano_lado_px
+        y = (1 - (p[1]-mn[1])/(mx[1]-mn[1])) * tamano_lado_px
         return (x,y)
     
     centro_img= map_pt((0,0))
-    dwg = svgwrite.Drawing(filename, size=(size_px, size_px))
+    dwg = svgwrite.Drawing(ruta_a_resultado, size=(tamano_lado_px, tamano_lado_px))
     
     # fondo (rectángulo que cubre todo el lienzo)
-    # dwg.add(dwg.rect(insert=(0, 0), size=(size_px, size_px), fill=background_color))
-    dwg.add(dwg.circle(center=(size_px/2,size_px/2), r=sum(mx), fill=background_color))
+    # dwg.add(dwg.rect(insert=(0, 0), size=(tamano_lado_px, tamano_lado_px), fill=color_de_fondo))
+    dwg.add(dwg.circle(center=(tamano_lado_px/2,tamano_lado_px/2), r=sum(mx), fill=color_de_fondo))
     # hilo
-    path_pts = [map_pt(coords[i]) for i in order]
-    dwg.add(dwg.polyline(points=path_pts, stroke=thread_color, fill='none',
-                          stroke_width=thread_width, stroke_linecap='round',
+    path_pts = [map_pt(posiciones_pines[i]) for i in secuencia_pines]
+    dwg.add(dwg.polyline(points=path_pts, stroke=color_de_hilo, fill='none',
+                          stroke_width=ancho_de_hilo, stroke_linecap='round',
                           stroke_linejoin="round"))
     # clavos
-    for p in [map_pt(p) for p in coords]:
-        dwg.add(dwg.circle(center=p, r=nail_r, fill=nail_color))
+    for p in [map_pt(p) for p in posiciones_pines]:
+        dwg.add(dwg.circle(center=p, r=ancho_clavos, fill=color_de_clavo))
     dwg.save()
-
+    return ruta_a_resultado
 if __name__ == "__main__":
 
     t = np.linspace(0, 2*np.pi, 256, endpoint=False)
-    coords = np.column_stack([np.cos(t), np.sin(t)])
-    order = [0,125]
-    draw_string_art_svg(coords, order, filename="string_art.svg")
+    posiciones_pines = np.column_stack([np.cos(t), np.sin(t)])
+    secuencia_pines = [0,125]
+    draw_string_art_svg(posiciones_pines, secuencia_pines, ruta_a_resultado="string_art.svg")

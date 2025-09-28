@@ -8,7 +8,7 @@ from .reconstruccion import draw_string_art_svg
 def string_art(ruta_imagen:str,ruta_salida:str,
                numero_de_pines:int = 256, distancia_minima:int = 20,
                peso_de_linea:int=1, maximo_lineas:int = 4000,
-               px_imagen_resultado:int=5000, nail_r:int=6,
+               px_imagen_resultado:int=5000, ancho_clavos:int=6,
                ancho_linea:int = 1, color_clavos:str = "#5c4c07",
                color_bg:str ="#c2c2c2" , color_hilo:str = "#000000")->None:
     
@@ -20,14 +20,14 @@ def string_art(ruta_imagen:str,ruta_salida:str,
                    distancia_minima,**diccionario_preprocesado,peso_de_linea= peso_de_linea)
     
     print(f"Creando y guardando la imagen {ruta_salida}")
-    draw_string_art_svg(diccionario_preprocesado["posiciones_pines"], secuencia_pines["secuencia_pines"], filename=ruta_salida,
-                        size_px=px_imagen_resultado,
-                        nail_r=nail_r,
-                        thread_width=ancho_linea,
-                        nail_color=color_clavos,
-                        thread_color=color_hilo,
-                        padding_ratio=0.5,
-                        background_color=color_bg)
+    draw_string_art_svg(diccionario_preprocesado["posiciones_pines"], secuencia_pines["secuencia_pines"], ruta_a_resultado=ruta_salida,
+                        tamano_lado_px=px_imagen_resultado,
+                        ancho_clavos=ancho_clavos,
+                        ancho_de_hilo=ancho_linea,
+                        color_de_clavo=color_clavos,
+                        color_de_hilo=color_hilo,
+                        ratio_distancia=0.5,
+                        color_de_fondo=color_bg)
     
 
 if __name__ == "__main__":

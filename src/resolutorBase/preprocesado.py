@@ -84,7 +84,7 @@ def precaluclar_todas_las_posibles_lineas(numero_de_pines: int, coord_xs: np.nda
 
 
 # ---------------------------------------Tuberia de preprocesado----------------------------------
-def tuberia_preprocesado(ruta_a_la_imagen:Path, numero_de_pines:int, distancia_minima:int):
+def tuberia_preprocesado(ruta_a_la_imagen:Path, numero_de_pines:int = 256, distancia_minima:int = 0):
     imagen =cv2.imread(ruta_a_la_imagen)
     imagen = cv2.flip(imagen,0)
     vector_de_la_imagen = construir_vector_imagen(imagen)
@@ -93,7 +93,8 @@ def tuberia_preprocesado(ruta_a_la_imagen:Path, numero_de_pines:int, distancia_m
     return {"ancho":imagen.shape[0],
             "vector_de_la_imagen":vector_de_la_imagen,
             "posiciones_pines":np.column_stack(posiciones_pines),
-            "cache_linea":(cache_linea_x,cache_linea_y)}
+            "linea_cache_x":cache_linea_x,
+            "linea_cache_y":cache_linea_y}
 
 # testing
 if __name__ == "__main__":
