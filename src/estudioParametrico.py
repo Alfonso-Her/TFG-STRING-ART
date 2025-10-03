@@ -66,8 +66,8 @@ def validacionesSaltoCaso(paquete_de_parametros):
         
         if "color_de_hilo" in parametros:
             if "color_de_fondo" in parametros:
-                parametros["color_de_hilo"] = parametros["color_de_fondo"]
-                return "has introducido el mismo color de fondo que de hilo saltamos"
+                if parametros["color_de_hilo"] == parametros["color_de_fondo"]:
+                    return "has introducido el mismo color de fondo que de hilo saltamos"
     return ""
 
 def concatenar_sobre_json(ruta: Path, metadatos:dict):
@@ -192,9 +192,7 @@ def estudioParametrico(output_dir:Path, estudio_web:bool,continuacion_estudio:bo
 ## TESTING
 
 if __name__ == "__main__":
-    # print(construirParametros(ruta_a_la_imagen= "HOLA", numero_de_pines= 25, peso_de_linea= [2,20], ancho_clavos = list(range(2))))
-    # estudioParametrico(output_dir=Path("../ejemplos/local/prueba"), estudio_web= False,ruta_a_la_imagen= "HOLA",
-    #                     numero_de_pines= 25, peso_de_linea= [2,20], ancho_clavos = list(range(2)))
+
     estudioParametrico(output_dir=Path("../ejemplos/local/prueba"), estudio_web= True, continuacion_estudio=False,
-                       ruta_a_la_imagen="../ejemplos/ae300.jpg", numero_de_pines= [2**a for a in range(1,4)],
-                       peso_de_linea= [5,15,25], ancho_clavos = 50)
+                       ruta_a_la_imagen="../ejemplos/ae300.jpg", numero_de_pines= [2**a for a in range(7,12)],
+                       peso_de_linea= [15,25,50], ancho_clavos = 2, color_de_hilo = "#000000", color_de_fondo = "#ffffff")
