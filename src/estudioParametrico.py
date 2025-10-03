@@ -121,7 +121,7 @@ def estudioParametrico(output_dir:Path, estudio_web:bool,continuacion_estudio:bo
     for paquete_argumentos in lista_con_todos_los_parametros:
         inicio = time()
         metadatos_ejecucion= {}
-        hora_proceso = "_"+datetime.now().strftime("%d%m%Y_%H%M%S")
+        hora_proceso = "_"+datetime.now().strftime("%d%m%Y_%H%M%S_%f")
         print("\n Estamos procesando los argumentos:",
               f"\n    para el preprocesado:{paquete_argumentos[0]}",
               f"\n    para el preprocesado:{paquete_argumentos[1]}",
@@ -196,5 +196,5 @@ if __name__ == "__main__":
     # estudioParametrico(output_dir=Path("../ejemplos/local/prueba"), estudio_web= False,ruta_a_la_imagen= "HOLA",
     #                     numero_de_pines= 25, peso_de_linea= [2,20], ancho_clavos = list(range(2)))
     estudioParametrico(output_dir=Path("../ejemplos/local/prueba"), estudio_web= True, continuacion_estudio=False,
-                       ruta_a_la_imagen="../ejemplos/ae300.jpg", numero_de_pines= 256,
-                       peso_de_linea= [20,1000], ancho_clavos = 10)
+                       ruta_a_la_imagen="../ejemplos/ae300.jpg", numero_de_pines= [2**a for a in range(1,4)],
+                       peso_de_linea= [5,15,25], ancho_clavos = 50)

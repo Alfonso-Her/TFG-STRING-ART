@@ -53,8 +53,9 @@
             background-color: rgba(237, 232, 208, 0.9);
             padding: 16px;
             border-radius: 8px;
-            width: 300px;
-            height: 300px;
+            width: 100%;
+            max-width: 500px;
+            /* height: 300px; */
             box-shadow: 0 2px 6px rgba(0,0,0,0.2);
             display: flex;
             flex-direction: column;
@@ -96,7 +97,7 @@
         }
 
         .tarjeta-especial:hover {
-            transform: scale(1.03);
+            transform: scale(1.10);
             box-shadow: 2px 4px 10px rgba(0,0,0,0.4);
         }
 
@@ -119,33 +120,55 @@
      * @param {Array} data - Array de objetos con los campos de ejecución
      */
     function cargarEjecuciones(data) {
-        const contenedor = document.querySelector(".contenedor-ejecuciones");
-
+        const contenedor_ejecucciones = document.querySelector(".contenedor-ejecuciones");
+        const contenedor_imagen = document.querySelector(".contenedor-imagen");
         // Limpia el contenedor por si ya había tarjetas
-        contenedor.innerHTML = "";
+        contenedor_ejecucciones.innerHTML = "";
+        contenedor_imagen.innerHTML = "";
 
         data.forEach(item => {
-            // Crear tarjeta
+            // Crear tarjetas
             const tarjeta = document.createElement("div");
+            const tarjeta_especial = document.createElement("div");
+
             tarjeta.className = "tarjeta";
+            tarjeta_especial.className = "tarjeta-especial";
+            tarjeta_especial.id = item.imagen_original;
 
             // Imagen
             const divImagen = document.createElement("div");
+            const divImagen_especial = document.createElement("div");
+
             divImagen.className = "Imagen";
+            divImagen_especial.className = "imagen-especial";
 
             const img = document.createElement("img");
-            img.src = item.ruta_resultado || item.ruta_a_la_imagen;
+            const img_especial = document.createElement("img");
+
+            img.src = item.ruta_resultado ;
             img.alt = "Resultado";
             img.style.maxWidth = "100%";
             img.style.maxHeight = "100%";
             divImagen.appendChild(img);
 
+
+            img_especial.src = item.imagen_original;
+            img_especial.alt = "origen";
+            img_especial.style.maxWidth = "100%";
+            img_especial.style.maxHeight = "100%";
+            divImagen_especial.appendChild(img_especial);
+
+            // texto de la imagen origen
+            const nombre = document.createElement("h2");
+            nombre.className = "texto-especial";
+            nombre.textContent = item.imagen_original;
             // Metadatos
             const divMeta = document.createElement("div");
             divMeta.className = "Metadatos";
 
             const ul = document.createElement("ul");
             ul.innerHTML = `
+                <li>Imagen original: ${item.imagen_original}</li>
                 <li>Nº de pines: ${item.numero_de_pines}</li>
                 <li>Distancia mínima: ${item.distancia_minima}</li>
                 <li>Máximo líneas: ${item.maximo_lineas}</li>
@@ -155,12 +178,21 @@
             `;
             divMeta.appendChild(ul);
 
-            // Montar tarjeta
+            // Montar tarjetas
             tarjeta.appendChild(divImagen);
             tarjeta.appendChild(divMeta);
 
+            const candidato_a_tarjeta_con_imagen = document.getElementById(item.imagen_original);
+            if(!(contenedor_imagen && candidato_a_tarjeta_con_imagen && contenedor_imagen.contains(candidato_a_tarjeta_con_imagen))){
+                tarjeta_especial.appendChild(divImagen_especial);
+                tarjeta_especial.appendChild(nombre);
+
+                contenedor_imagen.appendChild(tarjeta_especial);
+            }
+            
+
             // Agregar al contenedor
-            contenedor.appendChild(tarjeta);
+            contenedor_ejecucciones.appendChild(tarjeta);
         });
     }
 
