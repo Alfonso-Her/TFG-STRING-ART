@@ -7,71 +7,67 @@
     <style>
         body {
             margin: 0;
-            font-family: Arial;
+            font-family: Arial, sans-serif;
             background-color: #f5f5f5;
-            height: 100vh;
-            overflow-y: scroll;
-        }
-        .main{
+            min-height: 100vh;
             display: flex;
-			height:100%;
-		}
-        .contenedor-ejecuciones {
-            display: flex;
-            flex-wrap: wrap;  
-            gap: 13px;           
-            padding: 16px;
-            height: 100%;
-            justify-content: flex-start; 
         }
-	
-		.contenedor-imagen{
-			width:25%;
-            min-width: 25%;
-            padding:10px;
+
+        .main {
+            display: flex;
+            flex: 1;
+            min-height: 100vh;  /* ocupa toda la pantalla */
+        }
+
+        .contenedor-imagen {
+            width: 25%;
+            min-width: 220px;
+            padding: 10px;
             position: sticky;
             top: 0;
-            height: 100vh;
-            overflow: auto;
+            height: 100vh;      /* sidebar fijo */
+            overflow-y: auto;
             background-color: #ccb7b7;
             opacity: 0.8;
-		}
+            box-sizing: border-box;
+        }
 
-		/* .separador{
-			width: 16px;
-            height: 100vh;  
-            background-color: #e5e5f7;
-            opacity: 0.8;
-            background-image:  repeating-radial-gradient( circle at 0 0, transparent 0, #656572 23px ), repeating-linear-gradient( #444cf755, #444cf7 );
-         } */ 
-		.contenedor-ejecuciones{
-			display: flex;
-            flex-wrap: wrap; 
+        .ejecuciones {
+            flex: 1;
+            overflow-y: auto;   /* scroll vertical si las tarjetas no caben */
+            width: 75%;
+        }
+
+        .contenedor-ejecuciones {
+            display: flex;
+            flex-wrap: wrap;
             gap: 13px;
+            padding: 16px;
+            justify-content: space-around;
             background-color: #281a5f;
-            background-image:  repeating-radial-gradient( circle at 100 0, transparent 0, #e5e5f7 23px ), repeating-linear-gradient( #6e6f7655, #464649 );
-		}
+            box-sizing: border-box;
+            min-height: 100%;  /* ocupa todo el espacio disponible */
+        }
 
         .tarjeta {
-            background-color:rgba(237, 232, 208, 0.9); 
+            background-color: rgba(237, 232, 208, 0.9);
             padding: 16px;
             border-radius: 8px;
             width: 300px;
-            height: 300px;   
+            height: 300px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-            flex: 0 0 auto;      
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-			transition: all 0.2s ease;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
         }
-
-		.tarjeta:hover{
-			transform:  scale(1.05);
-			box-shadow: 2px 2px 6px rgba(0,0,0,0.5);
-		}
+        .tarjeta:hover {
+            transform: scale(1.05);
+            box-shadow: 2px 2px 6px rgba(0,0,0,0.5);
+        }
 		.Imagen{
-			background-color: rgba(255,255,255,0.2);;
+			background-color: rgba(255,255,255,0.2);
 			border-radius: 6px;
 			box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 			flex:1;
@@ -116,117 +112,83 @@
             color: #333;
         }
     </style>
+
+    <script>
+    /**
+     * Inserta tarjetas en el contenedor a partir de un JSON
+     * @param {Array} data - Array de objetos con los campos de ejecución
+     */
+    function cargarEjecuciones(data) {
+        const contenedor = document.querySelector(".contenedor-ejecuciones");
+
+        // Limpia el contenedor por si ya había tarjetas
+        contenedor.innerHTML = "";
+
+        data.forEach(item => {
+            // Crear tarjeta
+            const tarjeta = document.createElement("div");
+            tarjeta.className = "tarjeta";
+
+            // Imagen
+            const divImagen = document.createElement("div");
+            divImagen.className = "Imagen";
+
+            const img = document.createElement("img");
+            img.src = item.ruta_resultado || item.ruta_a_la_imagen;
+            img.alt = "Resultado";
+            img.style.maxWidth = "100%";
+            img.style.maxHeight = "100%";
+            divImagen.appendChild(img);
+
+            // Metadatos
+            const divMeta = document.createElement("div");
+            divMeta.className = "Metadatos";
+
+            const ul = document.createElement("ul");
+            ul.innerHTML = `
+                <li>Nº de pines: ${item.numero_de_pines}</li>
+                <li>Distancia mínima: ${item.distancia_minima}</li>
+                <li>Máximo líneas: ${item.maximo_lineas}</li>
+                <li>Peso línea: ${item.peso_de_linea}</li>
+                <li>Error total: ${item.error_total}</li>
+                <li>Tiempo: ${item.tiempo_ejecucion}s</li>
+            `;
+            divMeta.appendChild(ul);
+
+            // Montar tarjeta
+            tarjeta.appendChild(divImagen);
+            tarjeta.appendChild(divMeta);
+
+            // Agregar al contenedor
+            contenedor.appendChild(tarjeta);
+        });
+    }
+
+    </script>
 </head>
 <body>
+
 	<div class="main">
         <div class="contenedor-imagen">
-            <div class="tarjeta-especial">
-        <img src="https://via.placeholder.com/300x150" alt="Ejemplo 1" class="imagen-especial">
-        <div class="texto-especial">Descripción de la imagen 1</div>
-    </div>
+            
 
-    <div class="tarjeta-especial">
-        <img src="https://via.placeholder.com/300x150" alt="Ejemplo 2" class="imagen-especial">
-        <div class="texto-especial">Otra descripción interesante</div>
-    </div>
         </div>
         <!-- <div class="separador"></div> -->
         <div class="ejecuciones">
             <div class="contenedor-ejecuciones">
-                <div class="tarjeta">
-                    <div class="Imagen">Foto 1</div>
-                    <div class="Metadatos">
-                        <ul>
-                            <li>Algoritmo: Voraz Básico</li>
-                            <li>Pines: 256</li>
-                            <li>Error: 400</li>
-                            <li>Tiempo: 60s</li>
-                            <li>Peso línea: 20</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="tarjeta">
-                    <div class="Imagen">Foto 2</div>
-                    <div class="Metadatos">
-                        <ul>
-                            <li>Algoritmo: Voraz Básico</li>
-                            <li>Pines: 128</li>
-                            <li>Error: 350</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="tarjeta">
-                    <div class="Imagen">Foto 2</div>
-                    <div class="Metadatos">
-                        <ul>
-                            <li>Algoritmo: Voraz Básico</li>
-                            <li>Pines: 128</li>
-                            <li>Error: 350</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="tarjeta">
-                    <div class="Imagen">Foto 2</div>
-                    <div class="Metadatos">
-                        <ul>
-                            <li>Algoritmo: Voraz Básico</li>
-                            <li>Pines: 128</li>
-                            <li>Error: 350</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="tarjeta">
-                    <div class="Imagen">Foto 2</div>
-                    <div class="Metadatos">
-                        <ul>
-                            <li>Algoritmo: Voraz Básico</li>
-                            <li>Pines: 128</li>
-                            <li>Error: 350</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="tarjeta">
-                    <div class="Imagen">Foto 2</div>
-                    <div class="Metadatos">
-                        <ul>
-                            <li>Algoritmo: Voraz Básico</li>
-                            <li>Pines: 128</li>
-                            <li>Error: 350</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="tarjeta">
-                    <div class="Imagen">Foto 2</div>
-                    <div class="Metadatos">
-                        <ul>
-                            <li>Algoritmo: Voraz Básico</li>
-                            <li>Pines: 128</li>
-                            <li>Error: 350</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="tarjeta">
-                    <div class="Imagen">Foto 3</div>
-                    <div class="Metadatos">
-                        <ul>
-                            <li>Algoritmo: Genético</li>
-                            <li>Pines: 300</li>
-                            <li>Error: 280</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="tarjeta">
-                    <div class="Imagen">Foto 4</div>
-                    <div class="Metadatos">
-                        <ul>
-                            <li>Algoritmo: Voraz Mejorado</li>
-                            <li>Pines: 512</li>
-                            <li>Error: 200</li>
-                        </ul>
-                    </div>
-                </div>
+                
             </div>	
         </div>
     </div>
+    <script>
+        const data = ['cenicero'];
+
+        
+        // Cuando cargue la página, inyecta las tarjetas
+        document.addEventListener("DOMContentLoaded", () => {
+            cargarEjecuciones(data);
+
+        });
+    </script>
 </body>
 </html>
