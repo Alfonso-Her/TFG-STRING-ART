@@ -100,8 +100,10 @@ def tuberia_preprocesado(ruta_a_la_imagen:Path, numero_de_pines:int = 256, dista
 
 # testing
 if __name__ == "__main__":
-    a = _construir_vector_imagen_bucles(cv2.imread("../../ejemplos/ae300.jpg"))
-    b = construir_vector_imagen(cv2.imread("../../ejemplos/ae300.jpg"))
-    _construir_vector_imagen_bucles(cv2.imread("../../ejemplos/ae300.jpg"))
-    construir_vector_imagen(cv2.imread("../../ejemplos/ae300.jpg"))
-    print((a == b).all())
+    # a = _construir_vector_imagen_bucles(cv2.imread("../../ejemplos/ae300.jpg"))
+    # b = construir_vector_imagen(cv2.imread("../../ejemplos/ae300.jpg"))
+    # _construir_vector_imagen_bucles(cv2.imread("../../ejemplos/ae300.jpg"))
+    # construir_vector_imagen(cv2.imread("../../ejemplos/ae300.jpg"))
+    # print((a == b).all())
+
+    print(tuberia_preprocesado(ruta_a_la_imagen="../../ejemplos/acue.jpg"))

@@ -6,7 +6,10 @@ from datetime import datetime
 from time import time
 import cv2
 from copy import deepcopy
-from resolutorBase import tuberia_preprocesado, obtener_camino, draw_string_art_svg
+
+from preprocesado import *
+from reconstruccion import *
+from resolutor import *
 
 parametros_preprocesado = ["ruta_a_la_imagen","numero_de_pines","distancia_minima"]
 parametros_resolucion = ["numero_de_pines","distancia_minima","maximo_lineas","peso_de_linea"]
@@ -115,9 +118,11 @@ def estudioParametrico(output_dir:Path, estudio_web:bool,continuacion_estudio:bo
     ruta_json = output_dir.joinpath("datos.json")
     metadatos = []
     
+    print("METEMOS: ",kwargs)
     # Conseguimos los parametros ya empaquetados para cada parte del problema
     lista_con_todos_los_parametros = construirParametros(**kwargs)
 
+    print("SACAMOS: ",lista_con_todos_los_parametros)
     for paquete_argumentos in lista_con_todos_los_parametros:
         inicio = time()
         metadatos_ejecucion= {}
@@ -152,7 +157,7 @@ def estudioParametrico(output_dir:Path, estudio_web:bool,continuacion_estudio:bo
             paquete_argumentos[2].update(datos_solucion_problema)
             paquete_argumentos[2].update({"posiciones_pines": datos_preprocesados["posiciones_pines"]})
 
-            datos_sol_final = draw_string_art_svg(**paquete_argumentos[2])
+            datos_sol_final = hilar_secuencia_svg(**paquete_argumentos[2])
             print(f"\n imagen guardada con exito en {datos_sol_final["ruta_resultado"]} !!!")
         except Exception as e:
             print(f"\n Error {e} al pintar la solucion, continuando con el siguiente")

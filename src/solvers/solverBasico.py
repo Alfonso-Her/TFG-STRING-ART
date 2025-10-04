@@ -1,9 +1,10 @@
 from pathlib import Path
 import time
 import numpy as np
-from .preprocesado import tuberia_preprocesado
-from .resolutor import obtener_camino
-from .reconstruccion import draw_string_art_svg
+
+from preprocesado import tuberia_preprocesado
+from resolutor import obtener_camino
+from reconstruccion import hilar_secuencia_svg
 
 def string_art(ruta_imagen:str,ruta_salida:str,
                numero_de_pines:int = 256, distancia_minima:int = 20,
@@ -20,7 +21,7 @@ def string_art(ruta_imagen:str,ruta_salida:str,
                    distancia_minima,**diccionario_preprocesado,peso_de_linea= peso_de_linea)
     
     print(f"Creando y guardando la imagen {ruta_salida}")
-    draw_string_art_svg(diccionario_preprocesado["posiciones_pines"], secuencia_pines["secuencia_pines"], ruta_a_resultado=ruta_salida,
+    hilar_secuencia_svg(diccionario_preprocesado["posiciones_pines"], secuencia_pines["secuencia_pines"], ruta_a_resultado=ruta_salida,
                         tamano_lado_px=px_imagen_resultado,
                         ancho_clavos=ancho_clavos,
                         ancho_de_hilo=ancho_linea,

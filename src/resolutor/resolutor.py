@@ -10,6 +10,7 @@ def obtener_camino(linea_cache_x:np.ndarray,linea_cache_y:np.ndarray,
                    distancia_minima:int = 0,peso_de_linea:int = 20,
                    **kwargs)->np.ndarray:
     
+    print(vector_de_la_imagen.shape)
     error_acumulado = np.full(ancho*ancho, 255.0) - vector_de_la_imagen
     secuencia_pines =np.empty(0,dtype=int)
     ultimos_pines = np.empty(0,dtype=int)
@@ -55,3 +56,9 @@ def obtener_camino(linea_cache_x:np.ndarray,linea_cache_y:np.ndarray,
             "maximo_lineas":maximo_lineas,
             "error_total":error_acumulado,
             "secuencia_pines":secuencia_pines}
+
+if __name__ == "__main__":
+    from ..preprocesado import tuberia_preprocesado
+
+    parametros = tuberia_preprocesado(ruta_a_la_imagen="ejemplos/acue.jpg")
+    print(obtener_camino(**parametros))

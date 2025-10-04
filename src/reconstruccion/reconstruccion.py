@@ -1,7 +1,7 @@
 import numpy as np
 import svgwrite
 
-def draw_string_art_svg(posiciones_pines, secuencia_pines, ruta_a_resultado="string_art.svg",
+def hilar_secuencia_svg(posiciones_pines, secuencia_pines, ruta_a_resultado="string_art.svg",
                         tamano_lado_px=3000,
                         ancho_clavos=6,
                         ancho_de_hilo=1,
@@ -47,4 +47,4 @@ if __name__ == "__main__":
     t = np.linspace(0, 2*np.pi, 256, endpoint=False)
     posiciones_pines = np.column_stack([np.cos(t), np.sin(t)])
     secuencia_pines = [0,125]
-    draw_string_art_svg(posiciones_pines, secuencia_pines, ruta_a_resultado="string_art.svg")
+    hilar_secuencia_svg(posiciones_pines, secuencia_pines, ruta_a_resultado="string_art.svg")
