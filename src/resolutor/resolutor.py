@@ -1,5 +1,5 @@
 import numpy as np
-
+import cv2
 def get_line_err(err: np.ndarray, coords1: np.ndarray, coords2: np.ndarray, ancho: np.float64) ->  np.float64:
     indices = (coords1 * ancho + coords2).astype(int)
     return np.sum(err[indices])
@@ -53,6 +53,7 @@ def obtener_camino(linea_cache_x:np.ndarray,linea_cache_y:np.ndarray,
         pines_ya_recorridos = pines_ya_recorridos[1:]
         pin_actual = mejor_pin
 
+    cv2.imwrite(filename="mapa_de_error.jpg",img= error_acumulado.reshape(-1,ancho))
     return {"peso_de_linea": peso_de_linea,
             "distancia_minima":distancia_minima,
             "maximo_lineas":maximo_lineas,

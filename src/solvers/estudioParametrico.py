@@ -127,8 +127,8 @@ def estudioParametrico(output_dir:Path, estudio_web:bool,continuacion_estudio:bo
         hora_proceso = "_"+datetime.now().strftime("%d%m%Y_%H%M%S_%f")
         print("\n Estamos procesando los argumentos:",
               f"\n    para el preprocesado:{paquete_argumentos[0]}",
-              f"\n    para el preprocesado:{paquete_argumentos[1]}",
-              f"\n    para el preprocesado:{paquete_argumentos[2]}")
+              f"\n    para el resolutor:{paquete_argumentos[1]}",
+              f"\n    para el reconstructor:{paquete_argumentos[2]}")
         
         
         info_si_saltamos = validacionesSaltoCaso(paquete_argumentos)

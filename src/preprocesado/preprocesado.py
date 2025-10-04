@@ -118,10 +118,10 @@ def tuberia_preprocesado(ruta_a_la_imagen:Path, numero_de_pines:int = 256,
     if redimensionar:
         imagen = redimensionar_a_rectangulo(imagen)
     
-    # a =  imagen
-    # cv2.imwrite(filename="Imagen_preerror.jpg",img=a)
-    # a = np.full(shape =imagen.shape, fill_value=np.float64(255.0)) - a
-    # cv2.imwrite(filename="Imagen_error.jpg",img=a)
+    a =  imagen
+    cv2.imwrite(filename="Imagen_preerror.jpg",img=a)
+    a = np.full(shape =imagen.shape, fill_value=np.float64(255.0)) - a
+    cv2.imwrite(filename="Imagen_error.jpg",img=a)
 
     vector_de_la_imagen = construir_vector_imagen(imagen)
     posiciones_pines =  calcular_posicion_pins(numero_de_pines, ancho = imagen.shape[1], alto = imagen.shape[0])
