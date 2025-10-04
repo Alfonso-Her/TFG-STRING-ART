@@ -5,13 +5,12 @@ def get_line_err(err: np.ndarray, coords1: np.ndarray, coords2: np.ndarray, anch
     return np.sum(err[indices])
 
 def obtener_camino(linea_cache_x:np.ndarray,linea_cache_y:np.ndarray,
-                   ancho:int,vector_de_la_imagen:np.ndarray,
+                   ancho:int,alto:int,vector_de_la_imagen:np.ndarray,
                    numero_de_pines:int = 256 ,maximo_lineas:int= 4000,
                    distancia_minima:int = 0,peso_de_linea:int = 20,
                    **kwargs)->np.ndarray:
     
-    print(vector_de_la_imagen.shape)
-    error_acumulado = np.full(ancho*ancho, 255.0) - vector_de_la_imagen
+    error_acumulado = np.full(ancho*alto, 255.0) - vector_de_la_imagen
     secuencia_pines =np.empty(0,dtype=int)
     ultimos_pines = np.empty(0,dtype=int)
     pin_actual = 0

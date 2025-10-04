@@ -1,5 +1,7 @@
 .svg
 ejemplos/local/
+*.jpg
+*.png
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
