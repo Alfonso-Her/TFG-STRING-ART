@@ -11,7 +11,7 @@ from preprocesado import *
 from reconstruccion import *
 from resolutor import *
 
-parametros_preprocesado = ["ruta_a_la_imagen","numero_de_pines","distancia_minima"]
+parametros_preprocesado = ["ruta_a_la_imagen","numero_de_pines","distancia_minima", "pasar_a_grises", "redimensionar", "recortar"]
 parametros_resolucion = ["numero_de_pines","distancia_minima","maximo_lineas","peso_de_linea"]
 parametros_reconstruccion = ["tamano_lado_px","ancho_clavos","ancho_de_hilo","ratio_distancia","color_de_hilo","color_de_fondo","color_de_clavo"]
 parametros_a_guardar_json = ["imagen_original","numero_de_pines","secuencia_pines","distancia_minima","maximo_lineas","peso_de_linea","error_total","tiempo_ejecucion","ruta_resultado"]
@@ -117,12 +117,10 @@ def estudioParametrico(output_dir:Path, estudio_web:bool,continuacion_estudio:bo
     output_dir.mkdir( parents= True, exist_ok= True)
     ruta_json = output_dir.joinpath("datos.json")
     metadatos = []
-    
-    print("METEMOS: ",kwargs)
+
     # Conseguimos los parametros ya empaquetados para cada parte del problema
     lista_con_todos_los_parametros = construirParametros(**kwargs)
 
-    print("SACAMOS: ",lista_con_todos_los_parametros)
     for paquete_argumentos in lista_con_todos_los_parametros:
         inicio = time()
         metadatos_ejecucion= {}

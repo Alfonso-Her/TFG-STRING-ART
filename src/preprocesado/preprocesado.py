@@ -4,16 +4,19 @@ from pathlib import Path
 from typing import Callable,Tuple
 
 # ---------------------------------------Tratamiento de la imagen---------------------------------- 
+def recortar_rectangulo(img,pixel_inicial_ancho = 0 ,pixel_inicial_alto = 0): # TODO permitir recortar lo que se quiera
+    alto,ancho = img.shape[0:2]
+    padding = abs((alto-ancho) // 2)
+    return img[padding:padding+ancho,:] if ancho < alto else img[:,padding:padding+alto]
 
 def redimensionar_a_rectangulo(img:np.ndarray)->np.ndarray:
+    # OJO esta funcion deforma las imagenes
     alto, ancho = img.shape[0:2]
     lado_cuadrado = max(alto,ancho)
 
-    # nuevo_ancho = int(ancho * lado_cuadrado/ancho)
-    # nuevo_alto = int(alto * lado_cuadrado/alto)
-
     return cv2.resize(img,(lado_cuadrado,lado_cuadrado), interpolation=cv2.INTER_AREA)
-def pasar_a_grises(img:np.ndarray)->np.ndarray:
+
+def pasar_img_a_grises(img:np.ndarray)->np.ndarray:
     """
         Posible futura implementacion como una opcion de preprocesado
         Toma una imagen abierta (un np.ndarray) y la devuelve en escala de grises
@@ -34,7 +37,12 @@ def _construir_vector_imagen_bucles(img:np.ndarray)->np.ndarray:
 
 def construir_vector_imagen(img:np.ndarray)->np.ndarray:
 
-    return (img[:,:,2].flatten()).astype(np.float64)
+    # No pasamos a escala de grises
+    if len(img.shape)==3:
+        return (img[:,:,2].flatten()).astype(np.float64)
+    # Estamos en escala de grises
+    if len(img.shape)==2:
+        return (img[:,:].flatten()).astype(np.float64)
 
 
 # ---------------------------------------Generacion de pines----------------------------------
@@ -92,10 +100,24 @@ def precaluclar_todas_las_posibles_lineas(numero_de_pines: int, coord_xs: np.nda
 
 
 # ---------------------------------------Tuberia de preprocesado----------------------------------
-def tuberia_preprocesado(ruta_a_la_imagen:Path, numero_de_pines:int = 256, distancia_minima:int = 0,**kwargs):
+def tuberia_preprocesado(ruta_a_la_imagen:Path, numero_de_pines:int = 256,
+                         distancia_minima:int = 0, pasar_a_grises:bool = True,
+                         redimensionar:bool = False, recortar:bool = True,
+                         **kwargs):
     imagen =cv2.imread(ruta_a_la_imagen)
     imagen = cv2.flip(imagen,0)
-    imagen = redimensionar_a_rectangulo(imagen)
+
+    if pasar_a_grises:
+        imagen = pasar_img_a_grises(imagen)
+
+    imagen = cv2.normalize(imagen,None, 0, 255, cv2.NORM_MINMAX)
+
+    if recortar:
+        imagen = recortar_rectangulo(imagen)
+
+    if redimensionar:
+        imagen = redimensionar_a_rectangulo(imagen)
+    
     vector_de_la_imagen = construir_vector_imagen(imagen)
     posiciones_pines =  calcular_posicion_pins(numero_de_pines, ancho = imagen.shape[1], alto = imagen.shape[0])
     cache_linea_x, cache_linea_y = precaluclar_todas_las_posibles_lineas(numero_de_pines,posiciones_pines[0],posiciones_pines[1],distancia_minima)
@@ -116,4 +138,14 @@ if __name__ == "__main__":
     # construir_vector_imagen(cv2.imread("../../ejemplos/ae300.jpg"))
     # print((a == b).all())
 
-    print(tuberia_preprocesado(ruta_a_la_imagen="../../ejemplos/acue.jpg"))
+    # print(tuberia_preprocesado(ruta_a_la_imagen="../../ejemplos/acue.jpg"))
+    # foto =cv2.imread("../../ejemplos/cervantesColor.jpg") 
+    # print(foto[0:15])
+    # cerva= pasar_a_grises(foto)
+    # print(cerva[0:15])
+    # cv2.imwrite(filename="AAAAAA.jpg",img=cerva)
+
+    img = cv2.imread("../../ejemplos/cervantesColor.jpg", cv2.IMREAD_GRAYSCALE)
+    cv2.imwrite(filename="AAAAAA.jpg",img=img)
+    imagen_normalizada = cv2.normalize(img,None, 0, 255, cv2.NORM_MINMAX)
+    cv2.imwrite(filename="AAAdAAA.jpg",img=imagen_normalizada)
