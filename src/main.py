@@ -22,7 +22,7 @@ def estudio_peso_linea(ruta_salida:str, **kwargs):
         "recortar": True,
         "redimensionar": False,
         "numero_de_pines": 256,
-        "peso_de_linea" : list(range(50)),
+        "peso_de_linea" : 20,
         "color_de_hilo" : "#000000",
         "color_de_fondo" :"#ffffff"
     }
@@ -31,8 +31,8 @@ def estudio_peso_linea(ruta_salida:str, **kwargs):
     return 
 
 if __name__ == "__main__":
-   estudioParametrico(output_dir=Path("../ejemplos/local/pruebas_recorte_y_normalizacion"), estudio_web= True, continuacion_estudio= False,
-                        ruta_a_la_imagen = ["../ejemplos/ae300.jpg", "../ejemplos/acue.jpg","../ejemplos/cervantesColor.jpg"],
-                        numero_de_pines=[2**a for a in range(7,10)], peso_de_linea = [20,40])
+#    estudioParametrico(output_dir=Path("../ejemplos/local/pruebas_recorte_y_normalizacion"), estudio_web= True, continuacion_estudio= False,
+#                         ruta_a_la_imagen = ["../ejemplos/ae300.jpg", "../ejemplos/acue.jpg","../ejemplos/cervantesColor.jpg"],
+#                         numero_de_pines=[2**a for a in range(7,10)], peso_de_linea = [20,40])
    
-#    estudio_peso_linea(ruta_salida="../ejemplos/local/prueba_balnco_y_negro")
+   estudio_peso_linea(ruta_salida="../ejemplos/local/prueba_balnco_y_negro", ruta_a_la_imagen = "../ejemplos/genIA.png", peso_de_linea= list(range(5,20)))

@@ -9,13 +9,14 @@ def obtener_camino(linea_cache_x:np.ndarray,linea_cache_y:np.ndarray,
                    numero_de_pines:int = 256 ,maximo_lineas:int= 4000,
                    distancia_minima:int = 0,peso_de_linea:int = 20,
                    **kwargs)->np.ndarray:
-    
+    # Haciendo esto basicamente invertimos colores y pintamos de negro los blancos 
     error_acumulado = np.full(ancho*alto, 255.0) - vector_de_la_imagen
+
     secuencia_pines =np.empty(0,dtype=int)
-    ultimos_pines = np.empty(0,dtype=int)
+    pines_ya_recorridos = np.empty(0,dtype=int)
     pin_actual = 0
     mejor_pin = -1
-    error_en_la_linea = np.float64(0)
+    error_eliminado_en_la_linea = np.float64(0)
     error_maximo = np.float64(0)
     index = 0
     index_interno = 0
@@ -23,18 +24,19 @@ def obtener_camino(linea_cache_x:np.ndarray,linea_cache_y:np.ndarray,
     for i in range(maximo_lineas):
         # Restauramos variables para cada linea a pintar
         mejor_pin = -1
-        error_en_la_linea = np.float64(0)
+        error_eliminado_en_la_linea = np.float64(0)
         error_maximo = np.float64(0)
 
         for desfase_desde_pin in range(distancia_minima,numero_de_pines-distancia_minima):
             pin_a_probar = (pin_actual + desfase_desde_pin) % numero_de_pines
-            if pin_a_probar in ultimos_pines:
+            if pin_a_probar in pines_ya_recorridos:
                 continue
             else:
+
                 index_interno = pin_a_probar*numero_de_pines + pin_actual
-                error_en_la_linea = get_line_err(error_acumulado, linea_cache_y[index_interno],linea_cache_x[index_interno], ancho)
-                if (error_en_la_linea > error_maximo):
-                    error_maximo = error_en_la_linea
+                error_eliminado_en_la_linea = get_line_err(error_acumulado, linea_cache_y[index_interno],linea_cache_x[index_interno], ancho)
+                if (error_eliminado_en_la_linea > error_maximo):
+                    error_maximo = error_eliminado_en_la_linea
                     mejor_pin = pin_a_probar
                     index = index_interno
         
@@ -46,8 +48,9 @@ def obtener_camino(linea_cache_x:np.ndarray,linea_cache_y:np.ndarray,
             v = int(coords1[i] * ancho +coords2[i])
             error_acumulado[v] -= peso_de_linea 
 
-        ultimos_pines= np.append(ultimos_pines, mejor_pin)
-        ultimos_pines = ultimos_pines[1:]
+    
+        pines_ya_recorridos= np.append(pines_ya_recorridos, mejor_pin)
+        pines_ya_recorridos = pines_ya_recorridos[1:]
         pin_actual = mejor_pin
 
     return {"peso_de_linea": peso_de_linea,

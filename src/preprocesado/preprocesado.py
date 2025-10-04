@@ -118,6 +118,11 @@ def tuberia_preprocesado(ruta_a_la_imagen:Path, numero_de_pines:int = 256,
     if redimensionar:
         imagen = redimensionar_a_rectangulo(imagen)
     
+    # a =  imagen
+    # cv2.imwrite(filename="Imagen_preerror.jpg",img=a)
+    # a = np.full(shape =imagen.shape, fill_value=np.float64(255.0)) - a
+    # cv2.imwrite(filename="Imagen_error.jpg",img=a)
+
     vector_de_la_imagen = construir_vector_imagen(imagen)
     posiciones_pines =  calcular_posicion_pins(numero_de_pines, ancho = imagen.shape[1], alto = imagen.shape[0])
     cache_linea_x, cache_linea_y = precaluclar_todas_las_posibles_lineas(numero_de_pines,posiciones_pines[0],posiciones_pines[1],distancia_minima)
@@ -146,6 +151,8 @@ if __name__ == "__main__":
     # cv2.imwrite(filename="AAAAAA.jpg",img=cerva)
 
     img = cv2.imread("../../ejemplos/cervantesColor.jpg", cv2.IMREAD_GRAYSCALE)
-    cv2.imwrite(filename="AAAAAA.jpg",img=img)
-    imagen_normalizada = cv2.normalize(img,None, 0, 255, cv2.NORM_MINMAX)
-    cv2.imwrite(filename="AAAdAAA.jpg",img=imagen_normalizada)
+    # cv2.imwrite(filename="AAAAAA.jpg",img=img)
+    # imagen_normalizada = cv2.normalize(img,None, 0, 255, cv2.NORM_MINMAX)
+    # cv2.imwrite(filename="AAAdAAA.jpg",img=imagen_normalizada)
+    a = np.full(shape =img.shape, fill_value=np.float64(255.0)) - img
+    cv2.imwrite(filename="AAAdAAA.jpg",img=a)
