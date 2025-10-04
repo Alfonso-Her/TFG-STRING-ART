@@ -6,9 +6,9 @@ def hilar_secuencia_svg(posiciones_pines, secuencia_pines, ruta_a_resultado="str
                         ancho_clavos=6,
                         ancho_de_hilo=1,
                         color_de_clavo="#929191",
-                        color_de_hilo='white',
+                        color_de_hilo='#000000',
                         ratio_distancia=0.01,
-                        color_de_fondo="black",
+                        color_de_fondo="#ffffff",
                         **kwargs):
     
     posiciones_pines = np.asarray(posiciones_pines)

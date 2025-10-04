@@ -31,8 +31,8 @@ def estudio_peso_linea(ruta_salida:str, **kwargs):
     return 
 
 if __name__ == "__main__":
-#    estudio_calidad_visual_alternando_color_fondos_y_hilo(ruta_salida="../ejemplos/local/prueba_balnco_y_negro",
-#                                                          ruta_a_la_imagen = ["../ejemplos/ae300.jpg", "../ejemplos/acue.jpg","../ejemplos/cervantesColor.jpg"],
-#                                                          numero_de_pines=[2**a for a in range(6,11)])
+   estudioParametrico(output_dir=Path("../ejemplos/local/pruebas_recorte_y_normalizacion"), estudio_web= True, continuacion_estudio= False,
+                        ruta_a_la_imagen = ["../ejemplos/ae300.jpg", "../ejemplos/acue.jpg","../ejemplos/cervantesColor.jpg"],
+                        numero_de_pines=[2**a for a in range(7,10)], peso_de_linea = [20,40])
    
-   estudio_peso_linea(ruta_salida="../ejemplos/local/prueba_balnco_y_negro")
+#    estudio_peso_linea(ruta_salida="../ejemplos/local/prueba_balnco_y_negro")
