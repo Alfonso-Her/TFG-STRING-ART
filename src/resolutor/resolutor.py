@@ -9,8 +9,13 @@ def obtener_camino(linea_cache_x:np.ndarray,linea_cache_y:np.ndarray,
                    numero_de_pines:int = 256 ,maximo_lineas:int= 4000,
                    distancia_minima:int = 0,peso_de_linea:int = 20,
                    **kwargs)->np.ndarray:
+    
     # Haciendo esto basicamente invertimos colores y pintamos de negro los blancos 
     error_acumulado = np.full(ancho*alto, 255.0) - vector_de_la_imagen
+
+    if "verbose" in kwargs and kwargs["verbose"]:
+        imagen_preprocesada = vector_de_la_imagen.reshape(-1,ancho)
+        imagen_error_preresolutor = error_acumulado[:].reshape(-1,ancho)
 
     secuencia_pines =np.empty(0,dtype=int)
     pines_ya_recorridos = np.empty(0,dtype=int)
@@ -53,7 +58,20 @@ def obtener_camino(linea_cache_x:np.ndarray,linea_cache_y:np.ndarray,
         pines_ya_recorridos = pines_ya_recorridos[1:]
         pin_actual = mejor_pin
 
-    cv2.imwrite(filename="mapa_de_error.jpg",img= error_acumulado.reshape(-1,ancho))
+
+    if "verbose" in kwargs and kwargs["verbose"]:
+        imagen_error_post_resolutor = error_acumulado.reshape(-1,ancho)
+        
+        return {"peso_de_linea": peso_de_linea,
+            "distancia_minima":distancia_minima,
+            "maximo_lineas":maximo_lineas,
+            "error_total":error_acumulado,
+            "secuencia_pines":secuencia_pines,
+            "imagen_preprocesada": imagen_preprocesada,
+            "imagen_error_preresolutor": imagen_error_preresolutor,
+            "imagen_error_post_resolutor":imagen_error_post_resolutor
+            }
+    
     return {"peso_de_linea": peso_de_linea,
             "distancia_minima":distancia_minima,
             "maximo_lineas":maximo_lineas,

@@ -1,5 +1,6 @@
 import numpy as np
 import svgwrite
+import cv2
 
 def hilar_secuencia_svg(posiciones_pines, secuencia_pines, ruta_a_resultado="string_art.svg",
                         tamano_lado_px=3000,
@@ -23,9 +24,17 @@ def hilar_secuencia_svg(posiciones_pines, secuencia_pines, ruta_a_resultado="str
         y = (1 - (p[1]-mn[1])/(mx[1]-mn[1])) * tamano_lado_px
         return (x,y)
     
-    centro_img= map_pt((0,0))
     dwg = svgwrite.Drawing(ruta_a_resultado, size=(tamano_lado_px, tamano_lado_px))
-    
+
+    if "verbose" in kwargs and kwargs["verbose"]:
+        ruta_imagen_preprocesada = ruta_a_resultado.replace("procesado.svg","preprocesado.jpg")
+        ruta_imagen_error_preresolutor = ruta_a_resultado.replace("procesado.svg","error_pre.jpg")
+        imagen_error_post_resolutor = ruta_a_resultado.replace("procesado.svg","error_procesado.jpg")
+        
+        cv2.imwrite(filename=ruta_imagen_preprocesada, img=kwargs["imagen_preprocesada"])
+        cv2.imwrite(filename=ruta_imagen_error_preresolutor, img=kwargs["imagen_error_preresolutor"])
+        cv2.imwrite(filename=imagen_error_post_resolutor, img=kwargs["imagen_error_post_resolutor"])
+
     # fondo (rectángulo que cubre todo el lienzo)
     dwg.add(dwg.rect(insert=(0, 0), size=(tamano_lado_px, tamano_lado_px), fill=color_de_fondo))
     # dwg.add(dwg.circle(center=(tamano_lado_px/2,tamano_lado_px/2), r=sum(mx), fill=color_de_fondo))

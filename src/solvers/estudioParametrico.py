@@ -11,10 +11,10 @@ from preprocesado import *
 from reconstruccion import *
 from resolutor import *
 
-parametros_preprocesado = ["ruta_a_la_imagen","numero_de_pines","distancia_minima", "pasar_a_grises", "redimensionar", "recortar"]
-parametros_resolucion = ["numero_de_pines","distancia_minima","maximo_lineas","peso_de_linea"]
-parametros_reconstruccion = ["tamano_lado_px","ancho_clavos","ancho_de_hilo","ratio_distancia","color_de_hilo","color_de_fondo","color_de_clavo"]
-parametros_a_guardar_json = ["imagen_original","numero_de_pines","secuencia_pines","distancia_minima","maximo_lineas","peso_de_linea","error_total","tiempo_ejecucion","ruta_resultado"]
+parametros_preprocesado = ["ruta_a_la_imagen","numero_de_pines","distancia_minima", "pasar_a_grises", "redimensionar", "recortar","verbose"]
+parametros_resolucion = ["numero_de_pines","distancia_minima","maximo_lineas","peso_de_linea","verbose"]
+parametros_reconstruccion = ["tamano_lado_px","ancho_clavos","ancho_de_hilo","ratio_distancia","color_de_hilo","color_de_fondo","color_de_clavo","verbose"]
+parametros_a_guardar_json = ["imagen_original","numero_de_pines","secuencia_pines","distancia_minima","maximo_lineas","peso_de_linea","error_total","tiempo_ejecucion","ruta_resultado","verbose"]
 Ruta_a_web = Path("index.html")
 
 def agregarValor(parametros_fijos,clave,valor):
@@ -168,7 +168,7 @@ def estudioParametrico(output_dir:Path, estudio_web:bool,continuacion_estudio:bo
             img_padre = cv2.imread(datos_preprocesados["ruta_a_la_imagen"])
             cv2.imwrite(ruta_imagen_original_en_destino,img_padre)
         fin = time()
-
+        
         metadatos_ejecucion["imagen_original"] = ".".join(nombre_foto_con_ext)
         metadatos_ejecucion["numero_de_pines"] = datos_preprocesados["numero_de_pines"]
         metadatos_ejecucion["secuencia_pines"] = datos_solucion_problema["secuencia_pines"].tolist()
@@ -178,6 +178,11 @@ def estudioParametrico(output_dir:Path, estudio_web:bool,continuacion_estudio:bo
         metadatos_ejecucion["error_total"] = float(np.sum(datos_solucion_problema["error_total"]))
         metadatos_ejecucion["tiempo_ejecucion"] = fin - inicio
         metadatos_ejecucion["ruta_resultado"] = str(datos_sol_final["ruta_resultado"]).split("\\")[-1]
+        metadatos_ejecucion["ruta_resultado"] = False
+        
+        if "verbose" in paquete_argumentos[0]:
+            metadatos_ejecucion["verbose"] = paquete_argumentos[0]["verbose"]
+
         
         concatenar_sobre_json(ruta_json,metadatos_ejecucion)
         metadatos.append(metadatos_ejecucion)
