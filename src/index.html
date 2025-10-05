@@ -70,17 +70,25 @@
             transform: scale(1.05);
             box-shadow: 2px 2px 6px rgba(0,0,0,0.5);
         }
-		.Imagen{
-			background-color: rgba(255,255,255,0.2);
-			border-radius: 6px;
-			box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-			flex:1;
+		.Imagen {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
             padding: 4px;
-			height: 200px;
             margin-bottom: 10px;
             text-align: center;
-		}
-
+            display: flex;
+            flex-direction: column; /* fuerza imagen arriba y texto abajo */
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* evita que sobresalga si alguna es muy grande */
+        }
+        .nombreImagen{
+            width: 100%;
+           text-align : center;
+           font-size : italic;
+           margin-top: 6px;
+        }
 		.Metadatos ul {
             padding-left: 18px;
             margin: 0;
@@ -156,12 +164,17 @@
             img.style.maxHeight = "100%";
             divImagen.appendChild(img);
 
-
             img_especial.src = item.imagen_original;
             img_especial.alt = "origen";
             img_especial.style.maxWidth = "100%";
             img_especial.style.maxHeight = "100%";
             divImagen_especial.appendChild(img_especial);
+
+            // Texto descriptivo debajo de la imagen ejecucion
+            const textoImagen = document.createElement("p");
+            textoImagen.className = "NombreImg";
+            textoImagen.textContent = "Imagen: resultado";
+            divImagen.appendChild(textoImagen);
 
             // texto de la imagen origen
             const nombre = document.createElement("h2");
@@ -180,9 +193,37 @@
                 <li>Peso línea: ${item.peso_de_linea}</li>
                 <li>Error total: ${item.error_total}</li>
                 <li>Tiempo: ${item.tiempo_ejecucion}s</li>
+                <li>Verbose: ${item.verbose}</li>
             `;
             divMeta.appendChild(ul);
+            
+            if (item.verbose) {
+                const imagenes = [
+                    { src: item.ruta_resultado, nombre: "resultado" },
+                    { src: item.ruta_imagen_preprocesada, nombre: "Preprocesada" },
+                    { src: item.ruta_imagen_error_preresolutor, nombre: "Error limpio" },
+                    { src: item.ruta_imagen_error_post_resolutor, nombre: "Error final" }
+                ].filter(obj => obj.src); // elimina los que no existen
+                
+                let index = 0;
 
+                img.style.cursor = "pointer";
+                img.title = "Haz clic para alternar imágenes";
+
+                img.addEventListener("click", () => {
+                    index = (index + 1) % imagenes.length;
+                    const actual = imagenes[index];
+
+                    // cambia imagen y texto
+                    img.src = actual.src;
+                    textoImagen.textContent = `Imagen: ${actual.nombre}`;
+
+                    // // agrega a la lista un registro
+                    // const li = document.createElement("li");
+                    // li.textContent = `Vista: ${actual.nombre}`;
+                    // ul.appendChild(li);
+                });
+            }
             // Montar tarjetas
             tarjeta.appendChild(divImagen);
             tarjeta.appendChild(divMeta);

@@ -26,15 +26,6 @@ def hilar_secuencia_svg(posiciones_pines, secuencia_pines, ruta_a_resultado="str
     
     dwg = svgwrite.Drawing(ruta_a_resultado, size=(tamano_lado_px, tamano_lado_px))
 
-    if "verbose" in kwargs and kwargs["verbose"]:
-        ruta_imagen_preprocesada = ruta_a_resultado.replace("procesado.svg","preprocesado.jpg")
-        ruta_imagen_error_preresolutor = ruta_a_resultado.replace("procesado.svg","error_pre.jpg")
-        imagen_error_post_resolutor = ruta_a_resultado.replace("procesado.svg","error_procesado.jpg")
-        
-        cv2.imwrite(filename=ruta_imagen_preprocesada, img=kwargs["imagen_preprocesada"])
-        cv2.imwrite(filename=ruta_imagen_error_preresolutor, img=kwargs["imagen_error_preresolutor"])
-        cv2.imwrite(filename=imagen_error_post_resolutor, img=kwargs["imagen_error_post_resolutor"])
-
     # fondo (rectángulo que cubre todo el lienzo)
     dwg.add(dwg.rect(insert=(0, 0), size=(tamano_lado_px, tamano_lado_px), fill=color_de_fondo))
     # dwg.add(dwg.circle(center=(tamano_lado_px/2,tamano_lado_px/2), r=sum(mx), fill=color_de_fondo))
@@ -48,6 +39,21 @@ def hilar_secuencia_svg(posiciones_pines, secuencia_pines, ruta_a_resultado="str
         dwg.add(dwg.circle(center=p, r=ancho_clavos, fill=color_de_clavo))
     dwg.save()
 
+    if "verbose" in kwargs and kwargs["verbose"]:
+        ruta_imagen_preprocesada = str(ruta_a_resultado).replace("procesado.svg","preprocesado.jpg")
+        ruta_imagen_error_preresolutor = str(ruta_a_resultado).replace("procesado.svg","error_pre.jpg")
+        imagen_error_post_resolutor = str(ruta_a_resultado).replace("procesado.svg","error_procesado.jpg")
+        
+        cv2.imwrite(filename=ruta_imagen_preprocesada, img=cv2.flip(kwargs["imagen_preprocesada"],0))
+        cv2.imwrite(filename=ruta_imagen_error_preresolutor, img=cv2.flip(kwargs["imagen_error_preresolutor"],0))
+        cv2.imwrite(filename=imagen_error_post_resolutor, img=cv2.flip(kwargs["imagen_error_post_resolutor"],0))
+        
+        return {
+                "ruta_resultado":ruta_a_resultado,
+                "ruta_imagen_preprocesada": ruta_imagen_preprocesada,
+                "ruta_imagen_error_preresolutor":ruta_imagen_error_preresolutor,
+                "ruta_imagen_post_resolutor":imagen_error_post_resolutor
+                }
     return {"ruta_resultado":ruta_a_resultado}
 
 ##TESTING

@@ -14,7 +14,12 @@ from resolutor import *
 parametros_preprocesado = ["ruta_a_la_imagen","numero_de_pines","distancia_minima", "pasar_a_grises", "redimensionar", "recortar","verbose"]
 parametros_resolucion = ["numero_de_pines","distancia_minima","maximo_lineas","peso_de_linea","verbose"]
 parametros_reconstruccion = ["tamano_lado_px","ancho_clavos","ancho_de_hilo","ratio_distancia","color_de_hilo","color_de_fondo","color_de_clavo","verbose"]
-parametros_a_guardar_json = ["imagen_original","numero_de_pines","secuencia_pines","distancia_minima","maximo_lineas","peso_de_linea","error_total","tiempo_ejecucion","ruta_resultado","verbose"]
+parametros_a_guardar_json = ["imagen_original","numero_de_pines","secuencia_pines",
+                             "distancia_minima","maximo_lineas","peso_de_linea",
+                             "error_total","tiempo_ejecucion","ruta_resultado",
+                             "verbose","ruta_imagen_preprocesada","ruta_imagen_error_preresolutor",
+                             "ruta_imagen_error_post_resolutor"]
+
 Ruta_a_web = Path("index.html")
 
 def agregarValor(parametros_fijos,clave,valor):
@@ -92,6 +97,9 @@ def concatenar_sobre_json(ruta: Path, metadatos:dict):
 
     with ruta.open("w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4,default=convert)
+
+def limpiar_ruta_para_raiz(ruta:str|Path)->str:
+    return str(ruta).split("\\")[-1]
 
 def estudioParametrico(output_dir:Path, estudio_web:bool,continuacion_estudio:bool, **kwargs):
     """
@@ -177,11 +185,17 @@ def estudioParametrico(output_dir:Path, estudio_web:bool,continuacion_estudio:bo
         metadatos_ejecucion["peso_de_linea"] = datos_solucion_problema["peso_de_linea"]
         metadatos_ejecucion["error_total"] = float(np.sum(datos_solucion_problema["error_total"]))
         metadatos_ejecucion["tiempo_ejecucion"] = fin - inicio
-        metadatos_ejecucion["ruta_resultado"] = str(datos_sol_final["ruta_resultado"]).split("\\")[-1]
-        metadatos_ejecucion["ruta_resultado"] = False
-        
+        metadatos_ejecucion["ruta_resultado"] = limpiar_ruta_para_raiz(datos_sol_final["ruta_resultado"])
+        metadatos_ejecucion["verbose"] = str(False) 
+        metadatos_ejecucion["ruta_imagen_preprocesada"] = ""
+        metadatos_ejecucion["ruta_imagen_error_preresolutor"] = ""
+        metadatos_ejecucion["ruta_imagen_error_post_resolutor"] = ""
+
         if "verbose" in paquete_argumentos[0]:
-            metadatos_ejecucion["verbose"] = paquete_argumentos[0]["verbose"]
+            metadatos_ejecucion["verbose"] = str(paquete_argumentos[0]["verbose"])
+            metadatos_ejecucion["ruta_imagen_preprocesada"] = limpiar_ruta_para_raiz(datos_sol_final["ruta_imagen_preprocesada"])
+            metadatos_ejecucion["ruta_imagen_error_preresolutor"] = limpiar_ruta_para_raiz(datos_sol_final["ruta_imagen_error_preresolutor"])
+            metadatos_ejecucion["ruta_imagen_error_post_resolutor"] = limpiar_ruta_para_raiz(datos_sol_final["ruta_imagen_post_resolutor"])
 
         
         concatenar_sobre_json(ruta_json,metadatos_ejecucion)

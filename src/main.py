@@ -35,4 +35,4 @@ if __name__ == "__main__":
 #                         ruta_a_la_imagen = ["../ejemplos/ae300.jpg", "../ejemplos/acue.jpg","../ejemplos/cervantesColor.jpg"],
 #                         numero_de_pines=[2**a for a in range(7,10)], peso_de_linea = [20,40])
    
-   estudio_peso_linea(ruta_salida="../ejemplos/local/entendiendo_error", ruta_a_la_imagen = "../ejemplos/ae300.jpg", peso_de_linea=1)
+   estudio_peso_linea(ruta_salida="../ejemplos/local/entendiendo_error", ruta_a_la_imagen = "../ejemplos/ae300.jpg", peso_de_linea=5,verbose=True)

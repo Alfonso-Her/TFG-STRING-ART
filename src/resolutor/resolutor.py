@@ -1,4 +1,5 @@
 import numpy as np
+from copy import deepcopy
 import cv2
 def get_line_err(err: np.ndarray, coords1: np.ndarray, coords2: np.ndarray, ancho: np.float64) ->  np.float64:
     indices = (coords1 * ancho + coords2).astype(int)
@@ -15,7 +16,7 @@ def obtener_camino(linea_cache_x:np.ndarray,linea_cache_y:np.ndarray,
 
     if "verbose" in kwargs and kwargs["verbose"]:
         imagen_preprocesada = vector_de_la_imagen.reshape(-1,ancho)
-        imagen_error_preresolutor = error_acumulado[:].reshape(-1,ancho)
+        imagen_error_preresolutor = deepcopy(error_acumulado).reshape(-1,ancho)
 
     secuencia_pines =np.empty(0,dtype=int)
     pines_ya_recorridos = np.empty(0,dtype=int)
@@ -61,7 +62,7 @@ def obtener_camino(linea_cache_x:np.ndarray,linea_cache_y:np.ndarray,
 
     if "verbose" in kwargs and kwargs["verbose"]:
         imagen_error_post_resolutor = error_acumulado.reshape(-1,ancho)
-        
+
         return {"peso_de_linea": peso_de_linea,
             "distancia_minima":distancia_minima,
             "maximo_lineas":maximo_lineas,
