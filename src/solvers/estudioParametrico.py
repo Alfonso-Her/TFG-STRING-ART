@@ -212,7 +212,7 @@ def estudioParametrico(output_dir:Path, estudio_web:bool= True,
         metadatos_ejecucion["ruta_imagen_preprocesada"] = ""
         metadatos_ejecucion["ruta_imagen_error_preresolutor"] = ""
         metadatos_ejecucion["ruta_imagen_error_post_resolutor"] = ""
-        metadatos_ejecucion["funciones_usadas"]= ", ".join([str(funcion_preprocesado),str(funcion_resolucion),str(funcion_reconstruccion)])
+        metadatos_ejecucion["funciones_usadas"]= ", ".join([funcion_preprocesado.__name__,funcion_resolucion.__name__,funcion_reconstruccion.__name__])
 
         if "verbose" in paquete_argumentos[0] and paquete_argumentos[0]["verbose"]:
             metadatos_ejecucion["verbose"] = str(paquete_argumentos[0]["verbose"])
