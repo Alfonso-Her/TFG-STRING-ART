@@ -1,22 +1,15 @@
 from pathlib import Path
+import numpy as np
+from typing import Unpack,Callable
+
+from resolutor import obtener_camino, obtener_camino_cambio_pin_medio
 from solvers import estudioParametrico
+from IOfunct import *
 
-def estudio_calidad_visual_alternando_color_fondos_y_hilo(ruta_salida: str, **kwargs):
-    """
-        Parece que se ven mejor las imagenes con hilo negro y fondo blanco 
-    """
-    parametros_basicos = {
-        "ruta_a_la_imagen": "../ejemplos/ae300.jpg",
-        "numero_de_pines": 256,
-        "peso_de_linea" : 20,
-        "color_de_hilo" : ["#000000","#ffffff"],
-        "color_de_fondo" : ["#000000","#ffffff"]
-     }
-    parametros_basicos.update(kwargs)
-    estudioParametrico(output_dir=Path(ruta_salida), estudio_web= True, continuacion_estudio=False, **parametros_basicos)
-    return 
 
-def estudio_peso_linea(ruta_salida:str, **kwargs):
+def probar_funcion_resolutora(ruta_salida:str,
+                              funcion_resolucion: Callable[[ParametrosResolucion, ReturnPreprocesado], ReturnResolutor],
+                              **kwargs:Unpack[EstudioParametros]):
     parametros_basicos = {
         "ruta_a_la_imagen": "../ejemplos/ae300.jpg",
         "recortar": True,
@@ -24,20 +17,24 @@ def estudio_peso_linea(ruta_salida:str, **kwargs):
         "numero_de_pines": 256,
         "peso_de_linea" : 20,
         "color_de_hilo" : "#000000",
-        "color_de_fondo" :"#ffffff"
+        "color_de_fondo" :"#ffffff",
+        "verbose": False
     }
+
     parametros_basicos.update(kwargs)
-    estudioParametrico(output_dir=Path(ruta_salida), estudio_web= True, continuacion_estudio=False, **parametros_basicos)
-    return 
-
+    estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False, **parametros_basicos)
+    estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= True,
+                        funcion_resolucion=funcion_resolucion, **parametros_basicos)
 if __name__ == "__main__":
-#    estudioParametrico(output_dir=Path("../ejemplos/local/pruebas_recorte_y_normalizacion"), estudio_web= True, continuacion_estudio= False,
-#                         ruta_a_la_imagen = ["../ejemplos/ae300.jpg", "../ejemplos/acue.jpg","../ejemplos/cervantesColor.jpg"],
-#                         numero_de_pines=[2**a for a in range(7,10)], peso_de_linea = [20,40])
-   
-#    estudio_peso_linea(ruta_salida="../ejemplos/local/entendiendo_error", ruta_a_la_imagen = "../ejemplos/ae300.jpg", peso_de_linea=5,verbose=True)
 
-   estudioParametrico(output_dir=Path("../ejemplos/local/menos1"),estudio_web= True, continuacion_estudio= True,
-                      ruta_a_la_imagen = ["../ejemplos/ae300.jpg", "../ejemplos/acue.jpg","../ejemplos/cervantesColor.jpg"],
-                      maximo_lineas = 6000, peso_de_linea=[20,120], verbose= True)
-   estudioParametrico()
+    np.set_printoptions(threshold=2)
+    nombreEstudio = "1"
+    ruta_salida = f"../ejemplos/local/{nombreEstudio}"
+    todas_las_imagenes = ["../ejemplos/ae300.jpg","../ejemplos/acue.jpg","../ejemplos/cervantesColor.jpg"]
+
+    probar_funcion_resolutora(ruta_salida=ruta_salida,
+                            funcion_resolucion=obtener_camino_cambio_pin_medio,
+                            ruta_a_la_imagen=todas_las_imagenes,
+                            peso_de_linea=[1,5,15,120,200])
+   
+   

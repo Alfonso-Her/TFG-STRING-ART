@@ -3,6 +3,7 @@ import numpy as np
 from pathlib import Path
 from typing import Callable,Tuple
 
+from IOfunct import ReturnPreprocesado
 # ---------------------------------------Tratamiento de la imagen---------------------------------- 
 def recortar_rectangulo(img,pixel_inicial_ancho = 0 ,pixel_inicial_alto = 0): # TODO permitir recortar lo que se quiera
     alto,ancho = img.shape[0:2]
@@ -103,7 +104,7 @@ def precaluclar_todas_las_posibles_lineas(numero_de_pines: int, coord_xs: np.nda
 def tuberia_preprocesado(ruta_a_la_imagen:Path, numero_de_pines:int = 256,
                          distancia_minima:int = 0, pasar_a_grises:bool = True,
                          redimensionar:bool = False, recortar:bool = True,
-                         **kwargs):
+                         **kwargs) -> ReturnPreprocesado:
     imagen =cv2.imread(ruta_a_la_imagen)
     imagen = cv2.flip(imagen,0)
 
@@ -122,14 +123,14 @@ def tuberia_preprocesado(ruta_a_la_imagen:Path, numero_de_pines:int = 256,
     vector_de_la_imagen = construir_vector_imagen(imagen)
     posiciones_pines =  calcular_posicion_pins(numero_de_pines, ancho = imagen.shape[1], alto = imagen.shape[0])
     cache_linea_x, cache_linea_y = precaluclar_todas_las_posibles_lineas(numero_de_pines,posiciones_pines[0],posiciones_pines[1],distancia_minima)
-    return {"ruta_a_la_imagen":ruta_a_la_imagen,
-            "numero_de_pines":numero_de_pines, 
-            "ancho":imagen.shape[1],
-            "alto":imagen.shape[0],
-            "vector_de_la_imagen":vector_de_la_imagen,
-            "posiciones_pines":np.column_stack(posiciones_pines),
-            "linea_cache_x":cache_linea_x,
-            "linea_cache_y":cache_linea_y}
+    return ReturnPreprocesado(ruta_a_la_imagen=ruta_a_la_imagen,
+                            numero_de_pines=numero_de_pines, 
+                            ancho=imagen.shape[1],
+                            alto=imagen.shape[0],
+                            vector_de_la_imagen=vector_de_la_imagen,
+                            posiciones_pines=np.column_stack(posiciones_pines),
+                            linea_cache_x=cache_linea_x,
+                            linea_cache_y=cache_linea_y)
 
 # testing
 if __name__ == "__main__":

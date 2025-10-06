@@ -1,6 +1,8 @@
 import numpy as np
 from copy import deepcopy
 import cv2
+
+from IOfunct import ReturnResolutor
 def get_line_err(err: np.ndarray, coords1: np.ndarray, coords2: np.ndarray, ancho: np.float64) ->  np.float64:
     indices = (coords1 * ancho + coords2).astype(int)
     return np.sum(err[indices])
@@ -10,7 +12,7 @@ def obtener_camino(linea_cache_x:np.ndarray,linea_cache_y:np.ndarray,
                    numero_de_pines:int = 256 ,maximo_lineas:int= 4000,
                    distancia_minima:int = 0,peso_de_linea:int = 20,
                    numero_de_pines_recientes_a_evitar:int=5,
-                   **kwargs)->np.ndarray:
+                   **kwargs)->ReturnResolutor:
     
     # Haciendo esto basicamente invertimos colores y pintamos de negro los blancos 
     error_acumulado = np.full(ancho*alto, 255.0) - vector_de_la_imagen
@@ -65,21 +67,24 @@ def obtener_camino(linea_cache_x:np.ndarray,linea_cache_y:np.ndarray,
     if "verbose" in kwargs and kwargs["verbose"]:
         imagen_error_post_resolutor = error_acumulado.reshape(-1,ancho)
 
-        return {"peso_de_linea": peso_de_linea,
-            "distancia_minima":distancia_minima,
-            "maximo_lineas":maximo_lineas,
-            "error_total":error_acumulado,
-            "secuencia_pines":secuencia_pines,
-            "imagen_preprocesada": imagen_preprocesada,
-            "imagen_error_preresolutor": imagen_error_preresolutor,
-            "imagen_error_post_resolutor":imagen_error_post_resolutor
-            }
+        return ReturnResolutor(
+            peso_de_linea=peso_de_linea,
+            distancia_minima=distancia_minima,
+            maximo_lineas=maximo_lineas,
+            error_total=error_acumulado,
+            secuencia_pines=secuencia_pines,
+            imagen_preprocesada=imagen_preprocesada,
+            imagen_error_preresolutor=imagen_error_preresolutor,
+            imagen_error_post_resolutor=imagen_error_post_resolutor,
+        )
     
-    return {"peso_de_linea": peso_de_linea,
-            "distancia_minima":distancia_minima,
-            "maximo_lineas":maximo_lineas,
-            "error_total":error_acumulado,
-            "secuencia_pines":secuencia_pines}
+    return ReturnResolutor(
+            peso_de_linea=peso_de_linea,
+            distancia_minima=distancia_minima,
+            maximo_lineas=maximo_lineas,
+            error_total=error_acumulado,
+            secuencia_pines=secuencia_pines
+        )
 
 if __name__ == "__main__":
     from ..preprocesado import tuberia_preprocesado

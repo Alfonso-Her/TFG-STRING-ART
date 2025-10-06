@@ -1,1 +1,2 @@
 from .resolutor import obtener_camino
+from .resolutorCambioPinMedio import obtener_camino_cambio_pin_medio

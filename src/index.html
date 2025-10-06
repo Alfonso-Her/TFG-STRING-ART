@@ -30,7 +30,7 @@
             top: 0;
             height: 100vh;      /* sidebar fijo */
             overflow-y: auto;
-            background-color: #ccb7b7;
+            background-color: #30475E;
             opacity: 0.8;
             box-sizing: border-box;
         }
@@ -47,33 +47,38 @@
             gap: 13px;
             padding: 16px;
             justify-content: space-around;
-            background-color: #281a5f;
+            background-color: #222831;
             box-sizing: border-box;
             min-height: 100%;  /* ocupa todo el espacio disponible */
         }
 
         .tarjeta {
-            background-color: rgba(237, 232, 208, 0.9);
+            background-color: #ECECEC;
             padding: 16px;
             border-radius: 8px;
             width: 100%;
             max-width: 500px;
             /* height: 300px; */
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            /* box-shadow: 0 2px 6px rgba(0,0,0,0.2); */
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             transition: all 0.2s ease;
             box-sizing: border-box;
+            margin: 10px;
         }
         .tarjeta:hover {
-            transform: scale(1.05);
-            box-shadow: 2px 2px 6px rgba(0,0,0,0.5);
+            transform: scale(1.02);
+            border:2px #000;
+            box-shadow:
+                3px 3px 10px rgba(0, 0, 0, 0.9),  /* sombra principal hacia abajo-derecha */
+                -1px -1px 10px rgba(255, 255, 255, 0.3); /* luz suave arriba-izquierda */
+            /* box-shadow: 2px 4px 10px rgba(0,0,0,0.4); */
+            overflow: hidden;
         }
 		.Imagen {
-            background-color: rgba(255, 255, 255, 0.2);
+            background-color: transparent;
             border-radius: 6px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
             padding: 4px;
             margin-bottom: 10px;
             text-align: center;
@@ -84,23 +89,39 @@
             overflow: hidden; /* evita que sobresalga si alguna es muy grande */
         }
         .nombreImagen{
-            width: 100%;
+
+           width: 100%;
            text-align : center;
            font-size : italic;
            margin-top: 6px;
         }
-		.Metadatos ul {
+		/* .Metadatos ul {
             padding-left: 18px;
             margin: 0;
+        } */
+        .propiedades-ejeciucion{
+            width: 100%;
+            display: felx;
+            flex-direction: row;
+            flex-wrap: wrap;
+            background-color: #C1A57B;
+            border-radius: 6px;
+        }
+
+        .Propiedad{
+            padding: 3px;
+            border-radius: 8px;
+            flex: 1 2 auto;
+            margin: 3px;
+            justify-content: space-between;
         }
 
         .tarjeta-especial {
-            background-color: rgba(0,0,0,0.2);
+            background-color: transparent;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
             width: 90%;           /* ocupa casi todo el ancho del panel */
-            margin: 10px auto;    /* centrado */
-            overflow: hidden;
+            margin:15px auto;    /* centrado */
+            overflow:  hidden;
             display: flex;
             flex-direction: column;
             text-align: center;
@@ -108,8 +129,11 @@
         }
 
         .tarjeta-especial:hover {
-            transform: scale(1.10);
-            box-shadow: 2px 4px 10px rgba(0,0,0,0.4);
+            transform: scale(1.02);
+            box-shadow:
+                4px 4px 10px rgba(0, 0, 0, 0.4),  /* sombra principal hacia abajo-derecha */
+                -1px -1px 10px rgba(255, 255, 255, 0.3); /* luz suave arriba-izquierda */
+            /* box-shadow: 2px 4px 10px rgba(0,0,0,0.4); */
         }
 
         .tarjeta-especial .imagen-especial {
@@ -122,8 +146,9 @@
             padding: 10px;
             font-size: 18px;
             color: #333;
-            background-color: aliceblue;
+            background-color: #C1A57B;
             border-radius: 8px;
+            margin-bottom: 0;
         }
     </style>
 
@@ -180,23 +205,26 @@
             const nombre = document.createElement("h2");
             nombre.className = "texto-especial";
             nombre.textContent = item.imagen_original;
-            // Metadatos
-            const divMeta = document.createElement("div");
-            divMeta.className = "Metadatos";
+            // // Metadatos
+            // const divMeta = document.createElement("div");
+            // divMeta.className = "Metadatos";
 
-            const ul = document.createElement("ul");
-            ul.innerHTML = `
-                <li>Imagen original: ${item.imagen_original}</li>
-                <li>Nº de pines: ${item.numero_de_pines}</li>
-                <li>Distancia mínima: ${item.distancia_minima}</li>
-                <li>Máximo líneas: ${item.maximo_lineas}</li>
-                <li>Peso línea: ${item.peso_de_linea}</li>
-                <li>Error total: ${item.error_total}</li>
-                <li>Tiempo: ${item.tiempo_ejecucion}s</li>
-                <li>Verbose: ${item.verbose}</li>
+            const divPropiedadesEjecucion = document.createElement("div");
+            divPropiedadesEjecucion.className = "propiedades-ejeciucion";
+
+            divPropiedadesEjecucion.innerHTML = `
+                <p class="Propiedad">Imagen original: ${item.imagen_original}</p>
+                <p class="Propiedad">Funciones Usadas: ${item.funciones_usadas}</p>
+                <p class="Propiedad">Nº de pines: ${item.numero_de_pines}</p>
+                <p class="Propiedad">Distancia mínima: ${item.distancia_minima}</p>
+                <p class="Propiedad">Máximo líneas: ${item.maximo_lineas}</p>
+                <p class="Propiedad">Peso línea: ${item.peso_de_linea}</p>
+                <p class="Propiedad">Error total: ${item.error_total}</p>
+                <p class="Propiedad">Tiempo: ${item.tiempo_ejecucion}s</p>
+                <p class="Propiedad">Verbose: ${item.verbose}</p>
             `;
-            divMeta.appendChild(ul);
-            
+            // divMeta.appendChild(ul);
+
             if (item.verbose) {
                 const imagenes = [
                     { src: item.ruta_resultado, nombre: "resultado" },
@@ -226,7 +254,7 @@
             }
             // Montar tarjetas
             tarjeta.appendChild(divImagen);
-            tarjeta.appendChild(divMeta);
+            tarjeta.appendChild(divPropiedadesEjecucion);
 
             const candidato_a_tarjeta_con_imagen = document.getElementById(item.imagen_original);
             if(!(contenedor_imagen && candidato_a_tarjeta_con_imagen && contenedor_imagen.contains(candidato_a_tarjeta_con_imagen))){
