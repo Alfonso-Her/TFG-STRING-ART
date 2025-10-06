@@ -3,6 +3,7 @@ from pathlib import Path
 import numpy as np
 from numpy import ndarray
 from datetime import datetime
+from typing import Unpack
 from time import time
 import cv2
 from copy import deepcopy
@@ -10,10 +11,10 @@ from copy import deepcopy
 from preprocesado import *
 from reconstruccion import *
 from resolutor import *
-
-parametros_preprocesado = ["ruta_a_la_imagen","numero_de_pines","distancia_minima", "pasar_a_grises", "redimensionar", "recortar","verbose"]
-parametros_resolucion = ["numero_de_pines","distancia_minima","maximo_lineas","peso_de_linea","verbose"]
-parametros_reconstruccion = ["tamano_lado_px","ancho_clavos","ancho_de_hilo","ratio_distancia","color_de_hilo","color_de_fondo","color_de_clavo","verbose"]
+from .EstudioParametricoParametros import ParametrosPreprocesado, ParametrosReconstruccion, ParametrosResolucion, EstudioParametros
+parametros_preprocesado = list(ParametrosPreprocesado.__annotations__.keys())
+parametros_resolucion = list(ParametrosResolucion.__annotations__.keys())
+parametros_reconstruccion = list(ParametrosReconstruccion.__annotations__.keys())
 parametros_a_guardar_json = ["imagen_original","numero_de_pines","secuencia_pines",
                              "distancia_minima","maximo_lineas","peso_de_linea",
                              "error_total","tiempo_ejecucion","ruta_resultado",
@@ -101,7 +102,7 @@ def concatenar_sobre_json(ruta: Path, metadatos:dict):
 def limpiar_ruta_para_raiz(ruta:str|Path)->str:
     return str(ruta).split("\\")[-1]
 
-def estudioParametrico(output_dir:Path, estudio_web:bool,continuacion_estudio:bool, **kwargs):
+def estudioParametrico(output_dir:Path, estudio_web:bool= True ,continuacion_estudio:bool = False, **kwargs:Unpack[EstudioParametros]):
     """
         Esta funcion toma la imagen y los parametros dados en kwargs y va a construir todas las imagenes con esos parametros
         en caso de estudio_web arma un directorio con un index.html, un json, y todas las fotos, abriendo el index.html se veran

@@ -40,3 +40,4 @@ if __name__ == "__main__":
    estudioParametrico(output_dir=Path("../ejemplos/local/menos1"),estudio_web= True, continuacion_estudio= True,
                       ruta_a_la_imagen = ["../ejemplos/ae300.jpg", "../ejemplos/acue.jpg","../ejemplos/cervantesColor.jpg"],
                       maximo_lineas = 6000, peso_de_linea=[20,120], verbose= True)
+   estudioParametrico()
