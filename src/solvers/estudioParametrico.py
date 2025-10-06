@@ -126,6 +126,10 @@ def estudioParametrico(output_dir:Path, estudio_web:bool,continuacion_estudio:bo
     ruta_json = output_dir.joinpath("datos.json")
     metadatos = []
 
+    if ruta_json.exists() and continuacion_estudio:
+        with open(ruta_json, "r") as f:
+            metadatos = json.load(f)
+
     # Conseguimos los parametros ya empaquetados para cada parte del problema
     lista_con_todos_los_parametros = construirParametros(**kwargs)
 
