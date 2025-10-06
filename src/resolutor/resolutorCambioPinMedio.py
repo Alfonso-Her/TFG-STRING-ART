@@ -75,17 +75,20 @@ def cambioPinMedio(error_acumulado:np.ndarray,secuencia_pines:List[int],
         error_acumulado = agregar_lineas_al_error([indice_A_B,indice_B_C],error_acumulado,
                                                      linea_cache_y, linea_cache_x, ancho,
                                                      peso_de_linea)
-    return secuencia_pines_resultado
+        
+    return error_acumulado,secuencia_pines_resultado
 def obtener_camino_cambio_pin_medio(linea_cache_x:np.ndarray,linea_cache_y:np.ndarray,
                    ancho:int,alto:int,vector_de_la_imagen:np.ndarray,
                    numero_de_pines:int = 256 ,maximo_lineas:int= 4000,
                    distancia_minima:int = 0,peso_de_linea:int = 20,
+                   numero_de_pines_recientes_a_evitar:int=5,
                    **kwargs)->np.ndarray:
     
     diccionario_datos = obtener_camino(linea_cache_x,linea_cache_y,
                    ancho,alto,vector_de_la_imagen,
                    numero_de_pines,maximo_lineas,
                    distancia_minima,peso_de_linea,
+                   numero_de_pines_recientes_a_evitar,
                    **kwargs)
     
     error_acumulado = "error_total"
@@ -116,4 +119,4 @@ if __name__ == "__main__":
     from ..preprocesado import tuberia_preprocesado
 
     parametros = tuberia_preprocesado(ruta_a_la_imagen="ejemplos/acue.jpg")
-    print(obtener_camino(**parametros))
+    print(obtener_camino_cambio_pin_medio(**parametros))

@@ -9,6 +9,7 @@ def obtener_camino(linea_cache_x:np.ndarray,linea_cache_y:np.ndarray,
                    ancho:int,alto:int,vector_de_la_imagen:np.ndarray,
                    numero_de_pines:int = 256 ,maximo_lineas:int= 4000,
                    distancia_minima:int = 0,peso_de_linea:int = 20,
+                   numero_de_pines_recientes_a_evitar:int=5,
                    **kwargs)->np.ndarray:
     
     # Haciendo esto basicamente invertimos colores y pintamos de negro los blancos 
@@ -56,7 +57,8 @@ def obtener_camino(linea_cache_x:np.ndarray,linea_cache_y:np.ndarray,
 
     
         pines_ya_recorridos= np.append(pines_ya_recorridos, mejor_pin)
-        pines_ya_recorridos = pines_ya_recorridos[1:]
+        if len(pines_ya_recorridos)> numero_de_pines_recientes_a_evitar:
+            pines_ya_recorridos = pines_ya_recorridos[1:]
         pin_actual = mejor_pin
 
 
