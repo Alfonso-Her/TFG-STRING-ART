@@ -4,7 +4,7 @@ import cv2
 
 from IOfunct import ReturnResolutor
 def get_line_err(err: np.ndarray, coords1: np.ndarray, coords2: np.ndarray, ancho: np.float64) ->  np.float64:
-    indices = (coords1 * ancho + coords2).astype(int)
+    indices = (coords1 * ancho + coords2).astype(np.int64)
     return np.sum(err[indices])
 
 def obtener_camino(linea_cache_x:np.ndarray,linea_cache_y:np.ndarray,

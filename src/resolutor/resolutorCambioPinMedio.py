@@ -42,12 +42,13 @@ def cambioPinMedio(error_acumulado:np.ndarray,secuencia_pines:List[int],
         que encontremos uno mejor
     """
     secuencia_pines_resultado = secuencia_pines.copy()
+    error_acumulado_local = error_acumulado.copy()
 
     for posicion, terna in enumerate(zip(secuencia_pines,secuencia_pines[1:],secuencia_pines[2:])):
         mejor_pin = terna[1]
         indice_A_B = terna[1]*numero_de_pines + terna[0]
         indice_B_C = terna[2]*numero_de_pines + terna[1]
-        error_acumulado = eliminar_lineas_del_error([indice_A_B,indice_B_C],error_acumulado,
+        error_acumulado_local = eliminar_lineas_del_error([indice_A_B,indice_B_C],error_acumulado_local,
                                                      linea_cache_y, linea_cache_x, ancho,
                                                      peso_de_linea)
         error_subsanado_al_agregar_las_lineas = np.float64(0)
@@ -57,9 +58,9 @@ def cambioPinMedio(error_acumulado:np.ndarray,secuencia_pines:List[int],
         for pin_candidato in pines_intermedios_posibles:
             index_interno_desde = pin_candidato*numero_de_pines + terna[0]
             index_interno_hasta = terna[2]*numero_de_pines + pin_candidato
-            error_subsanado_al_agregar_las_lineas = get_line_err(error_acumulado, linea_cache_y[index_interno_desde],
+            error_subsanado_al_agregar_las_lineas = get_line_err(error_acumulado_local, linea_cache_y[index_interno_desde],
                                                                  linea_cache_x[index_interno_desde],ancho)
-            error_subsanado_al_agregar_las_lineas += get_line_err(error_acumulado, linea_cache_y[index_interno_hasta],
+            error_subsanado_al_agregar_las_lineas += get_line_err(error_acumulado_local, linea_cache_y[index_interno_hasta],
                                                                  linea_cache_x[index_interno_hasta],ancho)
             if (error_subsanado_al_agregar_las_lineas > error_subsanado_maximo) :
                 error_subsanado_maximo = error_subsanado_al_agregar_las_lineas
@@ -69,11 +70,11 @@ def cambioPinMedio(error_acumulado:np.ndarray,secuencia_pines:List[int],
 
         secuencia_pines_resultado[posicion+1] = mejor_pin
 
-        error_acumulado = agregar_lineas_al_error([indice_A_B,indice_B_C],error_acumulado,
+        error_acumulado_local = agregar_lineas_al_error([indice_A_B,indice_B_C],error_acumulado_local,
                                                      linea_cache_y, linea_cache_x, ancho,
                                                      peso_de_linea)
         
-    return error_acumulado,secuencia_pines_resultado
+    return error_acumulado_local,secuencia_pines_resultado
 
 def obtener_camino_cambio_pin_medio(linea_cache_x:np.ndarray,linea_cache_y:np.ndarray,
                    ancho:int,alto:int,vector_de_la_imagen:np.ndarray,
