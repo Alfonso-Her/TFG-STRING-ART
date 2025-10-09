@@ -50,15 +50,13 @@ def cambioPinMedio(error_acumulado:np.ndarray,secuencia_pines:List[int],
         mejor_pin = secuencia_pines_local[i+1]
         pin_fin = secuencia_pines_local[i+2]
 
-        print("Estamos trabajando con ", pin_origen," ", mejor_pin," ", pin_fin," ")
+        # print("Estamos trabajando con ", pin_origen," ", mejor_pin," ", pin_fin," ")
         indice_O_M = mejor_pin*numero_de_pines +pin_origen
         indice_M_F = pin_fin*numero_de_pines + mejor_pin
 
         error_acumulado_local = eliminar_lineas_del_error([indice_O_M,indice_M_F],error_acumulado_local,
                                                      linea_cache_y, linea_cache_x, ancho,
                                                      peso_de_linea)
-        cv2.imwrite("temp.jpg",img=error_acumulado.reshape(-1,ancho))
-        input("dame una a")
         error_subsanado_al_agregar_las_lineas = np.float64(0)
         error_subsanado_maximo = np.float64(0)
 
