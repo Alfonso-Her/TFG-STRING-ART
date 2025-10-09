@@ -28,7 +28,7 @@ def probar_funcion_resolutora(ruta_salida:str,
 if __name__ == "__main__":
 
     np.set_printoptions(threshold=2)
-    nombreEstudio = "debbugPinMedioSolo"
+    nombreEstudio = "debbugPinMedioSolo1"
     ruta_salida = f"../ejemplos/local/{nombreEstudio}"
     todas_las_imagenes = ["../ejemplos/ae300.jpg","../ejemplos/acue.jpg","../ejemplos/cervantesColor.jpg"]
 
@@ -38,8 +38,8 @@ if __name__ == "__main__":
     #                         peso_de_linea=15, verbose= True)
     estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
                         ruta_salida=ruta_salida,
-                        funcion_resolucion=obtener_camino_cambio_pin_medio,
-                        ruta_a_la_imagen=todas_las_imagenes[0],
-                        peso_de_linea=1, verbose= True, maximo_lineas=8000)
+                        # funcion_resolucion=obtener_camino_cambio_pin_medio,
+                        ruta_a_la_imagen=todas_las_imagenes[0], numero_de_pines=10,
+                        peso_de_linea=50, verbose= True, maximo_lineas=3)
    
    
