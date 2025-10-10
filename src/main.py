@@ -40,6 +40,6 @@ if __name__ == "__main__":
                         ruta_salida=ruta_salida,
                         # funcion_resolucion=obtener_camino_cambio_pin_medio,
                         ruta_a_la_imagen=todas_las_imagenes[0], numero_de_pines=10,
-                        peso_de_linea=50, verbose= True, maximo_lineas=list(range(25)))
+                        peso_de_linea=50, verbose= True, maximo_lineas=2500)
    
    

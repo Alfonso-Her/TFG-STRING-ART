@@ -12,6 +12,8 @@ from preprocesado import *
 from reconstruccion import *
 from resolutor import *
 from IOfunct import *
+from calcular_error import *
+
 parametros_preprocesado = list(ParametrosPreprocesado.__annotations__.keys())
 parametros_resolucion = list(ParametrosResolucion.__annotations__.keys())
 parametros_reconstruccion = list(ParametrosReconstruccion.__annotations__.keys())
@@ -107,6 +109,7 @@ def estudioParametrico(output_dir:Path, estudio_web:bool= True,
                        funcion_preprocesado:Callable[[ParametrosPreprocesado], ReturnPreprocesado] = tuberia_preprocesado,
                        funcion_resolucion:Callable[[ParametrosResolucion, ReturnPreprocesado], ReturnResolutor] = obtener_camino,
                        funcion_reconstruccion: Callable[[ParametrosReconstruccion, ReturnPreprocesado, ReturnResolutor], ReturnHilar] = hilar_secuencia_svg,
+                       funcion_calculo_error: Callable[[np.ndarray],np.float64] = suma_abs,
                        **kwargs:Unpack[EstudioParametros]):
     """
         Esta funcion toma la imagen y los parametros dados en kwargs y va a construir todas las imagenes con esos parametros
@@ -205,7 +208,7 @@ def estudioParametrico(output_dir:Path, estudio_web:bool= True,
         metadatos_ejecucion["distancia_minima"] = datos_solucion_problema["distancia_minima"]
         metadatos_ejecucion["maximo_lineas"] = datos_solucion_problema["maximo_lineas"]
         metadatos_ejecucion["peso_de_linea"] = datos_solucion_problema["peso_de_linea"]
-        metadatos_ejecucion["error_total"] = float(np.sum(datos_solucion_problema["error_total"]))
+        metadatos_ejecucion["error_total"] = funcion_calculo_error(datos_solucion_problema["error_total"])
         metadatos_ejecucion["tiempo_ejecucion"] = fin - inicio
         metadatos_ejecucion["ruta_resultado"] = limpiar_ruta_para_raiz(datos_sol_final["ruta_resultado"])
         metadatos_ejecucion["verbose"] = str(False) 

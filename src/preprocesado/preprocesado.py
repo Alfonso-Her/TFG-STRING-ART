@@ -10,6 +10,20 @@ def recortar_rectangulo(img,pixel_inicial_ancho = 0 ,pixel_inicial_alto = 0): # 
     padding = abs((alto-ancho) // 2)
     return img[padding:padding+ancho,:] if ancho < alto else img[:,padding:padding+alto]
 
+def aplicar_mascara_circular(img:np.ndarray):
+    alto,ancho = img.shape[0:2]
+    y,x = np.indices((alto,ancho))
+    distancias = np.sqrt((x-ancho/2)**2+(y-alto/2)**2)
+    mascara = distancias <= min(ancho,alto)/2
+    img_return = img.copy()
+
+    if img.ndim == 3:  # Imagen en color
+        img_return[~mascara] = [255, 255, 255]
+    else:  # Imagen en escala de grises
+        img_return[~mascara] = 255
+
+    return img_return
+
 def redimensionar_a_rectangulo(img:np.ndarray)->np.ndarray:
     # OJO esta funcion deforma las imagenes
     alto, ancho = img.shape[0:2]
@@ -104,6 +118,7 @@ def precaluclar_todas_las_posibles_lineas(numero_de_pines: int, coord_xs: np.nda
 def tuberia_preprocesado(ruta_a_la_imagen:Path, numero_de_pines:int = 256,
                          distancia_minima:int = 0, pasar_a_grises:bool = True,
                          redimensionar:bool = False, recortar:bool = True,
+                         mascara_circular:bool = True,
                          **kwargs) -> ReturnPreprocesado:
     imagen =cv2.imread(ruta_a_la_imagen)
     imagen = cv2.flip(imagen,0)
@@ -115,6 +130,9 @@ def tuberia_preprocesado(ruta_a_la_imagen:Path, numero_de_pines:int = 256,
 
     if recortar:
         imagen = recortar_rectangulo(imagen)
+
+    if mascara_circular:
+        imagen = aplicar_mascara_circular(imagen)
 
     if redimensionar:
         imagen = redimensionar_a_rectangulo(imagen)

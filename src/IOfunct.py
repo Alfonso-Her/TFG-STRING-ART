@@ -1,8 +1,9 @@
 from typing import TypedDict, NotRequired, Callable
 from pathlib import Path
+import numpy as np
 from numpy import ndarray,float64
 
-
+from calcular_error import suma_abs,suma_cuad
 # ────────────────────────────────
 # SECCIÓN 1 — PREPROCESADO
 # ────────────────────────────────
@@ -12,8 +13,9 @@ class ParametrosPreprocesado(TypedDict, total=False):
     numero_de_pines: NotRequired[int]
     distancia_minima: NotRequired[float]
     pasar_a_grises: NotRequired[bool]
-    redimensionar: NotRequired[tuple[int, int]]
-    recortar: NotRequired[tuple[int, int, int, int]]
+    redimensionar: NotRequired[bool]
+    mascara_circular: NotRequired[bool]
+    recortar: NotRequired[bool]
     verbose: NotRequired[bool]
 
 class ReturnPreprocesado(TypedDict, total=False):
@@ -88,4 +90,4 @@ class EstudioParametros(ParametrosPreprocesado,
     funcion_preprocesado: NotRequired[Callable[[ParametrosPreprocesado], ReturnPreprocesado]]
     funcion_resolucion: NotRequired[Callable[[ParametrosResolucion, ReturnPreprocesado], ReturnResolutor]]
     funcion_reconstruccion: NotRequired[Callable[[ParametrosReconstruccion, ReturnPreprocesado, ReturnResolutor], ReturnHilar]]
-
+    funcion_calculo_error: NotRequired[Callable[[np.ndarray],np.float64]] | {suma_abs,suma_cuad}
