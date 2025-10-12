@@ -49,14 +49,15 @@ if __name__ == "__main__":
     todas_las_imagenes = ["../ejemplos/ae300.jpg","../ejemplos/acue.jpg","../ejemplos/cervantesColor.jpg"]
 
 
-    # probar_funcion_resolutora(ruta_salida=ruta_salida,
-    #                         funcion_resolucion=obtener_camino_cambio_pin_medio,
-    #                         # ruta_a_la_imagen=todas_las_imagenes,
-    #                         peso_de_linea=15, verbose= True)
-    estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
-                        ruta_salida=ruta_salida,
-                        # funcion_resolucion=obtener_camino_cambio_pin_medio,
-                        ruta_a_la_imagen=todas_las_imagenes[0], numero_de_pines=256,
-                        peso_de_linea=20, verbose= True, maximo_lineas=4000)
+    probar_funcion_resolutora(ruta_salida=ruta_salida,
+                            funcion_resolucion=obtener_camino_cambio_pin_medio,
+                            ruta_a_la_imagen=todas_las_imagenes,
+                            peso_de_linea=35, verbose= True)
+    # estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
+    #                     ruta_salida=ruta_salida,
+    #                     funcion_resolucion=obtener_camino_cambio_pin_medio,
+    #                     ruta_a_la_imagen=todas_las_imagenes[2], numero_de_pines=256,
+    #                     peso_de_linea=100, verbose= True, maximo_lineas=4000)
    
    
+1

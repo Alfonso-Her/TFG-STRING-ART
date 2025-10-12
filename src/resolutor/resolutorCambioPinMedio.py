@@ -1,5 +1,4 @@
 import numpy as np
-from copy import deepcopy
 from typing import List
 from .resolutor import obtener_camino, get_line_err
 from IOfunct import ReturnResolutor
@@ -7,8 +6,8 @@ import cv2
 
 
 
-def eliminar_lineas_del_error(indices_a_eliminar:List[int],error_acumulado:np.ndarray, linea_cache_x:np.ndarray,
-                              linea_cache_y:np.ndarray,ancho:int,peso_de_linea:int):
+def eliminar_lineas_del_error(indices_a_eliminar:List[int],error_acumulado:np.ndarray,linea_cache_y:np.ndarray,
+                              linea_cache_x:np.ndarray,ancho:int,peso_de_linea:int):
     for index in indices_a_eliminar:
         coords1 = linea_cache_y[index]
         coords2 = linea_cache_x[index]
@@ -19,8 +18,8 @@ def eliminar_lineas_del_error(indices_a_eliminar:List[int],error_acumulado:np.nd
 
     return error_acumulado 
 
-def agregar_lineas_al_error(indices_a_agregar:List[int],error_acumulado:np.ndarray, linea_cache_x:np.ndarray,
-                              linea_cache_y:np.ndarray,ancho:int,peso_de_linea:int):
+def agregar_lineas_al_error(indices_a_agregar:List[int],error_acumulado:np.ndarray,linea_cache_y:np.ndarray,
+                            linea_cache_x:np.ndarray, ancho:int,peso_de_linea:int):
     
     for index in indices_a_agregar:
         coords1 = linea_cache_y[index]
@@ -38,8 +37,7 @@ def cambioPinMedio(error_acumulado:np.ndarray,secuencia_pines:List[int],
                     linea_cache_x:np.ndarray,linea_cache_y:np.ndarray):
     """
         Recorremos toda la solucion obtenida sacando ternas de pines, buscamos obtener una mejor solucion replazando
-        el pin del medio, el parametro estricto fuerza a que no podamos elegir el mimo pin intermedio actual siempre
-        que encontremos uno mejor
+        el pin del medio
     """
     secuencia_pines_local = secuencia_pines.copy()
     error_acumulado_local = error_acumulado.copy()
@@ -49,14 +47,20 @@ def cambioPinMedio(error_acumulado:np.ndarray,secuencia_pines:List[int],
         pin_origen = secuencia_pines_local[i]
         mejor_pin = secuencia_pines_local[i+1]
         pin_fin = secuencia_pines_local[i+2]
-
+        # print("Movemos de ", mejor_pin)
         # print("Estamos trabajando con ", pin_origen," ", mejor_pin," ", pin_fin," ")
         indice_O_M = mejor_pin*numero_de_pines +pin_origen
         indice_M_F = pin_fin*numero_de_pines + mejor_pin
+        # cv2.imwrite("antes.jpg",cv2.flip(error_acumulado_local.reshape(-1,ancho),0))
+        error_acumulado_local = eliminar_lineas_del_error(indices_a_eliminar=[indice_O_M,indice_M_F],
+                                                          error_acumulado=error_acumulado_local,
+                                                          linea_cache_y=linea_cache_y,
+                                                          linea_cache_x=linea_cache_x,
+                                                          ancho= ancho,
+                                                          peso_de_linea=peso_de_linea)
+        
+        # cv2.imwrite("eliminadoError.jpg",cv2.flip(error_acumulado_local.reshape(-1,ancho),0) )
 
-        error_acumulado_local = eliminar_lineas_del_error([indice_O_M,indice_M_F],error_acumulado_local,
-                                                     linea_cache_y, linea_cache_x, ancho,
-                                                     peso_de_linea)
         error_subsanado_al_agregar_las_lineas = np.float64(0)
         error_subsanado_maximo = np.float64(0)
 
@@ -73,19 +77,25 @@ def cambioPinMedio(error_acumulado:np.ndarray,secuencia_pines:List[int],
             error_subsanado_al_agregar_las_lineas += get_line_err(error_acumulado_local, linea_cache_y[index_interno_hasta],
                                                                  linea_cache_x[index_interno_hasta],ancho)
             
-            if (error_subsanado_al_agregar_las_lineas > error_subsanado_maximo + 1e-6) :
+            if (error_subsanado_al_agregar_las_lineas > error_subsanado_maximo +1e-6) :
                 error_subsanado_maximo = error_subsanado_al_agregar_las_lineas
                 mejor_pin = pin_candidato
                 indice_O_M = index_interno_desde
                 indice_M_F = index_interno_hasta
 
+        # print("A el pin: ", mejor_pin)
         secuencia_pines_local[i+1] = mejor_pin     
         i+=1
 
-        error_acumulado_local = agregar_lineas_al_error([indice_O_M,indice_M_F],error_acumulado_local,
-                                                     linea_cache_y, linea_cache_x, ancho,
-                                                     peso_de_linea)
+        error_acumulado_local = agregar_lineas_al_error(indices_a_agregar=[indice_O_M,indice_M_F],
+                                                          error_acumulado=error_acumulado_local,
+                                                          linea_cache_y=linea_cache_y,
+                                                          linea_cache_x=linea_cache_x,
+                                                          ancho= ancho,
+                                                          peso_de_linea=peso_de_linea)
         
+        # cv2.imwrite("despues.jpg",cv2.flip(error_acumulado_local.reshape(-1,ancho),0))
+
     return error_acumulado_local,secuencia_pines_local
 
 def obtener_camino_cambio_pin_medio(linea_cache_x:np.ndarray,linea_cache_y:np.ndarray,

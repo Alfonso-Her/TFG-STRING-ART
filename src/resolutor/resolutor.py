@@ -51,8 +51,9 @@ def obtener_camino(linea_cache_x:np.ndarray,linea_cache_y:np.ndarray,
                     index = index_interno
         
         if mejor_pin == -1:
-            # evitamos quedarnos atrapados haciendo iteraciones que no mejoran y no salen del pin actual
+            # evitamos quedarnos atrapados haciendo iteraciones que no salen del pin actual
             break
+
         secuencia_pines = np.append(secuencia_pines,mejor_pin)
         coords1 = linea_cache_y[index]
         coords2 = linea_cache_x[index]
