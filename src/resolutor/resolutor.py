@@ -22,6 +22,7 @@ def obtener_camino(linea_cache_x:np.ndarray,linea_cache_y:np.ndarray,
         imagen_error_preresolutor = deepcopy(error_acumulado).reshape(-1,ancho)
 
     secuencia_pines =np.empty(0,dtype=int)
+    secuencia_pines = np.append(secuencia_pines,0)
     pines_ya_recorridos = np.empty(0,dtype=int)
     pin_actual = 0
     mejor_pin = -1
@@ -49,6 +50,9 @@ def obtener_camino(linea_cache_x:np.ndarray,linea_cache_y:np.ndarray,
                     mejor_pin = pin_a_probar
                     index = index_interno
         
+        if mejor_pin == -1:
+            # evitamos quedarnos atrapados haciendo iteraciones que no mejoran y no salen del pin actual
+            break
         secuencia_pines = np.append(secuencia_pines,mejor_pin)
         coords1 = linea_cache_y[index]
         coords2 = linea_cache_x[index]
@@ -62,7 +66,6 @@ def obtener_camino(linea_cache_x:np.ndarray,linea_cache_y:np.ndarray,
         if len(pines_ya_recorridos)> numero_de_pines_recientes_a_evitar:
             pines_ya_recorridos = pines_ya_recorridos[1:]
         pin_actual = mejor_pin
-
 
     if "verbose" in kwargs and kwargs["verbose"]:
         imagen_error_post_resolutor = error_acumulado.reshape(-1,ancho)

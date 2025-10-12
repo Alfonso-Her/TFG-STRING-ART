@@ -1,8 +1,10 @@
 .svg
 ejemplos/local/
 *.jpg
+*.jpeg
 *.png
 sucio.py
+paseo/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

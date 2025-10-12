@@ -18,8 +18,8 @@ parametros_preprocesado = list(ParametrosPreprocesado.__annotations__.keys())
 parametros_resolucion = list(ParametrosResolucion.__annotations__.keys())
 parametros_reconstruccion = list(ParametrosReconstruccion.__annotations__.keys())
 parametros_a_guardar_json = ["imagen_original","numero_de_pines","secuencia_pines",
-                             "distancia_minima","maximo_lineas","peso_de_linea",
-                             "error_total","tiempo_ejecucion","ruta_resultado",
+                             "distancia_minima","maximo_lineas","lineas_usadas","peso_de_linea",
+                             "error_total","funcio_error","tiempo_ejecucion","ruta_resultado",
                              "verbose","ruta_imagen_preprocesada","ruta_imagen_error_preresolutor",
                              "ruta_imagen_error_post_resolutor", "funciones_usadas"]
 
@@ -207,10 +207,12 @@ def estudioParametrico(output_dir:Path, estudio_web:bool= True,
         metadatos_ejecucion["secuencia_pines"] = datos_solucion_problema["secuencia_pines"].tolist()
         metadatos_ejecucion["distancia_minima"] = datos_solucion_problema["distancia_minima"]
         metadatos_ejecucion["maximo_lineas"] = datos_solucion_problema["maximo_lineas"]
+        metadatos_ejecucion["lineas_usadas"] = len(datos_solucion_problema["secuencia_pines"].tolist())-1
         metadatos_ejecucion["peso_de_linea"] = datos_solucion_problema["peso_de_linea"]
-        metadatos_ejecucion["error_total"] = funcion_calculo_error(datos_solucion_problema["error_total"])
+        metadatos_ejecucion["error_total"] = str(funcion_calculo_error(datos_solucion_problema["error_total"]))
         metadatos_ejecucion["tiempo_ejecucion"] = fin - inicio
         metadatos_ejecucion["ruta_resultado"] = limpiar_ruta_para_raiz(datos_sol_final["ruta_resultado"])
+        metadatos_ejecucion["funcio_error"] = funcion_calculo_error.__name__
         metadatos_ejecucion["verbose"] = str(False) 
         metadatos_ejecucion["ruta_imagen_preprocesada"] = ""
         metadatos_ejecucion["ruta_imagen_error_preresolutor"] = ""
