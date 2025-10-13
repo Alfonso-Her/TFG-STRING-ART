@@ -31,7 +31,7 @@ def hilar_secuencia_svg(posiciones_pines, secuencia_pines, ruta_a_resultado="str
     dwg.add(dwg.rect(insert=(0, 0), size=(tamano_lado_px, tamano_lado_px), fill=color_de_fondo))
     # dwg.add(dwg.circle(center=(tamano_lado_px/2,tamano_lado_px/2), r=sum(mx), fill=color_de_fondo))
     # hilo
-    path_pts = [map_pt(posiciones_pines[i]) for i in secuencia_pines]
+    path_pts = [map_pt(posiciones_pines[i]) for i in secuencia_pines if i>=0]
     dwg.add(dwg.polyline(points=path_pts, stroke=color_de_hilo, fill='none',
                           stroke_width=ancho_de_hilo, stroke_linecap='round',
                           stroke_linejoin="round"))

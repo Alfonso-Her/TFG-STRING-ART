@@ -79,6 +79,14 @@ def validacionesSaltoCaso(paquete_de_parametros):
             if "color_de_fondo" in parametros:
                 if parametros["color_de_hilo"] == parametros["color_de_fondo"]:
                     return "has introducido el mismo color de fondo que de hilo saltamos"
+        
+        if "distancia_minima" in parametros:
+            if "numero_de_pines" in parametros:
+                if parametros["distancia_minima"] > parametros["numero_de_pines"]/2 :
+                    return "Has intoruducido una distancia minima tal, que no sepuede hilar ninguna cuerda"
+        if "peso_de_linea" in parametros:
+            if parametros["peso_de_linea"] <=0:
+                return "Has introducido un peso de linea erroneo"
     return ""
 
 def concatenar_sobre_json(ruta: Path, metadatos:dict):

@@ -4,8 +4,7 @@ import cv2
 
 from IOfunct import ReturnResolutor
 def get_line_err(err: np.ndarray, coords1: np.ndarray, coords2: np.ndarray, ancho: np.float64) ->  np.float64:
-    indices = (coords1 * ancho + coords2).astype(np.int64)
-    return np.sum(err[indices])
+    return err[(coords1 * ancho + coords2).astype(np.int64)].sum()
 
 def obtener_camino(linea_cache_x:np.ndarray,linea_cache_y:np.ndarray,
                    ancho:int,alto:int,vector_de_la_imagen:np.ndarray,
@@ -51,8 +50,12 @@ def obtener_camino(linea_cache_x:np.ndarray,linea_cache_y:np.ndarray,
                     index = index_interno
         
         if mejor_pin == -1:
-            # evitamos quedarnos atrapados haciendo iteraciones que no salen del pin actual
-            break
+            if len(pines_ya_recorridos) > 0:
+                #Probamos con los pines que nos saltabamos por euristica
+                pines_ya_recorridos = pines_ya_recorridos[1:]
+            else:
+                # evitamos quedarnos atrapados haciendo iteraciones que no salen del pin actual
+                break
 
         secuencia_pines = np.append(secuencia_pines,mejor_pin)
         coords1 = linea_cache_y[index]

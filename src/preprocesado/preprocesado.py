@@ -6,6 +6,9 @@ from typing import Callable,Tuple
 from IOfunct import ReturnPreprocesado
 # ---------------------------------------Tratamiento de la imagen---------------------------------- 
 def recortar_rectangulo(img,pixel_inicial_ancho = 0 ,pixel_inicial_alto = 0): # TODO permitir recortar lo que se quiera
+    """
+        Dada una imagen rectangular recorta el cuadrado mas grande posible (si ya es cuadrada no hace nada)
+    """
     alto,ancho = img.shape[0:2]
     padding = abs((alto-ancho) // 2)
     return img[padding:padding+ancho,:] if ancho < alto else img[:,padding:padding+alto]
@@ -17,7 +20,7 @@ def aplicar_mascara_circular(img:np.ndarray):
     mascara = distancias <= min(ancho,alto)/2
     img_return = img.copy()
 
-    if img.ndim == 3:  # Imagen en color
+    if img.ndim == 3:  # Imagen en color 
         img_return[~mascara] = [255, 255, 255]
     else:  # Imagen en escala de grises
         img_return[~mascara] = 255
@@ -52,7 +55,7 @@ def _construir_vector_imagen_bucles(img:np.ndarray)->np.ndarray:
 
 def construir_vector_imagen(img:np.ndarray)->np.ndarray:
 
-    # No pasamos a escala de grises
+    # No pasamos a escala de grises TODO hacer que esto funcione bien
     if len(img.shape)==3:
         return (img[:,:,2].flatten()).astype(np.float64)
     # Estamos en escala de grises
@@ -120,7 +123,8 @@ def tuberia_preprocesado(ruta_a_la_imagen:Path, numero_de_pines:int = 256,
                          redimensionar:bool = False, recortar:bool = True,
                          mascara_circular:bool = True,
                          **kwargs) -> ReturnPreprocesado:
-    imagen =cv2.imread(ruta_a_la_imagen)
+    
+    imagen = cv2.imread(ruta_a_la_imagen)
     imagen = cv2.flip(imagen,0)
 
     if pasar_a_grises:

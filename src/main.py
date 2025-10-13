@@ -72,21 +72,22 @@ def probar_funciones_resolutoras_lista_de_errores(ruta_salida:str, lista_funcion
 if __name__ == "__main__":
 
     np.set_printoptions(threshold=2)
-    nombreEstudio = "Comparamos ejecucion con diferentes errores"
+    nombreEstudio = "test"
     ruta_salida = f"../ejemplos/local/{nombreEstudio}"
     todas_las_imagenes = ["../ejemplos/ae300.jpg","../ejemplos/acue.jpg","../ejemplos/cervantesColor.jpg"]
     todas_las_funciones_error = [mse, mad, mae, suma_abs, suma_cuad, psnr, nrmse]
     todas_las_funciones_resolutoras = [obtener_camino, obtener_camino_cambio_pin_medio, obtener_camino_con_error_total]
 
-    probar_funciones_resolutoras_lista_de_errores(ruta_salida= ruta_salida,
-                                                  ruta_a_la_imagen= todas_las_imagenes,
-                                                  lista_funciones_error = todas_las_funciones_error,
-                                                  lista_funciones_resolutor= todas_las_funciones_resolutoras)
+    # ojo tarda mas de una hora
+    # probar_funciones_resolutoras_lista_de_errores(ruta_salida= ruta_salida,
+    #                                               ruta_a_la_imagen= todas_las_imagenes,
+    #                                               lista_funciones_error = todas_las_funciones_error,
+    #                                               lista_funciones_resolutor= todas_las_funciones_resolutoras)
     
-    # probar_funcion_resolutora(ruta_salida=ruta_salida,
-    #                         funcion_resolucion=obtener_camino_con_error_total,
-    #                         ruta_a_la_imagen=todas_las_imagenes,
-    #                         peso_de_linea=35, verbose= True)
+    probar_funcion_resolutora(ruta_salida=ruta_salida,
+                            funcion_resolucion=obtener_camino_cambio_pin_medio,
+                            ruta_a_la_imagen=todas_las_imagenes,
+                            peso_de_linea=[35,55], verbose= True)
     # estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
     #                     ruta_salida=ruta_salida, funcion_calculo_error=mse,
     #                     funcion_resolucion=obtener_camino_con_error_total,
