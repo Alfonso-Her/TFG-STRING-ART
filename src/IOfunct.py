@@ -41,6 +41,7 @@ class ParametrosResolucion(TypedDict, total=False):
     maximo_lineas: NotRequired[int]
     peso_de_linea: NotRequired[float]
     numero_de_pines_recientes_a_evitar: NotRequired[int]
+    funcion_calculo_error: NotRequired[Callable[[np.ndarray],np.float64]] | {suma_abs,suma_cuad}
     verbose: NotRequired[bool]
 
 class ReturnResolutor(TypedDict, total=False):

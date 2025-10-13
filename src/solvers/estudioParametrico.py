@@ -142,7 +142,7 @@ def estudioParametrico(output_dir:Path, estudio_web:bool= True,
         
 
     # Conseguimos los parametros ya empaquetados para cada parte del problema
-    lista_con_todos_los_parametros = construirParametros(**kwargs)
+    lista_con_todos_los_parametros = construirParametros(funcion_calculo_error=funcion_calculo_error,**kwargs)
 
     for paquete_argumentos in lista_con_todos_los_parametros:
         inicio = time()

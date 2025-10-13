@@ -3,10 +3,10 @@ import numpy as np
 from typing import Unpack,Callable
 from pathlib import Path
 
-from resolutor import obtener_camino, obtener_camino_cambio_pin_medio
+from resolutor import obtener_camino, obtener_camino_cambio_pin_medio, obtener_camino_con_error_total
 from solvers import estudioParametrico
 from IOfunct import *
-
+from calcular_error import mse, mad, mae, suma_abs, suma_cuad, psnr, nrmse
 def obtener_imagenes_por_carpeta(ruta_carpeta:str):
     extensiones_validas = {".jpg", ".jpeg", ".png", ".bmp", ".tiff", ".gif", ".webp"}
     carpeta = Path(ruta_carpeta)
@@ -25,6 +25,7 @@ def obtener_imagenes_por_carpeta(ruta_carpeta:str):
 
 def probar_funcion_resolutora(ruta_salida:str,
                               funcion_resolucion: Callable[[ParametrosResolucion, ReturnPreprocesado], ReturnResolutor],
+                              continuacion_estudio:bool = False,
                               **kwargs:Unpack[EstudioParametros]):
     parametros_basicos = {
         "ruta_a_la_imagen": "../ejemplos/ae300.jpg",
@@ -38,26 +39,58 @@ def probar_funcion_resolutora(ruta_salida:str,
     }
 
     parametros_basicos.update(kwargs)
-    estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False, **parametros_basicos)
+    estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= continuacion_estudio, **parametros_basicos)
     estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= True,
                         funcion_resolucion=funcion_resolucion, **parametros_basicos)
+
+def probar_funciones_resolutoras_lista_de_errores(ruta_salida:str, lista_funciones_error:list[Callable[[np.ndarray],np.float64]],
+                              lista_funciones_resolutor: list[Callable[[ParametrosResolucion, ReturnPreprocesado], ReturnResolutor]],
+                              continuacion_estudio:bool = False,
+                              **kwargs:Unpack[EstudioParametros]):
+    parametros_basicos = {
+        "ruta_a_la_imagen": "../ejemplos/ae300.jpg",
+        "recortar": True,
+        "redimensionar": False,
+        "numero_de_pines": 256,
+        "peso_de_linea" : 20,
+        "color_de_hilo" : "#000000",
+        "color_de_fondo" :"#ffffff",
+        "verbose": False
+    }
+    parametros_basicos.update(kwargs)
+
+    for funcion_resolutora in lista_funciones_resolutor:
+        estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, funcion_calculo_error= lista_funciones_error[0],
+                            continuacion_estudio= continuacion_estudio,  funcion_resolucion= funcion_resolutora,
+                            **parametros_basicos)
+        
+        continuacion_estudio = True # apaño feo 
+        for i in range(1,len(lista_funciones_error)-1):
+            estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, funcion_calculo_error= lista_funciones_error[i],
+                            continuacion_estudio= True,  funcion_resolucion= funcion_resolutora, **parametros_basicos)
+        
 if __name__ == "__main__":
 
     np.set_printoptions(threshold=2)
-    nombreEstudio = "arreglandoPinMedio"
+    nombreEstudio = "Comparamos ejecucion con diferentes errores"
     ruta_salida = f"../ejemplos/local/{nombreEstudio}"
     todas_las_imagenes = ["../ejemplos/ae300.jpg","../ejemplos/acue.jpg","../ejemplos/cervantesColor.jpg"]
+    todas_las_funciones_error = [mse, mad, mae, suma_abs, suma_cuad, psnr, nrmse]
+    todas_las_funciones_resolutoras = [obtener_camino, obtener_camino_cambio_pin_medio, obtener_camino_con_error_total]
 
-
-    probar_funcion_resolutora(ruta_salida=ruta_salida,
-                            funcion_resolucion=obtener_camino_cambio_pin_medio,
-                            ruta_a_la_imagen=todas_las_imagenes,
-                            peso_de_linea=35, verbose= True)
+    probar_funciones_resolutoras_lista_de_errores(ruta_salida= ruta_salida,
+                                                  ruta_a_la_imagen= todas_las_imagenes,
+                                                  lista_funciones_error = todas_las_funciones_error,
+                                                  lista_funciones_resolutor= todas_las_funciones_resolutoras)
+    
+    # probar_funcion_resolutora(ruta_salida=ruta_salida,
+    #                         funcion_resolucion=obtener_camino_con_error_total,
+    #                         ruta_a_la_imagen=todas_las_imagenes,
+    #                         peso_de_linea=35, verbose= True)
     # estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
-    #                     ruta_salida=ruta_salida,
-    #                     funcion_resolucion=obtener_camino_cambio_pin_medio,
-    #                     ruta_a_la_imagen=todas_las_imagenes[2], numero_de_pines=256,
-    #                     peso_de_linea=100, verbose= True, maximo_lineas=4000)
+    #                     ruta_salida=ruta_salida, funcion_calculo_error=mse,
+    #                     funcion_resolucion=obtener_camino_con_error_total,
+    #                     ruta_a_la_imagen=todas_las_imagenes[0], numero_de_pines=256,
+    #                     peso_de_linea=20, verbose= True, maximo_lineas=2000)
    
    
-1
