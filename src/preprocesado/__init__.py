@@ -1,1 +1,2 @@
 from .preprocesado import tuberia_preprocesado
+from .preprocesadoBresenham import tuberia_preprocesado_bresenham

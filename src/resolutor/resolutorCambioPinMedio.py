@@ -1,10 +1,10 @@
 import numpy as np
-from typing import List
-from .resolutor import obtener_camino, get_line_err
-from IOfunct import ReturnResolutor
+from typing import List, Unpack, Callable
 import cv2
 
-
+from .resolutor import obtener_camino, get_line_err
+from IOfunct import ReturnResolutor, ParametrosResolucion
+from calcular_error import mse
 
 def eliminar_lineas_del_error(indices_a_eliminar:List[int],error_acumulado:np.ndarray,linea_cache_y:np.ndarray,
                               linea_cache_x:np.ndarray,ancho:int,peso_de_linea:int):
@@ -103,7 +103,10 @@ def obtener_camino_cambio_pin_medio(linea_cache_x:np.ndarray,linea_cache_y:np.nd
                    numero_de_pines:int = 256 ,maximo_lineas:int= 4000,
                    distancia_minima:int = 0,peso_de_linea:int = 20,
                    numero_de_pines_recientes_a_evitar:int=5,
-                   **kwargs)->ReturnResolutor:
+                   funcion_calculo_error: Callable[[np.ndarray],np.float64] = mse,
+                   itereaciones_re_optimizado:int = 1,
+                   decremento_error_minimo: np.float64 = np.float64(0.1),
+                   **kwargs: Unpack[ParametrosResolucion])->ReturnResolutor:
     
     diccionario_datos = obtener_camino(linea_cache_x,linea_cache_y,
                    ancho,alto,vector_de_la_imagen,
@@ -112,10 +115,21 @@ def obtener_camino_cambio_pin_medio(linea_cache_x:np.ndarray,linea_cache_y:np.nd
                    numero_de_pines_recientes_a_evitar,
                    **kwargs)
     
-    error_acumulado,secuencia_pines = cambioPinMedio(error_acumulado=diccionario_datos["error_total"],secuencia_pines=diccionario_datos["secuencia_pines"],
+    k = 0
+    error_acumulado = diccionario_datos["error_total"]
+    secuencia_pines = diccionario_datos["secuencia_pines"]
+    error_anterior = np.float64(0)
+    error_posterior = np.float64(decremento_error_minimo) + 10
+
+    while k < itereaciones_re_optimizado and error_posterior-error_anterior >= decremento_error_minimo:
+        error_anterior = error_posterior
+        error_acumulado,secuencia_pines = cambioPinMedio(error_acumulado=error_acumulado,secuencia_pines=secuencia_pines,
                                     ancho=ancho, alto=alto, numero_de_pines= numero_de_pines,
                                     distancia_minima=distancia_minima ,peso_de_linea=peso_de_linea,
                                     linea_cache_x=linea_cache_x,linea_cache_y=linea_cache_y)
+        
+        error_posterior = funcion_calculo_error(error_acumulado)
+        k+=1
 
     if "verbose" in kwargs and kwargs["verbose"]:
         imagen_error_post_resolutor = error_acumulado.reshape(-1,ancho)
