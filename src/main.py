@@ -104,12 +104,12 @@ if __name__ == "__main__":
     #                     ruta_a_la_imagen=todas_las_imagenes, numero_de_pines=256,
     #                     peso_de_linea=20, verbose= True)
     
-    estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
-                        ruta_salida=ruta_salida, funcion_calculo_error=mse,
-                        funcion_preprocesado=tuberia_preprocesado,
-                        funcion_resolucion=obtener_camino_cambio_pin_medio,
-                        ruta_a_la_imagen=todas_las_imagenes, numero_de_pines=256,
-                        peso_de_linea=20, verbose= True)
+    # estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
+    #                     ruta_salida=ruta_salida, funcion_calculo_error=mse,
+    #                     funcion_preprocesado=tuberia_preprocesado,
+    #                     funcion_resolucion=obtener_camino_cambio_pin_medio,
+    #                     ruta_a_la_imagen=todas_las_imagenes, numero_de_pines=256,
+    #                     peso_de_linea=20, verbose= True)
     
     # estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= True,
     #                     ruta_salida=ruta_salida, funcion_calculo_error=mse,
@@ -118,11 +118,12 @@ if __name__ == "__main__":
     #                     ruta_a_la_imagen=todas_las_imagenes, numero_de_pines=256,
     #                     peso_de_linea=20, verbose= True)
     
-    estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= True,
+    estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
                         ruta_salida=ruta_salida, funcion_calculo_error=mse,
                         funcion_preprocesado=tuberia_preprocesado_bresenham,
                         funcion_resolucion=obtener_camino_cambio_pin_medio,
                         ruta_a_la_imagen=todas_las_imagenes, numero_de_pines=256,
-                        peso_de_linea=20, verbose= True)
+                        itereaciones_re_optimizado= 256,
+                        peso_de_linea=[2,32,128], verbose= True)
     
     
