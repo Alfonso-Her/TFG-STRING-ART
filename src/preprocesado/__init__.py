@@ -1,2 +1,4 @@
 from .preprocesado import tuberia_preprocesado
 from .preprocesadoBresenham import tuberia_preprocesado_bresenham
+
+from .parametros import ParametrosPreprocesado, ReturnPreprocesado
