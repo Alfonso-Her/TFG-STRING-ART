@@ -3,16 +3,17 @@ from pathlib import Path
 import numpy as np
 from numpy import ndarray
 from datetime import datetime
-from typing import Unpack
+from typing import Unpack, Callable
 from time import time
 import cv2
 from copy import deepcopy
 
-from preprocesado import *
-from reconstruccion import *
-from resolutor import *
-from IOfunct import *
-from calcular_error import *
+from preprocesado import ParametrosPreprocesado,ReturnPreprocesado,tuberia_preprocesado
+from reconstruccion import ParametrosReconstruccion,ReturnReconstruccion,hilar_secuencia_svg
+from resolutor import ParametrosResolucion,ReturnResolutor,obtener_camino
+from calcular_error import mse
+
+from .parametros import EstudioParametros
 
 parametros_preprocesado = list(ParametrosPreprocesado.__annotations__.keys())
 parametros_resolucion = list(ParametrosResolucion.__annotations__.keys())
@@ -33,6 +34,7 @@ def agregarValor(parametros_fijos,clave,valor):
     if clave in parametros_reconstruccion:
         parametros_fijos[2][clave] = valor
     return parametros_fijos
+
 def construirParametros(**kwargs):
     """
         Dado kwargs devuelve los parametros organizados por ejecuciones y consistentes entre si
@@ -116,8 +118,8 @@ def estudioParametrico(output_dir:Path, estudio_web:bool= True,
                        continuacion_estudio:bool = False,
                        funcion_preprocesado:Callable[[ParametrosPreprocesado], ReturnPreprocesado] = tuberia_preprocesado,
                        funcion_resolucion:Callable[[ParametrosResolucion, ReturnPreprocesado], ReturnResolutor] = obtener_camino,
-                       funcion_reconstruccion: Callable[[ParametrosReconstruccion, ReturnPreprocesado, ReturnResolutor], ReturnHilar] = hilar_secuencia_svg,
-                       funcion_calculo_error: Callable[[np.ndarray],np.float64] = suma_abs,
+                       funcion_reconstruccion: Callable[[ParametrosReconstruccion, ReturnPreprocesado, ReturnResolutor], ReturnReconstruccion] = hilar_secuencia_svg,
+                       funcion_calculo_error: Callable[[np.ndarray],np.float64] = mse,
                        **kwargs:Unpack[EstudioParametros]):
     """
         Esta funcion toma la imagen y los parametros dados en kwargs y va a construir todas las imagenes con esos parametros

@@ -1,7 +1,8 @@
 import numpy as np
 import svgwrite
 import cv2
-from IOfunct import ReturnHilar
+
+from .parametros import ReturnReconstruccion, ParametrosReconstruccion
 
 def hilar_secuencia_svg(posiciones_pines, secuencia_pines, ruta_a_resultado="string_art.svg",
                         tamano_lado_px=3000,
@@ -11,7 +12,7 @@ def hilar_secuencia_svg(posiciones_pines, secuencia_pines, ruta_a_resultado="str
                         color_de_hilo='#000000',
                         ratio_distancia=0.01,
                         color_de_fondo="#ffffff",
-                        **kwargs) -> ReturnHilar :
+                        **kwargs) -> ReturnReconstruccion :
     
     posiciones_pines = np.asarray(posiciones_pines)
     # Normaliza posiciones_pines al rango 0..tamano_lado_px con margen
@@ -50,14 +51,14 @@ def hilar_secuencia_svg(posiciones_pines, secuencia_pines, ruta_a_resultado="str
         cv2.imwrite(filename=ruta_imagen_error_preresolutor, img=cv2.flip(kwargs["imagen_error_preresolutor"],0))
         cv2.imwrite(filename=ruta_imagen_post_resolutor, img=cv2.flip(kwargs["imagen_error_post_resolutor"],0))
         
-        return ReturnHilar(
+        return ReturnReconstruccion(
             ruta_resultado=ruta_a_resultado,
             ruta_imagen_preprocesada=ruta_imagen_preprocesada,
             ruta_imagen_error_preresolutor=ruta_imagen_error_preresolutor,
             ruta_imagen_post_resolutor=ruta_imagen_post_resolutor
         )
     
-    return ReturnHilar(ruta_resultado=ruta_a_resultado)
+    return ReturnReconstruccion(ruta_resultado=ruta_a_resultado)
 
 ##TESTING
 if __name__ == "__main__":

@@ -3,8 +3,10 @@ import cv2
 from typing import Callable, Tuple, Unpack
 from pathlib import Path
 
-from .preprocesado import recortar_rectangulo, pasar_img_a_grises, aplicar_mascara_circular,redimensionar_a_rectangulo, construir_vector_imagen, calcular_posicion_pins, _distancia_eu
-from IOfunct import ReturnPreprocesado, ParametrosPreprocesado
+from .preprocesado import ReturnPreprocesado, ParametrosPreprocesado,recortar_rectangulo,\
+                          pasar_img_a_grises, aplicar_mascara_circular,\
+                          redimensionar_a_rectangulo, construir_vector_imagen, \
+                          calcular_posicion_pins
 
 def bresenham(x0: int, y0: int, x1: int, y1: int) -> Tuple[np.ndarray, np.ndarray]:
 

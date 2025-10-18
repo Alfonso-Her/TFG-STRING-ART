@@ -3,7 +3,7 @@ from typing import List, Unpack, Callable
 import cv2
 
 from .resolutor import obtener_camino, get_line_err
-from IOfunct import ReturnResolutor, ParametrosResolucion
+from .parametros import ReturnResolutor, ParametrosResolucion
 from calcular_error import mse
 
 def eliminar_lineas_del_error(indices_a_eliminar:List[int],error_acumulado:np.ndarray,linea_cache_y:np.ndarray,

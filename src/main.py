@@ -3,10 +3,12 @@ import numpy as np
 from typing import Unpack,Callable
 from pathlib import Path
 
-from preprocesado import tuberia_preprocesado, tuberia_preprocesado_bresenham
-from resolutor import obtener_camino, obtener_camino_cambio_pin_medio, obtener_camino_con_error_total
-from solvers import estudioParametrico
-from IOfunct import *
+from preprocesado import ParametrosPreprocesado,ReturnPreprocesado,\
+                    tuberia_preprocesado, tuberia_preprocesado_bresenham
+from resolutor import ParametrosResolucion,ReturnResolutor,\
+                        obtener_camino, obtener_camino_cambio_pin_medio, obtener_camino_con_error_total
+
+from solvers import  EstudioParametros,estudioParametrico
 from calcular_error import mse, mad, mae, suma_abs, suma_cuad, psnr, nrmse
 def obtener_imagenes_por_carpeta(ruta_carpeta:str):
     extensiones_validas = {".jpg", ".jpeg", ".png", ".bmp", ".tiff", ".gif", ".webp"}

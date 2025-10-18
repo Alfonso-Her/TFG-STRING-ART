@@ -1,9 +1,9 @@
 import cv2
 import numpy as np
 from pathlib import Path
-from typing import Callable,Tuple
+from typing import Callable,Tuple, Unpack
 
-from IOfunct import ReturnPreprocesado
+from .parametros import ReturnPreprocesado,ParametrosPreprocesado
 # ---------------------------------------Tratamiento de la imagen---------------------------------- 
 def recortar_rectangulo(img,pixel_inicial_ancho = 0 ,pixel_inicial_alto = 0): # TODO permitir recortar lo que se quiera
     """
@@ -122,7 +122,7 @@ def tuberia_preprocesado(ruta_a_la_imagen:Path, numero_de_pines:int = 256,
                          distancia_minima:int = 0, pasar_a_grises:bool = True,
                          redimensionar:bool = False, recortar:bool = True,
                          mascara_circular:bool = True,
-                         **kwargs) -> ReturnPreprocesado:
+                         **kwargs:Unpack[ParametrosPreprocesado]) -> ReturnPreprocesado:
     
     imagen = cv2.imread(ruta_a_la_imagen)
     imagen = cv2.flip(imagen,0)

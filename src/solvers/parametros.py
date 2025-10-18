@@ -6,7 +6,7 @@ from calcular_error import mse, mad
 from preprocesado import ParametrosPreprocesado, ReturnPreprocesado
 from resolutor import ParametrosResolucion, ReturnResolutor
 from postOpt import ParametrosPostOpt, ReturnPostOpt
-from reconstruccion import ParametrosReconstruccion, ReturnHilar
+from reconstruccion import ParametrosReconstruccion, ReturnReconstruccion
 
 class EstudioParametros(ParametrosPreprocesado,
                         ParametrosResolucion,
@@ -19,7 +19,7 @@ class EstudioParametros(ParametrosPreprocesado,
     # Funciones para el proceso
     funcion_preprocesado: NotRequired[Callable[[ParametrosPreprocesado], ReturnPreprocesado]]
     funcion_resolucion: NotRequired[Callable[[ParametrosResolucion, ReturnPreprocesado], ReturnResolutor]]
-    funcion_reconstruccion: NotRequired[Callable[[ParametrosReconstruccion, ReturnPreprocesado, ReturnResolutor], ReturnHilar]]
+    funcion_reconstruccion: NotRequired[Callable[[ParametrosReconstruccion, ReturnPreprocesado, ReturnResolutor], ReturnReconstruccion]]
     funcion_calculo_error: NotRequired[Callable[[ndarray],float64]] | {mse,mad}
 
     

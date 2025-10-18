@@ -13,7 +13,7 @@ class ParametrosReconstruccion(TypedDict, total=False):
     color_de_clavo: NotRequired[str]
     verbose: NotRequired[bool]
 
-class ReturnHilar(TypedDict, total=False):
+class ReturnReconstruccion(TypedDict, total=False):
     ruta_resultado: str
     ruta_imagen_preprocesada: str
     ruta_imagen_error_preresolutor: str

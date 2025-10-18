@@ -1,9 +1,9 @@
 import numpy as np
 from copy import deepcopy
-from typing import Callable
+from typing import Callable, Unpack
 import cv2
 
-from IOfunct import ReturnResolutor
+from .parametros import ReturnResolutor, ParametrosResolucion
 from calcular_error import suma_abs,suma_cuad,mad,mae,mse
 from .resolutorCambioPinMedio import agregar_lineas_al_error, eliminar_lineas_del_error
 
@@ -29,7 +29,7 @@ def obtener_camino_con_error_total(linea_cache_x:np.ndarray,linea_cache_y:np.nda
                    numero_de_pines:int = 256 ,maximo_lineas:int= 4000,
                    distancia_minima:int = 0,peso_de_linea:int = 20,
                    numero_de_pines_recientes_a_evitar:int=5,
-                   **kwargs)->ReturnResolutor:
+                   **kwargs:Unpack[ParametrosResolucion])->ReturnResolutor:
     
     # Haciendo esto basicamente invertimos colores y pintamos de negro los blancos 
     error_acumulado = np.full(ancho*alto, 255.0) - vector_de_la_imagen
