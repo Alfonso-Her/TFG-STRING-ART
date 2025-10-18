@@ -107,9 +107,8 @@ def tuberia_resolucion(paquete_argumentos,output_dir):
         datos_sol_final = args_reconstruccion["funcion_reconstruccion"](**args_reconstruccion)
         datos_totales.update(datos_sol_final)
 
-        print(datos_sol_final)
         if "verbose" in args_resolucion and args_resolucion["verbose"]:
-            print(" Del reconstructor obtenemos: ", datos_sol_final)
+            print("\n Del reconstructor obtenemos: ", datos_sol_final)
 
         print(f"\n imagen guardada con exito en {datos_sol_final["ruta_resultado"]} !!!")
     except Exception as e:
@@ -124,6 +123,7 @@ def tuberia_resolucion(paquete_argumentos,output_dir):
     fin = time()
     
     try:
+
         datos_totales.update({
             "secuencia_pines" : datos_totales["secuencia_pines"].tolist(),
             "lineas_usadas" : len(datos_totales["secuencia_pines"].tolist())-1,
@@ -134,18 +134,21 @@ def tuberia_resolucion(paquete_argumentos,output_dir):
             "funciones_usadas": ", ".join([args_preprocesado["funcion_preprocesado"].__name__,args_resolucion["funcion_resolucion"].__name__,
                                             args_reconstruccion["funcion_reconstruccion"].__name__,args_postOpt["funcion_postOpt"].__name__,
                                             args_resolucion["funcion_calculo_error"].__name__]),
-            "ruta_imagen_preprocesada":"",
-            "ruta_imagen_error_preresolutor":"",
-            "ruta_imagen_error_post_resolutor":""
 
         })
 
         if "verbose" in args_preprocesado and args_preprocesado["verbose"]:
+
             datos_totales.update({
                 "ruta_imagen_preprocesada":limpiar_ruta_para_raiz(datos_totales["ruta_imagen_preprocesada"]),
                 "ruta_imagen_error_preresolutor":limpiar_ruta_para_raiz(datos_totales["ruta_imagen_error_preresolutor"]),
-                "ruta_imagen_error_post_resolutor":limpiar_ruta_para_raiz(datos_totales["ruta_imagen_error_post_resolutor"])
+                "ruta_imagen_post_resolutor":limpiar_ruta_para_raiz(datos_totales["ruta_imagen_post_resolutor"])
             })
+        else:
+            datos_totales.update({
+                        "ruta_imagen_preprocesada":"",
+                        "ruta_imagen_error_preresolutor":"",
+                        "ruta_imagen_error_post_resolutor":""})
 
     except Exception as e:
         print(f"\n Error{e} mientras actualizabamos valores de la ejecucion para su estudio, \n llegamos a tener los valores: {datos_totales}")

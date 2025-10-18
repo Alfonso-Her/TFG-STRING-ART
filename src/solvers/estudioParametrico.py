@@ -87,6 +87,7 @@ def construirParametros(**kwargs):
 
 def estudioParametrico(output_dir:Path, estudio_web:bool= True,
                        continuacion_estudio:bool = False,
+                       numero_procesos:int=4,
                        funcion_preprocesado:Callable[[ParametrosPreprocesado], ReturnPreprocesado] = tuberia_preprocesado,
                        funcion_resolucion:Callable[[ParametrosResolucion, ReturnPreprocesado], ReturnResolutor] = obtener_camino,
                        funcion_postOpt: Callable[[ParametrosPostOpt, ReturnResolutor], ReturnPostOpt] = no_reoptimizar,
@@ -132,12 +133,12 @@ def estudioParametrico(output_dir:Path, estudio_web:bool= True,
     # Conseguimos los parametros ya empaquetados para cada parte del problema
     lista_con_todos_los_parametros = construirParametros(**kwargs)
 
-    print(lista_con_todos_los_parametros)
-    input("aa")
-    for paquete_argumentos in lista_con_todos_los_parametros:
-        datos_totales = tuberia_resolucion(paquete_argumentos=paquete_argumentos,output_dir=output_dir)
-        metadatos_ejecucion=tratar_json(datos_totales)
-        metadatos.append(metadatos_ejecucion)
+    with Pool(processes=numero_procesos) as pool:
+        datos_ejecuciones = pool.starmap(func=tuberia_resolucion,
+                                         iterable=[(paquete_argumentos,output_dir)
+                                                    for paquete_argumentos in lista_con_todos_los_parametros])
+    
+    metadatos = [tratar_json(datos_totales) for datos_totales in datos_ejecuciones]
 
     if estudio_web:
         ruta_web_destino = output_dir.joinpath("index.html")

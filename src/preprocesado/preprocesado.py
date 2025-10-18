@@ -124,6 +124,7 @@ def tuberia_preprocesado(ruta_a_la_imagen:Path, numero_de_pines:int = 256,
                          mascara_circular:bool = True,
                          **kwargs:Unpack[ParametrosPreprocesado]) -> ReturnPreprocesado:
     
+    # print(ruta_a_la_imagen)
     imagen = cv2.imread(ruta_a_la_imagen)
     imagen = cv2.flip(imagen,0)
 

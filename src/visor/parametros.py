@@ -22,7 +22,7 @@ mapaJson = {
     "verbose":"verbose",
     "ruta_imagen_preprocesada":"ruta_imagen_preprocesada",
     "ruta_imagen_error_preresolutor":"ruta_imagen_error_preresolutor",
-    "ruta_imagen_error_post_resolutor":"ruta_imagen_error_post_resolutor",
+    "ruta_imagen_error_post_resolutor":"ruta_imagen_post_resolutor",
     "funciones_usadas":"funciones_usadas",
 
 }

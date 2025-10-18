@@ -95,4 +95,6 @@ if __name__ == "__main__":
     #                     peso_de_linea=[2,32,128], verbose= True)
     
     estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
-                        ruta_salida=ruta_salida, ruta_a_la_imagen=todas_las_imagenes[0])
+                        ruta_salida=ruta_salida, ruta_a_la_imagen=todas_las_imagenes, 
+                        numero_de_pines=[276,302], peso_de_linea= [40,50],
+                        verbose=True)
