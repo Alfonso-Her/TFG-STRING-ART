@@ -1,12 +1,14 @@
 import json
-from pathlib import Path
 import numpy as np
+import cv2
+import webbrowser
+
+from pathlib import Path
+from copy import deepcopy
 from numpy import ndarray
 from datetime import datetime
 from typing import Unpack, Callable
 from time import time
-import cv2
-from copy import deepcopy
 
 from preprocesado import ParametrosPreprocesado,ReturnPreprocesado,tuberia_preprocesado
 from reconstruccion import ParametrosReconstruccion,ReturnReconstruccion,hilar_secuencia_svg
@@ -29,7 +31,7 @@ parametros_a_guardar_json = ["imagen_original","numero_de_pines","secuencia_pine
                              "verbose","ruta_imagen_preprocesada","ruta_imagen_error_preresolutor",
                              "ruta_imagen_error_post_resolutor", "funciones_usadas"]
 
-Ruta_a_web = Path("index.html")
+Ruta_a_web = Path("visor/web/index.html")
 
 def agregarValor(parametros_fijos,clave,valor):
     if clave in parametros_preprocesado:
@@ -282,12 +284,13 @@ def estudioParametrico(output_dir:Path, estudio_web:bool= True,
         metadatos.append(metadatos_ejecucion)
 
     if estudio_web:
-        ruta_web = output_dir.joinpath("index.html")
-        with open("index.html","r", encoding="utf-8") as web_origen:
+        ruta_web_destino = output_dir.joinpath("index.html")
+        with open(Ruta_a_web,"r", encoding="utf-8") as web_origen:
             contenido = web_origen.read()
             contenido = contenido.replace("const data = ['cenicero'];",f"const data = {metadatos} ;")
-        with open(ruta_web, "w", encoding="utf-8") as web_destino:
+        with open(ruta_web_destino, "w", encoding="utf-8") as web_destino:
             web_destino.write(contenido)
+        webbrowser.open(ruta_web_destino)
     
 
 

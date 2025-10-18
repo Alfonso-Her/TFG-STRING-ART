@@ -96,5 +96,4 @@ if __name__ == "__main__":
     
     estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
                         ruta_salida=ruta_salida, ruta_a_la_imagen=todas_las_imagenes,
-                        numero_de_pines=[150,200,350], distancia_minima=[0,10,50,75],
-                        itereaciones_re_optimizado=[0,10,20])
+                        numero_de_pines=[150,200,350])
