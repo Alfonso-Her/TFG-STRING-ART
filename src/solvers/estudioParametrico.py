@@ -175,6 +175,7 @@ def estudioParametrico(output_dir:Path, estudio_web:bool= True,
         print("\n Estamos procesando los argumentos:",
               f"\n    para el preprocesado:{args_preprocesado}",
               f"\n    para el resolutor:{args_resolucion}",
+              f"\n    para el post-optimizador:{args_resolucion}",
               f"\n    para el reconstructor:{args_reconstruccion}")
         
         info_si_saltamos = validacionesSaltoCaso(paquete_argumentos)
@@ -202,9 +203,6 @@ def estudioParametrico(output_dir:Path, estudio_web:bool= True,
 
             datos_solucion_problema = funcion_resolucion(**args_resolucion)
 
-            ruta_fichero = output_dir.joinpath(Path(nombre_foto_con_ext[0]+hora_proceso+"_procesado.svg"))
-
-            datos_solucion_problema.update({"ruta_a_resultado": ruta_fichero })
             datos_totales.update(datos_solucion_problema)
 
             if "verbose" in args_resolucion and args_resolucion["verbose"]:
@@ -215,21 +213,21 @@ def estudioParametrico(output_dir:Path, estudio_web:bool= True,
             print(f"\n Error {e} al solucionar con la funcion {funcion_resolucion}, continuando con el siguiente")
             continue
         try:
-            args_postOpt.update({k:v for k,v in datos_preprocesados.items() if k != "posiciones_pines"})
+            args_postOpt.update(datos_solucion_problema)
 
             datos_solucion_problema_postOpt = funcion_postOpt(**args_postOpt)
 
             ruta_fichero = output_dir.joinpath(Path(nombre_foto_con_ext[0]+hora_proceso+"_procesado.svg"))
-
             datos_solucion_problema_postOpt.update({"ruta_a_resultado": ruta_fichero })
+
             datos_totales.update(datos_solucion_problema_postOpt)
 
             if "verbose" in args_resolucion and args_resolucion["verbose"]:
                 print(" Del resolutor obtenemos: ", datos_solucion_problema)
 
-            print("\n Pasamos con exito el proceso de resolucion ")
+            print("\n Pasamos con exito el proceso de post-optimizacion ")
         except Exception as e:
-            print(f"\n Error {e} al solucionar con la funcion {funcion_resolucion}, continuando con el siguiente")
+            print(f"\n Error {e} al reoptimizar con la funcion {funcion_resolucion}, continuando con el siguiente")
             continue
 
         try:
@@ -272,7 +270,7 @@ def estudioParametrico(output_dir:Path, estudio_web:bool= True,
         metadatos_ejecucion["funciones_usadas"]= ", ".join([funcion_preprocesado.__name__,funcion_resolucion.__name__,funcion_reconstruccion.__name__])
         metadatos_ejecucion["iteraciones_postopimizacion"] = datos_totales["iteraciones_re_optimizado_realizadas"]
         metadatos_ejecucion["tiempo_postOpt"] = datos_totales["tiempo_usado_re_optimizando"]
-        
+
         if "verbose" in args_preprocesado and args_preprocesado["verbose"]:
             metadatos_ejecucion["verbose"] = str(args_preprocesado["verbose"])
             metadatos_ejecucion["ruta_imagen_preprocesada"] = limpiar_ruta_para_raiz(datos_sol_final["ruta_imagen_preprocesada"])

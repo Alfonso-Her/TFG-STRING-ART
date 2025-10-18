@@ -7,9 +7,12 @@ from preprocesado import ParametrosPreprocesado,ReturnPreprocesado,\
                     tuberia_preprocesado, tuberia_preprocesado_bresenham
 from resolutor import ParametrosResolucion,ReturnResolutor,\
                         obtener_camino, obtener_camino_cambio_pin_medio, obtener_camino_con_error_total
-
+from postOpt import ParametrosPostOpt,ReturnPostOpt,\
+                    no_reoptimizar
 from solvers import  EstudioParametros,estudioParametrico
 from calcular_error import mse, mad, mae, suma_abs, suma_cuad, psnr, nrmse
+
+
 def obtener_imagenes_por_carpeta(ruta_carpeta:str):
     extensiones_validas = {".jpg", ".jpeg", ".png", ".bmp", ".tiff", ".gif", ".webp"}
     carpeta = Path(ruta_carpeta)
@@ -75,57 +78,23 @@ def probar_funciones_resolutoras_lista_de_errores(ruta_salida:str, lista_funcion
 if __name__ == "__main__":
 
     np.set_printoptions(threshold=2)
-    nombreEstudio = "aaa"
+    nombreEstudio = "p"
     ruta_salida = f"../ejemplos/local/{nombreEstudio}"
     todas_las_imagenes = ["../ejemplos/ae300.jpg","../ejemplos/acue.jpg","../ejemplos/cervantesColor.jpg"]
     todas_las_funciones_error = [mse, mad, mae, suma_abs, suma_cuad, psnr, nrmse]
     todas_las_funciones_preprocesado = [tuberia_preprocesado, tuberia_preprocesado_bresenham]
     todas_las_funciones_resolutoras = [obtener_camino, obtener_camino_cambio_pin_medio, obtener_camino_con_error_total]
-
-    # ojo tarda mas de una hora
-    # probar_funciones_resolutoras_lista_de_errores(ruta_salida= ruta_salida,
-    #                                               ruta_a_la_imagen= todas_las_imagenes,
-    #                                               lista_funciones_error = todas_las_funciones_error,
-    #                                               lista_funciones_resolutor= todas_las_funciones_resolutoras)
-    
-    # probar_funcion_resolutora(ruta_salida=ruta_salida,
-    #                         funcion_resolucion=obtener_camino_cambio_pin_medio,
-    #                         ruta_a_la_imagen=todas_las_imagenes,
-    #                         peso_de_linea=[35,55], verbose= True)
+    todas_las_funciones_postOpt = [no_reoptimizar]
 
     # estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
-    #                     ruta_salida=ruta_salida, funcion_calculo_error=mse,
-    #                     funcion_resolucion=obtener_camino_con_error_total,
-    #                     ruta_a_la_imagen=todas_las_imagenes[0], numero_de_pines=256,
-    #                     peso_de_linea=20, verbose= True, maximo_lineas=2000)
-
-    # estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
-    #                     ruta_salida=ruta_salida, funcion_calculo_error=mse,
-    #                     funcion_preprocesado=tuberia_preprocesado,
-    #                     funcion_resolucion=obtener_camino,
-    #                     ruta_a_la_imagen=todas_las_imagenes, numero_de_pines=256,
-    #                     peso_de_linea=20, verbose= True)
-    
-    # estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
-    #                     ruta_salida=ruta_salida, funcion_calculo_error=mse,
-    #                     funcion_preprocesado=tuberia_preprocesado,
-    #                     funcion_resolucion=obtener_camino_cambio_pin_medio,
-    #                     ruta_a_la_imagen=todas_las_imagenes, numero_de_pines=256,
-    #                     peso_de_linea=20, verbose= True)
-    
-    # estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= True,
     #                     ruta_salida=ruta_salida, funcion_calculo_error=mse,
     #                     funcion_preprocesado=tuberia_preprocesado_bresenham,
-    #                     funcion_resolucion=obtener_camino,
+    #                     funcion_resolucion=obtener_camino_cambio_pin_medio,
     #                     ruta_a_la_imagen=todas_las_imagenes, numero_de_pines=256,
-    #                     peso_de_linea=20, verbose= True)
+    #                     itereaciones_re_optimizado= 256,
+    #                     peso_de_linea=[2,32,128], verbose= True)
     
     estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
-                        ruta_salida=ruta_salida, funcion_calculo_error=mse,
-                        funcion_preprocesado=tuberia_preprocesado_bresenham,
-                        funcion_resolucion=obtener_camino_cambio_pin_medio,
-                        ruta_a_la_imagen=todas_las_imagenes, numero_de_pines=256,
-                        itereaciones_re_optimizado= 256,
-                        peso_de_linea=[2,32,128], verbose= True)
-    
-    
+                        ruta_salida=ruta_salida, ruta_a_la_imagen=todas_las_imagenes,
+                        numero_de_pines=[150,200,350], distancia_minima=[0,10,50,75],
+                        itereaciones_re_optimizado=[0,10,20])
