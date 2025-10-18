@@ -1,9 +1,10 @@
-from typing import TypedDict, NotRequired
+from typing import TypedDict, NotRequired, Callable
 from pathlib import Path
 from numpy import ndarray
 
 
 class ParametrosPreprocesado(TypedDict, total=False):
+    funcion_preprocesado: NotRequired[Callable]
     ruta_a_la_imagen: str  # Requerido solo aquí
     numero_de_pines: NotRequired[int]
     distancia_minima: NotRequired[float]

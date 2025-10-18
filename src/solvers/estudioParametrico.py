@@ -4,6 +4,7 @@ import cv2
 import webbrowser
 
 from pathlib import Path
+from multiprocessing import Pool
 from copy import deepcopy
 from numpy import ndarray
 from datetime import datetime
@@ -11,12 +12,14 @@ from typing import Unpack, Callable
 from time import time
 
 from preprocesado import ParametrosPreprocesado,ReturnPreprocesado,tuberia_preprocesado
-from reconstruccion import ParametrosReconstruccion,ReturnReconstruccion,hilar_secuencia_svg
 from resolutor import ParametrosResolucion,ReturnResolutor,obtener_camino
 from postOpt import ParametrosPostOpt,ReturnPostOpt, no_reoptimizar
+from reconstruccion import ParametrosReconstruccion,ReturnReconstruccion,hilar_secuencia_svg
+from visor import concatenar_sobre_json,tratar_json
 from calcular_error import mse
 
 from .parametros import EstudioParametros
+from .tuberia_resolucion import tuberia_resolucion
 
 parametros_preprocesado = list(ParametrosPreprocesado.__annotations__.keys())
 parametros_resolucion = list(ParametrosResolucion.__annotations__.keys())
@@ -38,10 +41,11 @@ def agregarValor(parametros_fijos,clave,valor):
         parametros_fijos[0][clave] = valor
     if clave in parametros_resolucion:
         parametros_fijos[1][clave] = valor
-    if clave in parametros_reconstruccion:
-        parametros_fijos[2][clave] = valor
     if clave in parametros_postoprimizacion:
+        parametros_fijos[2][clave] = valor
+    if clave in parametros_reconstruccion:
         parametros_fijos[3][clave] = valor
+
     return parametros_fijos
 
 def construirParametros(**kwargs):
@@ -57,7 +61,8 @@ def construirParametros(**kwargs):
     # Fijamos los parametros que nos pasan y solo tienen un valor
     for k,v in kwargs.items():
         # no tomamos aquellos que con valor iterable:
-        if k in parametros_preprocesado or k in parametros_reconstruccion or k in parametros_resolucion:
+        if k  in parametros_preprocesado + parametros_resolucion\
+              + parametros_postoprimizacion + parametros_reconstruccion  :
             if isinstance(v,list):
                 parametros_iterables.append(k)
             else: 
@@ -79,50 +84,6 @@ def construirParametros(**kwargs):
         parametros_totales = nuevo_total
 
     return parametros_totales
-
-def validacionesSaltoCaso(paquete_de_parametros):
-    """
-        Devuelve texto si detecta que los parametros pasados contienen casos
-        que no debemos estudiar
-    """
-    for parametros in paquete_de_parametros:
-        
-        if "color_de_hilo" in parametros:
-            if "color_de_fondo" in parametros:
-                if parametros["color_de_hilo"] == parametros["color_de_fondo"]:
-                    return "has introducido el mismo color de fondo que de hilo saltamos"
-        
-        if "distancia_minima" in parametros:
-            if "numero_de_pines" in parametros:
-                if parametros["distancia_minima"] > parametros["numero_de_pines"]/2 :
-                    return "Has intoruducido una distancia minima tal, que no sepuede hilar ninguna cuerda"
-        if "peso_de_linea" in parametros:
-            if parametros["peso_de_linea"] <=0:
-                return "Has introducido un peso de linea erroneo"
-    return ""
-
-def concatenar_sobre_json(ruta: Path, metadatos:dict):
-    def convert(o):
-        if isinstance(o, np.integer):
-            return int(o)
-        if isinstance(o, np.floating):
-            return float(o)
-        if isinstance(o, np.ndarray):
-            return o.tolist()
-        
-    if ruta.exists():
-        with ruta.open("r", encoding="utf-8") as f:
-            data = json.load(f)
-    else:
-        data = []
-    
-    data.append(metadatos)
-
-    with ruta.open("w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=4,default=convert)
-
-def limpiar_ruta_para_raiz(ruta:str|Path)->str:
-    return str(ruta).split("\\")[-1]
 
 def estudioParametrico(output_dir:Path, estudio_web:bool= True,
                        continuacion_estudio:bool = False,
@@ -161,126 +122,21 @@ def estudioParametrico(output_dir:Path, estudio_web:bool= True,
         if ruta_json.exists():
             with open(ruta_json, "r") as f:
                 metadatos = json.load(f)
-        
-
+ 
+    kwargs.update({"funcion_calculo_error":funcion_calculo_error,
+                    "funcion_preprocesado": funcion_preprocesado,
+                    "funcion_resolucion":funcion_resolucion,
+                    "funcion_postOpt":funcion_postOpt,
+                    "funcion_reconstruccion":funcion_reconstruccion
+                   })
     # Conseguimos los parametros ya empaquetados para cada parte del problema
-    lista_con_todos_los_parametros = construirParametros(funcion_calculo_error=funcion_calculo_error,**kwargs)
+    lista_con_todos_los_parametros = construirParametros(**kwargs)
 
+    print(lista_con_todos_los_parametros)
+    input("aa")
     for paquete_argumentos in lista_con_todos_los_parametros:
-        inicio = time()
-        metadatos_ejecucion= {}
-        datos_totales= {}
-        hora_proceso = "_"+datetime.now().strftime("%d%m%Y_%H%M%S_%f")
-        args_preprocesado, args_resolucion,\
-        args_postOpt,args_reconstruccion = paquete_argumentos
-        
-        print("\n Estamos procesando los argumentos:",
-              f"\n    para el preprocesado:{args_preprocesado}",
-              f"\n    para el resolutor:{args_resolucion}",
-              f"\n    para el post-optimizador:{args_resolucion}",
-              f"\n    para el reconstructor:{args_reconstruccion}")
-        
-        info_si_saltamos = validacionesSaltoCaso(paquete_argumentos)
-
-        if info_si_saltamos != "":
-                
-                print(f"\n {info_si_saltamos}")
-                continue
-        try:
-            nombre_foto_con_ext = args_preprocesado["ruta_a_la_imagen"].split("/")[-1].split(".")
-
-            datos_preprocesados = funcion_preprocesado(**args_preprocesado)
-
-            datos_totales.update(datos_preprocesados)
-
-            if "verbose" in args_preprocesado and args_preprocesado["verbose"]:
-                print(" Del preprocesado obtenemos: ", datos_preprocesados)
-
-            print("\n Pasamos con exito el preprocesado")
-        except Exception as e:
-            print(f"\n Error {e} al hacer el preprocesado con la funcion {funcion_preprocesado}, continuando con el siguiente")
-            continue
-        try:
-            args_resolucion.update({k:v for k,v in datos_preprocesados.items() if k != "posiciones_pines"})
-
-            datos_solucion_problema = funcion_resolucion(**args_resolucion)
-
-            datos_totales.update(datos_solucion_problema)
-
-            if "verbose" in args_resolucion and args_resolucion["verbose"]:
-                print(" Del resolutor obtenemos: ", datos_solucion_problema)
-
-            print("\n Pasamos con exito el proceso de resolucion ")
-        except Exception as e:
-            print(f"\n Error {e} al solucionar con la funcion {funcion_resolucion}, continuando con el siguiente")
-            continue
-        try:
-            args_postOpt.update(datos_solucion_problema)
-
-            datos_solucion_problema_postOpt = funcion_postOpt(**args_postOpt)
-
-            ruta_fichero = output_dir.joinpath(Path(nombre_foto_con_ext[0]+hora_proceso+"_procesado.svg"))
-            datos_solucion_problema_postOpt.update({"ruta_a_resultado": ruta_fichero })
-
-            datos_totales.update(datos_solucion_problema_postOpt)
-
-            if "verbose" in args_resolucion and args_resolucion["verbose"]:
-                print(" Del resolutor obtenemos: ", datos_solucion_problema)
-
-            print("\n Pasamos con exito el proceso de post-optimizacion ")
-        except Exception as e:
-            print(f"\n Error {e} al reoptimizar con la funcion {funcion_resolucion}, continuando con el siguiente")
-            continue
-
-        try:
-            args_reconstruccion.update(datos_solucion_problema_postOpt)
-            args_reconstruccion.update({"posiciones_pines": datos_preprocesados["posiciones_pines"]})
-
-            datos_sol_final = funcion_reconstruccion(**args_reconstruccion)
-            datos_totales.update(datos_sol_final)
-
-            if "verbose" in args_resolucion and args_resolucion["verbose"]:
-                print(" Del reconstructor obtenemos: ", datos_sol_final)
-
-            print(f"\n imagen guardada con exito en {datos_sol_final["ruta_resultado"]} !!!")
-        except Exception as e:
-            print(f"\n Error {e} al pintar la solucion con la funcion {funcion_reconstruccion}, continuando con el siguiente")
-            continue
-
-        #Agregramos la imagen original si no existe en la carpeta
-        ruta_imagen_original_en_destino = str(output_dir)+"\\"+".".join(nombre_foto_con_ext)
-        if not Path(ruta_imagen_original_en_destino).exists():
-            img_padre = cv2.imread(datos_preprocesados["ruta_a_la_imagen"])
-            cv2.imwrite(ruta_imagen_original_en_destino,img_padre)
-        fin = time()
-        
-        metadatos_ejecucion["imagen_original"] = ".".join(nombre_foto_con_ext)
-        metadatos_ejecucion["numero_de_pines"] = datos_preprocesados["numero_de_pines"]
-        metadatos_ejecucion["secuencia_pines"] = datos_solucion_problema["secuencia_pines"].tolist()
-        metadatos_ejecucion["distancia_minima"] = datos_solucion_problema["distancia_minima"]
-        metadatos_ejecucion["maximo_lineas"] = datos_solucion_problema["maximo_lineas"]
-        metadatos_ejecucion["lineas_usadas"] = len(datos_solucion_problema["secuencia_pines"].tolist())-1
-        metadatos_ejecucion["peso_de_linea"] = datos_solucion_problema["peso_de_linea"]
-        metadatos_ejecucion["error_total"] = str(funcion_calculo_error(datos_solucion_problema["error_total"]))
-        metadatos_ejecucion["tiempo_ejecucion"] = fin - inicio
-        metadatos_ejecucion["ruta_resultado"] = limpiar_ruta_para_raiz(datos_sol_final["ruta_resultado"])
-        metadatos_ejecucion["funcio_error"] = funcion_calculo_error.__name__
-        metadatos_ejecucion["verbose"] = str(False) 
-        metadatos_ejecucion["ruta_imagen_preprocesada"] = ""
-        metadatos_ejecucion["ruta_imagen_error_preresolutor"] = ""
-        metadatos_ejecucion["ruta_imagen_error_post_resolutor"] = ""
-        metadatos_ejecucion["funciones_usadas"]= ", ".join([funcion_preprocesado.__name__,funcion_resolucion.__name__,funcion_reconstruccion.__name__])
-        metadatos_ejecucion["iteraciones_postopimizacion"] = datos_totales["iteraciones_re_optimizado_realizadas"]
-        metadatos_ejecucion["tiempo_postOpt"] = datos_totales["tiempo_usado_re_optimizando"]
-
-        if "verbose" in args_preprocesado and args_preprocesado["verbose"]:
-            metadatos_ejecucion["verbose"] = str(args_preprocesado["verbose"])
-            metadatos_ejecucion["ruta_imagen_preprocesada"] = limpiar_ruta_para_raiz(datos_sol_final["ruta_imagen_preprocesada"])
-            metadatos_ejecucion["ruta_imagen_error_preresolutor"] = limpiar_ruta_para_raiz(datos_sol_final["ruta_imagen_error_preresolutor"])
-            metadatos_ejecucion["ruta_imagen_error_post_resolutor"] = limpiar_ruta_para_raiz(datos_sol_final["ruta_imagen_post_resolutor"])
-
-        
-        concatenar_sobre_json(ruta_json,metadatos_ejecucion)
+        datos_totales = tuberia_resolucion(paquete_argumentos=paquete_argumentos,output_dir=output_dir)
+        metadatos_ejecucion=tratar_json(datos_totales)
         metadatos.append(metadatos_ejecucion)
 
     if estudio_web:
@@ -292,7 +148,7 @@ def estudioParametrico(output_dir:Path, estudio_web:bool= True,
             web_destino.write(contenido)
         webbrowser.open(ruta_web_destino)
     
-
+    concatenar_sobre_json(ruta=ruta_json, metadatos=metadatos)
 
 ## TESTING
 

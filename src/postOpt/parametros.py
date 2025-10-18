@@ -1,10 +1,13 @@
-from typing import TypedDict, NotRequired
+from typing import TypedDict, NotRequired, Callable
 from pathlib import Path
 
 import numpy as np
 
-from resolutor import ParametrosResolucion, ReturnResolutor
-class ParametrosPostOpt(ParametrosResolucion, total=False):
+from resolutor import ParametrosResolucionBasicos, ReturnResolutor
+
+class ParametrosPostOpt(ParametrosResolucionBasicos, total=False):
+
+    funcion_postOpt: NotRequired[Callable]   
     itereaciones_re_optimizado: NotRequired[int]
     decremento_error_minimo: NotRequired[np.float64]
 

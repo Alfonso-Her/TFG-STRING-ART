@@ -1,10 +1,9 @@
 from typing import TypedDict, NotRequired, Callable
-from pathlib import Path
 from numpy import ndarray, float64
 
 from calcular_error import mse, mad
 
-class ParametrosResolucion(TypedDict, total=False):
+class ParametrosResolucionBasicos(TypedDict, total=False):
     numero_de_pines: NotRequired[int]
     distancia_minima: NotRequired[float]
     maximo_lineas: NotRequired[int]
@@ -13,6 +12,10 @@ class ParametrosResolucion(TypedDict, total=False):
     funcion_calculo_error: NotRequired[Callable[[ndarray],float64]] | {mse,mad}
     verbose: NotRequired[bool]
 
+
+class ParametrosResolucion(ParametrosResolucionBasicos, total=False):
+    funcion_resolucion: NotRequired[Callable]
+    
 class ReturnResolutor(TypedDict, total=False):
     peso_de_linea: int
     distancia_minima: int

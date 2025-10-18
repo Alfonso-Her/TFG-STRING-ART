@@ -1,9 +1,10 @@
-from typing import TypedDict, NotRequired
+from typing import TypedDict, NotRequired, Callable
 from pathlib import Path
 from numpy import ndarray
 
 
 class ParametrosReconstruccion(TypedDict, total=False):
+    funcion_reconstruccion: NotRequired[Callable]
     tamano_lado_px: NotRequired[int]
     ancho_clavos: NotRequired[float]
     ancho_de_hilo: NotRequired[float]
