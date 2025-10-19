@@ -15,7 +15,7 @@ from preprocesado import ParametrosPreprocesado,ReturnPreprocesado,tuberia_prepr
 from resolutor import ParametrosResolucion,ReturnResolutor,obtener_camino
 from postOpt import ParametrosPostOpt,ReturnPostOpt, no_reoptimizar
 from reconstruccion import ParametrosReconstruccion,ReturnReconstruccion,hilar_secuencia_svg
-from visor import concatenar_sobre_json,tratar_json
+from visor import concatenar_sobre_json,tratar_json, crear_web_con_dir
 from calcular_error import mse
 
 from .parametros import EstudioParametros
@@ -141,13 +141,7 @@ def estudioParametrico(output_dir:Path, estudio_web:bool= True,
     metadatos = [tratar_json(datos_totales) for datos_totales in datos_ejecuciones]
 
     if estudio_web:
-        ruta_web_destino = output_dir.joinpath("index.html")
-        with open(Ruta_a_web,"r", encoding="utf-8") as web_origen:
-            contenido = web_origen.read()
-            contenido = contenido.replace("const data = ['cenicero'];",f"const data = {metadatos} ;")
-        with open(ruta_web_destino, "w", encoding="utf-8") as web_destino:
-            web_destino.write(contenido)
-        webbrowser.open(ruta_web_destino)
+        crear_web_con_dir(output_dir=output_dir, ruta_a_web=Ruta_a_web)
     
     concatenar_sobre_json(ruta=ruta_json, metadatos=metadatos)
 

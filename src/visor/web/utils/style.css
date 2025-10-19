@@ -1,0 +1,214 @@
+::-webkit-scrollbar {
+    display: none;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    min-height: 100vh;
+}
+
+/* MENÚ SUPERIOR */
+.menu-superior {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #222831;
+    padding: 10px;
+    z-index: 1000;
+    border-bottom: 2px solid #C1A57B;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.filtro-select {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #C1A57B;
+    background: #30475E;
+    color: white;
+    min-width: 150px;
+}
+
+.filtro-checkboxes {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.filtro-checkboxes label {
+    color: white;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* LAYOUT PRINCIPAL */
+.main {
+    display: flex;
+    flex: 1;
+    min-height: 100vh;
+    margin-top: 60px; /* Espacio para el menú fijo */
+}
+
+.contenedor-imagen {
+    width: 25%;
+    min-width: 220px;
+    padding: 10px;
+    position: sticky;
+    top: 60px;
+    height: calc(100vh - 60px);
+    overflow-y: auto;
+    background-color: #30475E;
+    opacity: 0.8;
+    box-sizing: border-box;
+}
+
+.ejecuciones {
+    flex: 1;
+    overflow-y: auto;
+    width: 75%;
+}
+
+.contenedor-ejecuciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 13px;
+    padding: 16px;
+    justify-content: space-around;
+    background-color: #222831;
+    box-sizing: border-box;
+    min-height: 100%;
+}
+
+/* TARJETAS */
+.tarjeta {
+    background-color: #ECECEC;
+    padding: 16px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+    margin: 10px;
+    cursor: grab;
+}
+
+.tarjeta:hover {
+    transform: scale(1.02);
+    box-shadow:
+        3px 3px 10px rgba(0, 0, 0, 0.9),
+        -1px -1px 10px rgba(255, 255, 255, 0.3);
+}
+
+.Imagen {
+    background-color: transparent;
+    border-radius: 6px;
+    padding: 4px;
+    margin-bottom: 10px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.Imagen:hover {
+    transform: scale(0.98);
+}
+
+.nombreImagen {
+    width: 100%;
+    text-align: center;
+    font-style: italic;
+    margin-top: 6px;
+}
+
+.propiedades-ejecucion {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    background-color: #C1A57B;
+    border-radius: 6px;
+}
+
+.Propiedad {
+    padding: 3px;
+    border-radius: 8px;
+    flex: 1 2 auto;
+    margin: 3px;
+    justify-content: space-between;
+}
+
+/* TARJETAS ESPECIALES (IZQUIERDA) */
+.tarjeta-especial {
+    background-color: transparent;
+    border-radius: 8px;
+    width: 90%;
+    margin: 15px auto;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: grab;
+}
+
+.tarjeta-especial:hover {
+    transform: scale(1.02);
+    box-shadow:
+        4px 4px 10px rgba(0, 0, 0, 0.4),
+        -1px -1px 10px rgba(255, 255, 255, 0.3);
+}
+
+.tarjeta-especial .imagen-especial {
+    width: 100%;
+    object-fit: cover;
+}
+
+.tarjeta-especial .texto-especial {
+    padding: 10px;
+    font-size: 18px;
+    color: #333;
+    background-color: #C1A57B;
+    border-radius: 8px;
+    margin-bottom: 0;
+}
+
+/* ESTILOS PARA DRAG & DROP */
+.arrastrando {
+    opacity: 0.6;
+    transform: scale(0.95);
+    box-shadow: 0 0 20px rgba(193, 165, 123, 0.8);
+}
+
+.tarjeta:active, .tarjeta-especial:active {
+    cursor: grabbing;
+}
+
+.fantasma-arrastre {
+    opacity: 0.4;
+    background: #C1A57B;
+    transform: rotate(5deg);
+}
+
+/* GRUPOS */
+.grupo-header {
+    width: 100%;
+    background: #30475E;
+    color: white;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 6px;
+    text-align: center;
+}

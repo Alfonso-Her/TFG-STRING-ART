@@ -15,7 +15,7 @@ from preprocesado import ParametrosPreprocesado,ReturnPreprocesado,tuberia_prepr
 from resolutor import ParametrosResolucion,ReturnResolutor,obtener_camino
 from postOpt import ParametrosPostOpt,ReturnPostOpt, no_reoptimizar
 from reconstruccion import ParametrosReconstruccion,ReturnReconstruccion,hilar_secuencia_svg
-from visor import concatenar_sobre_json,tratar_json,lanzar_servidor_y_web
+from visor import concatenar_sobre_json,tratar_json,crear_web_con_dir
 from calcular_error import mse
 
 from .parametros import EstudioParametros
@@ -34,7 +34,7 @@ parametros_a_guardar_json = ["imagen_original","numero_de_pines","secuencia_pine
                              "verbose","ruta_imagen_preprocesada","ruta_imagen_error_preresolutor",
                              "ruta_imagen_error_post_resolutor", "funciones_usadas"]
 
-Ruta_a_web = Path("visor/web/index.html")
+Ruta_a_web = Path("visor/web/")
 
 def agregarValor(parametros_fijos,clave,valor):
     if clave in parametros_preprocesado:
@@ -141,13 +141,8 @@ def estudioParametrico(output_dir:Path, estudio_web:bool= True,
     concatenar_sobre_json(ruta=ruta_json, metadatos=metadatos)
 
     if estudio_web:
-        ruta_web_destino = output_dir.joinpath("index.html")
-        with open(Ruta_a_web,"r", encoding="utf-8") as web_origen:
-            contenido = web_origen.read()
-            contenido = contenido.replace("const data = ['cenicero'];",f"const data = {metadatos} ;")
-        with open(ruta_web_destino, "w", encoding="utf-8") as web_destino:
-            web_destino.write(contenido)
-        lanzar_servidor_y_web(output_dir=output_dir)
+        print(output_dir)
+        crear_web_con_dir(output_dir=output_dir, ruta_a_web=Ruta_a_web)
     
     
 
