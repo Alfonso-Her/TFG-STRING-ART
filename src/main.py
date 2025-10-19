@@ -99,6 +99,7 @@ if __name__ == "__main__":
     #                     ruta_salida=ruta_salida, ruta_a_la_imagen=todas_las_imagenes[0],
     #                     numero_de_pines=[256], peso_de_linea= 20,
     #                     verbose=True)
+    #
     # fin1=time.time()
     # revisar_estudio(output_dir=Path("../ejemplos/local/p_19102025_173514/"))
     estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
