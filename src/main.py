@@ -103,9 +103,9 @@ if __name__ == "__main__":
     # revisar_estudio(output_dir=Path("../ejemplos/local/p_19102025_173514/"))
     estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
                         ruta_salida=ruta_salida, funcion_calculo_error=mse,
-                        funcion_preprocesado=tuberia_preprocesado_bresenham,
+                        funcion_preprocesado=todas_las_funciones_preprocesado,
                         funcion_resolucion=obtener_camino_cambio_pin_medio,
                         funcion_postOpt=cambio_pin_medio,
-                        ruta_a_la_imagen=todas_las_imagenes[0], numero_de_pines=256,
-                        itereaciones_re_optimizado= 10,
+                        ruta_a_la_imagen=todas_las_imagenes, numero_de_pines=256,
+                        itereaciones_re_optimizado= 1,
                         peso_de_linea=[20,48], verbose= True)

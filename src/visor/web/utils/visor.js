@@ -1,4 +1,5 @@
 // VARIABLES GLOBALES
+window.datosOriginales= [];
 window.ejecucionesData = [];
 window.paginaActual = 0;
 window.elementosPorPagina = 20;
@@ -46,11 +47,19 @@ function crearTarjetas(item) {
     window.parametrosVisibles.forEach(param => {
         if (item.hasOwnProperty(param)) {
             const nombreFormateado = param.replace(/_/g, ' ')
-                                            .replace(/\b\w/g, l => l.toUpperCase());
+                                         .replace(/\b\w/g, l => l.toUpperCase());
+            
+            let valor = item[param];
+            
+            // Formatear valores específicos
+            if (param === 'error_total' && typeof valor === 'string') {
+                // Convertir error_total a número para mejor ordenamiento
+                valor = parseFloat(valor) || valor;
+            }
             
             propiedadesHTML += `
                 <p class="Propiedad" data-parametro="${param}">
-                    ${nombreFormateado}: ${item[param]}
+                    ${nombreFormateado}: ${valor}
                 </p>
             `;
         }
@@ -59,26 +68,28 @@ function crearTarjetas(item) {
     divPropiedadesEjecucion.innerHTML = propiedadesHTML;
 
     // Comportamiento de click para imágenes verbose
-    if (item.verbose) {
+    if (item.verbose && item.verbose !== "False") {
         const imagenes = [
             { src: item.ruta_resultado, nombre: "resultado" },
             { src: item.ruta_imagen_preprocesada, nombre: "Preprocesada" },
-            { src: item.ruta_imagen_error_preresolutor, nombre: "Error limpio" },
-            { src: item.ruta_imagen_error_post_resolutor, nombre: "Error final" }
-        ].filter(obj => obj.src);
+            { src: item.ruta_imagen_error_preresolutor, nombre: "Error pre-resolución" },
+            { src: item.ruta_imagen_error_post_resolutor, nombre: "Error post-resolución" }
+        ].filter(obj => obj.src && obj.src !== "");
         
-        let index = 0;
+        if (imagenes.length > 1) { // Solo si hay más de una imagen
+            let index = 0;
 
-        img.style.cursor = "pointer";
-        img.title = "Haz clic para alternar imágenes \n o pulsa click derecho para habilitar zoom";
+            img.style.cursor = "pointer";
+            img.title = "Haz clic para alternar imágenes \n o pulsa click derecho para habilitar zoom";
 
-        img.addEventListener("click", () => {
-            index = (index + 1) % imagenes.length;
-            const actual = imagenes[index];
-            
-            img.src = actual.src;
-            textoImagen.textContent = `Imagen: ${actual.nombre}`;
-        });
+            img.addEventListener("click", () => {
+                index = (index + 1) % imagenes.length;
+                const actual = imagenes[index];
+                
+                img.src = actual.src;
+                textoImagen.textContent = `Imagen: ${actual.nombre}`;
+            });
+        }
     }
 
     // Configurar zoom
