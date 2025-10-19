@@ -139,7 +139,7 @@ def estudioParametrico(output_dir:Path, estudio_web:bool= True,
         metadatos.append(metadatos_ejecucion)
 
     concatenar_sobre_json(ruta=ruta_json, metadatos=metadatos)
-    
+
     if estudio_web:
         ruta_web_destino = output_dir.joinpath("index.html")
         with open(Ruta_a_web,"r", encoding="utf-8") as web_origen:
@@ -147,7 +147,7 @@ def estudioParametrico(output_dir:Path, estudio_web:bool= True,
             contenido = contenido.replace("const data = ['cenicero'];",f"const data = {metadatos} ;")
         with open(ruta_web_destino, "w", encoding="utf-8") as web_destino:
             web_destino.write(contenido)
-            lanzar_servidor_y_web(output_dir=output_dir)
+        lanzar_servidor_y_web(output_dir=output_dir)
     
     
 

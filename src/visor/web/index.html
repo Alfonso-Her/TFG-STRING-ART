@@ -172,7 +172,41 @@
         contenedor_ejecucciones.innerHTML = "";
         contenedor_imagen.innerHTML = "";
 
-        data.forEach(item => {
+        window.ejecucionesData = data;
+        window.paginaActual = 0;
+        window.elementosPorPagina = 20; // Ajusta según rendimiento
+
+        cargarPagina(0);
+        configurarScrollInfinito();
+    }
+    function cargarPagina(pagina) {
+        const inicio = pagina * window.elementosPorPagina;
+        const fin = inicio + window.elementosPorPagina;
+        const datosPagina = window.ejecucionesData.slice(inicio, fin);
+        
+        datosPagina.forEach(item => {
+            crearTarjetas(item);
+        });
+    }
+    function configurarScrollInfinito() {
+        const contenedor = document.querySelector(".ejecuciones");
+        let cargando = false;
+
+        contenedor.addEventListener("scroll", () => {
+            const { scrollTop, scrollHeight, clientHeight } = contenedor;
+            
+            if (!cargando && scrollTop + clientHeight >= scrollHeight - 100) {
+                cargando = true;
+                window.paginaActual++;
+                
+                setTimeout(() => {
+                    cargarPagina(window.paginaActual);
+                    cargando = false;
+                }, 100);
+            }
+        });
+    }
+            data.forEach(item => {
             // Crear tarjetas
             const tarjeta = document.createElement("div");
             const tarjeta_especial = document.createElement("div");
@@ -297,14 +331,35 @@
         </div>
     </div>
     <script>
-        const data = ['cenicero'];
+        async function cargarDatosDesdeJSON() {
+            try {
+                const respuesta = await fetch("datos.json", { cache: "no-store" });
+                if (!respuesta.ok) {
+                    throw new Error(`Error HTTP ${respuesta.status}`);
+                }
 
-        
-        // Cuando cargue la página, inyecta las tarjetas
-        document.addEventListener("DOMContentLoaded", () => {
-            cargarEjecuciones(data);
+                const data = await respuesta.json();
 
-        });
+                if (!Array.isArray(data)) {
+                    throw new Error("El contenido de datos.json no es una lista de ejecuciones.");
+                }
+
+                console.log(`✅ Cargadas ${data.length} ejecuciones desde datos.json`);
+                cargarEjecuciones(data);
+            } catch (error) {
+                console.error("❌ Error al cargar datos.json:", error);
+                const contenedor = document.querySelector(".contenedor-ejecuciones");
+                contenedor.innerHTML = `
+                    <div style="color:white; text-align:center; padding:2em;">
+                        <h2>Error al cargar <code>datos.json</code></h2>
+                        <p>Verifica que estás sirviendo la carpeta con <code>python main.py</code>.</p>
+                        <p>Detalle del error: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", cargarDatosDesdeJSON);
     </script>
    <script>
     document.addEventListener("DOMContentLoaded", () => {

@@ -11,7 +11,7 @@ from postOpt import ParametrosPostOpt,ReturnPostOpt,\
                     no_reoptimizar
 from solvers import  EstudioParametros,estudioParametrico, estudioParametricoNoParalelo
 from calcular_error import mse, mad, mae, suma_abs, suma_cuad, psnr, nrmse
-
+from visor import revisar_estudio
 
 def obtener_imagenes_por_carpeta(ruta_carpeta:str):
     extensiones_validas = {".jpg", ".jpeg", ".png", ".bmp", ".tiff", ".gif", ".webp"}
@@ -93,9 +93,10 @@ if __name__ == "__main__":
     #                     ruta_a_la_imagen=todas_las_imagenes, numero_de_pines=256,
     #                     itereaciones_re_optimizado= 256,
     #                     peso_de_linea=[2,32,128], verbose= True)
-    ini1=time.time()
-    estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
-                        ruta_salida=ruta_salida, ruta_a_la_imagen=todas_las_imagenes,
-                        numero_de_pines=[256], peso_de_linea= 20,
-                        verbose=True)
-    fin1=time.time()
+    # ini1=time.time()
+    # estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
+    #                     ruta_salida=ruta_salida, ruta_a_la_imagen=todas_las_imagenes[0],
+    #                     numero_de_pines=[256], peso_de_linea= 20,
+    #                     verbose=True)
+    # fin1=time.time()
+    revisar_estudio(output_dir=Path("../ejemplos/local/p_19102025_173514/"))
