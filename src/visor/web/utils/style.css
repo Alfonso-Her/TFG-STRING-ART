@@ -54,15 +54,17 @@ body {
     display: flex;
     flex: 1;
     min-height: 100vh;
-    margin-top: 45px; /* Espacio para el menú fijo */
+    position: fixed;
+    top:45px;
+    height: calc(100vh - 45px); /* ocupa todo el alto menos el menú */
 }
 
 .contenedor-imagen {
     width: 25%;
     min-width: 220px;
     padding: 10px;
-    position: sticky;
-    height:100vh;
+    /* position: sticky; */
+    /* height:100%; */
     overflow-y: auto;
     background-color: #30475E;
     opacity: 0.8;

@@ -6,10 +6,13 @@ import time
 
 from preprocesado import ParametrosPreprocesado,ReturnPreprocesado,\
                     tuberia_preprocesado, tuberia_preprocesado_bresenham
+
 from resolutor import ParametrosResolucion,ReturnResolutor,\
-                        obtener_camino, obtener_camino_cambio_pin_medio, obtener_camino_con_error_total
+                        obtener_camino, obtener_camino_con_error_total
+
 from postOpt import ParametrosPostOpt,ReturnPostOpt,\
                     no_reoptimizar, cambio_pin_medio
+
 from solvers import  EstudioParametros,estudioParametrico, estudioParametricoNoParalelo
 from calcular_error import mse, mad, mae, suma_abs, suma_cuad, psnr, nrmse
 from visor import revisar_estudio
@@ -84,8 +87,8 @@ if __name__ == "__main__":
     todas_las_imagenes = ["../ejemplos/ae300.jpg","../ejemplos/acue.jpg","../ejemplos/cervantesColor.jpg"]
     todas_las_funciones_error = [mse, mad, mae, suma_abs, suma_cuad, psnr, nrmse]
     todas_las_funciones_preprocesado = [tuberia_preprocesado, tuberia_preprocesado_bresenham]
-    todas_las_funciones_resolutoras = [obtener_camino, obtener_camino_cambio_pin_medio, obtener_camino_con_error_total]
-    todas_las_funciones_postOpt = [no_reoptimizar]
+    todas_las_funciones_resolutoras = [obtener_camino, obtener_camino_con_error_total]
+    todas_las_funciones_postOpt = [no_reoptimizar,cambio_pin_medio]
 
     # estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
     #                     ruta_salida=ruta_salida, funcion_calculo_error=mse,
@@ -105,8 +108,8 @@ if __name__ == "__main__":
     estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
                         ruta_salida=ruta_salida, funcion_calculo_error=mse,
                         funcion_preprocesado=todas_las_funciones_preprocesado,
-                        funcion_resolucion=obtener_camino_cambio_pin_medio,
+                        funcion_resolucion=obtener_camino,
                         funcion_postOpt=cambio_pin_medio,
-                        ruta_a_la_imagen=todas_las_imagenes[0], numero_de_pines=256,
-                        itereaciones_re_optimizado= 1,
+                        ruta_a_la_imagen=todas_las_imagenes, numero_de_pines=256,
+                        itereaciones_re_optimizado= 1000, decremento_error_minimo=0.000001,
                         peso_de_linea=[20], verbose= True)
