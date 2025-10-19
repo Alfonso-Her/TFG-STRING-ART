@@ -2,14 +2,14 @@ from pathlib import Path
 import numpy as np
 from typing import Unpack,Callable
 from pathlib import Path
-
+import time
 from preprocesado import ParametrosPreprocesado,ReturnPreprocesado,\
                     tuberia_preprocesado, tuberia_preprocesado_bresenham
 from resolutor import ParametrosResolucion,ReturnResolutor,\
                         obtener_camino, obtener_camino_cambio_pin_medio, obtener_camino_con_error_total
 from postOpt import ParametrosPostOpt,ReturnPostOpt,\
                     no_reoptimizar
-from solvers import  EstudioParametros,estudioParametrico
+from solvers import  EstudioParametros,estudioParametrico, estudioParametricoNoParalelo
 from calcular_error import mse, mad, mae, suma_abs, suma_cuad, psnr, nrmse
 
 
@@ -93,8 +93,9 @@ if __name__ == "__main__":
     #                     ruta_a_la_imagen=todas_las_imagenes, numero_de_pines=256,
     #                     itereaciones_re_optimizado= 256,
     #                     peso_de_linea=[2,32,128], verbose= True)
-    
-    estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
-                        ruta_salida=ruta_salida, ruta_a_la_imagen=todas_las_imagenes, 
-                        numero_de_pines=[276,302], peso_de_linea= [40,50],
+    ini1=time.time()
+    estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
+                        ruta_salida=ruta_salida, ruta_a_la_imagen=todas_las_imagenes,
+                        numero_de_pines=[256], peso_de_linea= 20,
                         verbose=True)
+    fin1=time.time()
