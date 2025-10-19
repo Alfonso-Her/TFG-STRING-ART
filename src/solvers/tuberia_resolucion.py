@@ -32,12 +32,11 @@ def validacionesSaltoCaso(paquete_de_parametros):
 
 def tuberia_resolucion(paquete_argumentos,output_dir):
     inicio = time()
-    metadatos_ejecucion= {}
     datos_totales= {}
     hora_proceso = "_"+datetime.now().strftime("%d%m%Y_%H%M%S_%f")
     args_preprocesado, args_resolucion,\
     args_postOpt,args_reconstruccion = paquete_argumentos
-        
+    
     print("\n Estamos procesando los argumentos:",
             f"\n    para el preprocesado:{args_preprocesado}",
             f"\n    para el resolutor:{args_resolucion}",
@@ -83,6 +82,7 @@ def tuberia_resolucion(paquete_argumentos,output_dir):
         return
     # POSTOPTIMIZADO------------------------------------------------------------------
     try:
+        args_postOpt.update(args_resolucion)
         args_postOpt.update(datos_solucion_problema)
 
         datos_solucion_problema_postOpt = args_postOpt["funcion_postOpt"](**args_postOpt)

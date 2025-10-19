@@ -5,7 +5,8 @@ import numpy as np
 
 from resolutor import ParametrosResolucionBasicos, ReturnResolutor
 
-class ParametrosPostOpt(ParametrosResolucionBasicos, total=False):
+class ParametrosPostOpt(ParametrosResolucionBasicos,
+                        ReturnResolutor, total=False):
 
     funcion_postOpt: NotRequired[Callable]   
     itereaciones_re_optimizado: NotRequired[int]

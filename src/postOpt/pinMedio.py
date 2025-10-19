@@ -1,12 +1,11 @@
 import numpy as np
 from typing import List, Unpack, Callable
-import cv2
+from time import time
 
-from .resolutor import obtener_camino, get_line_err
-from .parametros import ReturnResolutor, ParametrosResolucion
-from .utils import agregar_lineas_al_error,eliminar_lineas_del_error
+from resolutor import get_line_err, agregar_lineas_al_error,eliminar_lineas_del_error
 from calcular_error import mse
 
+from .parametros import ParametrosPostOpt, ReturnPostOpt
 
 
 def cambioPinMedio(error_acumulado:np.ndarray,secuencia_pines:List[int],
@@ -25,11 +24,8 @@ def cambioPinMedio(error_acumulado:np.ndarray,secuencia_pines:List[int],
         pin_origen = secuencia_pines_local[i]
         mejor_pin = secuencia_pines_local[i+1]
         pin_fin = secuencia_pines_local[i+2]
-        # print("Movemos de ", mejor_pin)
-        # print("Estamos trabajando con ", pin_origen," ", mejor_pin," ", pin_fin," ")
         indice_O_M = mejor_pin*numero_de_pines +pin_origen
         indice_M_F = pin_fin*numero_de_pines + mejor_pin
-        # cv2.imwrite("antes.jpg",cv2.flip(error_acumulado_local.reshape(-1,ancho),0))
         error_acumulado_local = eliminar_lineas_del_error(indices_a_eliminar=[indice_O_M,indice_M_F],
                                                           error_acumulado=error_acumulado_local,
                                                           linea_cache_y=linea_cache_y,
@@ -37,8 +33,6 @@ def cambioPinMedio(error_acumulado:np.ndarray,secuencia_pines:List[int],
                                                           ancho= ancho,
                                                           peso_de_linea=peso_de_linea)
         
-        # cv2.imwrite("eliminadoError.jpg",cv2.flip(error_acumulado_local.reshape(-1,ancho),0) )
-
         error_subsanado_al_agregar_las_lineas = np.float64(0)
         error_subsanado_maximo = np.float64(0)
 
@@ -76,29 +70,25 @@ def cambioPinMedio(error_acumulado:np.ndarray,secuencia_pines:List[int],
 
     return error_acumulado_local,secuencia_pines_local
 
-def obtener_camino_cambio_pin_medio(linea_cache_x:np.ndarray,linea_cache_y:np.ndarray,
+def cambio_pin_medio(linea_cache_x:np.ndarray,linea_cache_y:np.ndarray,
                    ancho:int,alto:int,vector_de_la_imagen:np.ndarray,
+                   secuencia_pines:List[int],error_total:np.ndarray,
+                   imagen_preprocesada:np.ndarray, imagen_error_preresolutor: np.ndarray,
+                   imagen_error_post_resolutor: np.ndarray,
                    numero_de_pines:int = 256 ,maximo_lineas:int= 4000,
                    distancia_minima:int = 0,peso_de_linea:int = 20,
                    numero_de_pines_recientes_a_evitar:int=5,
                    funcion_calculo_error: Callable[[np.ndarray],np.float64] = mse,
                    itereaciones_re_optimizado:int = 1,
                    decremento_error_minimo: np.float64 = np.float64(0.1),
-                   **kwargs: Unpack[ParametrosResolucion])->ReturnResolutor:
+                   **kwargs: Unpack[ParametrosPostOpt])->ReturnPostOpt:
     
-    diccionario_datos = obtener_camino(linea_cache_x,linea_cache_y,
-                   ancho,alto,vector_de_la_imagen,
-                   numero_de_pines,maximo_lineas,
-                   distancia_minima,peso_de_linea,
-                   numero_de_pines_recientes_a_evitar,
-                   **kwargs)
-    
+
     k = 0
-    error_acumulado = diccionario_datos["error_total"]
-    secuencia_pines = diccionario_datos["secuencia_pines"]
+    error_acumulado = error_total
     error_anterior = np.float64(0)
     error_posterior = np.float64(decremento_error_minimo) + 10
-
+    inicio = time()
     while k < itereaciones_re_optimizado and error_posterior-error_anterior >= decremento_error_minimo:
         error_anterior = error_posterior
         error_acumulado,secuencia_pines = cambioPinMedio(error_acumulado=error_acumulado,secuencia_pines=secuencia_pines,
@@ -108,32 +98,29 @@ def obtener_camino_cambio_pin_medio(linea_cache_x:np.ndarray,linea_cache_y:np.nd
         
         error_posterior = funcion_calculo_error(error_acumulado)
         k+=1
-
+    fin= time()
     if "verbose" in kwargs and kwargs["verbose"]:
-        imagen_error_post_resolutor = error_acumulado.reshape(-1,ancho)
+        imagen_error_post_resolutor_opt = error_acumulado.reshape(-1,ancho)
 
-        return ReturnResolutor(
+        return ReturnPostOpt(
             peso_de_linea=peso_de_linea,
             distancia_minima=distancia_minima,
             maximo_lineas=maximo_lineas,
+            iteraciones_re_optimizado_realizadas = k,
+            tiempo_usado_re_optimizando = fin-inicio,
             error_total=error_acumulado,
             secuencia_pines=secuencia_pines,
-            imagen_preprocesada=diccionario_datos["imagen_preprocesada"],
-            imagen_error_preresolutor=diccionario_datos["imagen_error_post_resolutor"],
-            imagen_error_post_resolutor=imagen_error_post_resolutor,
+            imagen_preprocesada=imagen_preprocesada,
+            imagen_error_preresolutor=imagen_error_post_resolutor,
+            imagen_error_post_resolutor=imagen_error_post_resolutor_opt,
         )
     
-    return ReturnResolutor(
+    return ReturnPostOpt(
             peso_de_linea=peso_de_linea,
             distancia_minima=distancia_minima,
             maximo_lineas=maximo_lineas,
+            iteraciones_re_optimizado_realizadas = k,
+            tiempo_usado_re_optimizando = fin-inicio,
             error_total=error_acumulado,
             secuencia_pines=secuencia_pines
         )
-
-
-if __name__ == "__main__":
-    from ..preprocesado import tuberia_preprocesado
-
-    parametros = tuberia_preprocesado(ruta_a_la_imagen="ejemplos/acue.jpg")
-    print(obtener_camino_cambio_pin_medio(**parametros))

@@ -4,8 +4,8 @@ from typing import Callable, Unpack
 import cv2
 
 from .parametros import ReturnResolutor, ParametrosResolucion
-from calcular_error import suma_abs,suma_cuad,mad,mae,mse
-from .resolutorCambioPinMedio import agregar_lineas_al_error, eliminar_lineas_del_error
+from calcular_error import mse
+from .utils import agregar_lineas_al_error,eliminar_lineas_del_error
 
 
 def get_error_general(indice_linea:int, error_acumulado:np.ndarray,
@@ -25,7 +25,7 @@ def get_error_general(indice_linea:int, error_acumulado:np.ndarray,
 
 def obtener_camino_con_error_total(linea_cache_x:np.ndarray,linea_cache_y:np.ndarray,
                    ancho:int,alto:int,vector_de_la_imagen:np.ndarray,
-                   funcion_calculo_error :Callable[[np.ndarray],np.float64] = suma_abs,
+                   funcion_calculo_error :Callable[[np.ndarray],np.float64] = mse,
                    numero_de_pines:int = 256 ,maximo_lineas:int= 4000,
                    distancia_minima:int = 0,peso_de_linea:int = 20,
                    numero_de_pines_recientes_a_evitar:int=5,

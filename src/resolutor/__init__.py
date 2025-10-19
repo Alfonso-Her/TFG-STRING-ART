@@ -1,5 +1,5 @@
 from .resolutor import obtener_camino
 from .resolutorCambioPinMedio import obtener_camino_cambio_pin_medio
 from .resolutorComprobandoError import obtener_camino_con_error_total
-
+from .utils import agregar_lineas_al_error,eliminar_lineas_del_error, get_line_err
 from .parametros import ParametrosResolucion, ReturnResolutor, ParametrosResolucionBasicos

@@ -4,9 +4,7 @@ from typing import Unpack
 import cv2
 
 from .parametros import ReturnResolutor, ParametrosResolucion
-
-def get_line_err(err: np.ndarray, coords1: np.ndarray, coords2: np.ndarray, ancho: np.float64) ->  np.float64:
-    return err[(coords1 * ancho + coords2).astype(np.int64)].sum()
+from .utils import get_line_err
 
 def obtener_camino(linea_cache_x:np.ndarray,linea_cache_y:np.ndarray,
                    ancho:int,alto:int,vector_de_la_imagen:np.ndarray,
