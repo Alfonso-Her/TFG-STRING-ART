@@ -106,6 +106,6 @@ if __name__ == "__main__":
                         funcion_preprocesado=todas_las_funciones_preprocesado,
                         funcion_resolucion=obtener_camino_cambio_pin_medio,
                         funcion_postOpt=cambio_pin_medio,
-                        ruta_a_la_imagen=todas_las_imagenes, numero_de_pines=256,
+                        ruta_a_la_imagen=todas_las_imagenes[0], numero_de_pines=256,
                         itereaciones_re_optimizado= 1,
-                        peso_de_linea=[20,48], verbose= True)
+                        peso_de_linea=[20], verbose= True)

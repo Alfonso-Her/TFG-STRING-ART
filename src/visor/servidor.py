@@ -22,7 +22,7 @@ def lanzar_servidor_y_web(output_dir: Path, port: int = 8000):
         print("🛑 Pulsa Ctrl+C para detener el servidor.\n")
 
         threading.Thread(
-            target=lambda: (time.sleep(1), webbrowser.open(f"http://127.0.0.1:{port}/index.html")),
+            target=lambda: (time.sleep(3), webbrowser.open(f"http://127.0.0.1:{port}/index.html")),
             daemon=True
         ).start()
 

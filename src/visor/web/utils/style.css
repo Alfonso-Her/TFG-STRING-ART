@@ -23,6 +23,7 @@ body {
     gap: 15px;
     align-items: center;
     flex-wrap: wrap;
+    margin-bottom: 0px;
 }
 
 .filtro-select {
@@ -53,7 +54,7 @@ body {
     display: flex;
     flex: 1;
     min-height: 100vh;
-    margin-top: 60px; /* Espacio para el menú fijo */
+    margin-top: 45px; /* Espacio para el menú fijo */
 }
 
 .contenedor-imagen {
@@ -61,8 +62,7 @@ body {
     min-width: 220px;
     padding: 10px;
     position: sticky;
-    top: 60px;
-    height: calc(100vh - 60px);
+    height:100vh;
     overflow-y: auto;
     background-color: #30475E;
     opacity: 0.8;

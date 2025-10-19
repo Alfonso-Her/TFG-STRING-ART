@@ -1,13 +1,13 @@
 // VARIABLES GLOBALES
-window.datosOriginales= [];
-window.ejecucionesData = [];
+window.datosOriginales = []; // Mantenemos los datos originales intactos
+window.ejecucionesData = []; // Datos filtrados/ordenados
 window.paginaActual = 0;
 window.elementosPorPagina = 20;
 window.parametrosVisibles = [
-    'imagen_original', 'funciones_usadas', 'numero_de_pines', 
-    'distancia_minima', 'maximo_lineas', 'lineas_usadas', 
-    'peso_de_linea', 'error_total', 'funcio_error', 
-    'tiempo_ejecucion', 'verbose'
+    'imagen_original', 'numero_de_pines','distancia_minima', 
+    'maximo_lineas', 'lineas_usadas','peso_de_linea',
+    'error_total', 'funciones_usadas', 'tiempo_ejecucion',
+    'tiempo_postOpt','iteraciones_postopimizacion'
 ];
 
 /**
@@ -74,7 +74,7 @@ function crearTarjetas(item) {
             { src: item.ruta_imagen_preprocesada, nombre: "Preprocesada" },
             { src: item.ruta_imagen_error_preresolutor, nombre: "Error pre-resolución" },
             { src: item.ruta_imagen_error_post_resolutor, nombre: "Error post-resolución" }
-        ].filter(obj => obj.src && obj.src !== "");
+        ].filter(obj => obj.src && obj.src !== ""); // Filtra rutas vacías
         
         if (imagenes.length > 1) { // Solo si hay más de una imagen
             let index = 0;
@@ -196,17 +196,44 @@ function recargarVista() {
     const grupo = document.getElementById('filtro-grupo').value;
     const orden = document.getElementById('filtro-orden').value;
 
-    let datosFiltrados = [...window.ejecucionesData];
+    // Siempre trabajamos con los datos originales para filtros
+    let datosFiltrados = [...window.datosOriginales];
 
     // Aplicar ordenamiento
     if (orden) {
         datosFiltrados.sort((a, b) => {
-            if (orden === 'error_total') return a.error_total - b.error_total;
-            if (orden === 'tiempo_ejecucion') return a.tiempo_ejecucion - b.tiempo_ejecucion;
-            if (orden === 'lineas_usadas') return a.lineas_usadas - b.lineas_usadas;
-            return 0;
+            let valorA = a[orden];
+            let valorB = b[orden];
+            
+            // Convertir a número si es posible para ordenamiento correcto
+            if (orden === 'error_total') {
+                valorA = parseFloat(valorA) || 0;
+                valorB = parseFloat(valorB) || 0;
+                return valorA - valorB;
+            }
+            if (orden === 'tiempo_ejecucion') {
+                valorA = parseFloat(valorA) || 0;
+                valorB = parseFloat(valorB) || 0;
+                return valorA - valorB;
+            }
+            if (orden === 'lineas_usadas') {
+                valorA = parseInt(valorA) || 0;
+                valorB = parseInt(valorB) || 0;
+                return valorA - valorB;
+            }
+            if (orden === 'numero_de_pines') {
+                valorA = parseInt(valorA) || 0;
+                valorB = parseInt(valorB) || 0;
+                return valorA - valorB;
+            }
+            
+            // Ordenamiento por string para otros campos
+            return String(valorA).localeCompare(String(valorB));
         });
     }
+
+    // Actualizar datos de ejecución (sin perder los originales)
+    window.ejecucionesData = datosFiltrados;
 
     // Limpiar contenedores
     document.querySelector(".contenedor-ejecuciones").innerHTML = "";
@@ -219,7 +246,6 @@ function recargarVista() {
     if (grupo) {
         agruparYMostrar(datosFiltrados, grupo);
     } else {
-        window.ejecucionesData = datosFiltrados;
         cargarPagina(0);
     }
 }
@@ -233,8 +259,10 @@ function agruparYMostrar(datos, grupo) {
     // Agrupar datos
     datos.forEach(item => {
         const clave = item[grupo];
-        if (!grupos[clave]) grupos[clave] = [];
-        grupos[clave].push(item);
+        const claveNormalizada = String(clave || 'Sin valor'); // Manejar valores undefined/null
+        
+        if (!grupos[claveNormalizada]) grupos[claveNormalizada] = [];
+        grupos[claveNormalizada].push(item);
     });
 
     const contenedor = document.querySelector(".contenedor-ejecuciones");
@@ -279,6 +307,39 @@ function configurarDragAndDrop() {
 }
 
 /**
+ * Normaliza los datos cargados del JSON
+ */
+function normalizarDatos(data) {
+    return data.map(item => {
+        // Asegurar que las rutas de imágenes de error estén correctamente mapeadas
+        const itemNormalizado = { ...item };
+        
+        // Corregir posibles inconsistencias en las rutas
+        if (!itemNormalizado.ruta_imagen_error_post_resolutor && itemNormalizado.ruta_imagen_post_resolutor) {
+            itemNormalizado.ruta_imagen_error_post_resolutor = itemNormalizado.ruta_imagen_post_resolutor;
+        }
+        
+        // Convertir strings a booleanos para verbose
+        if (typeof itemNormalizado.verbose === 'string') {
+            itemNormalizado.verbose = itemNormalizado.verbose === 'True' || itemNormalizado.verbose === 'true';
+        }
+        
+        // Convertir números almacenados como strings
+        if (typeof itemNormalizado.error_total === 'string') {
+            itemNormalizado.error_total = parseFloat(itemNormalizado.error_total) || itemNormalizado.error_total;
+        }
+        if (typeof itemNormalizado.tiempo_ejecucion === 'string') {
+            itemNormalizado.tiempo_ejecucion = parseFloat(itemNormalizado.tiempo_ejecucion) || itemNormalizado.tiempo_ejecucion;
+        }
+        if (typeof itemNormalizado.lineas_usadas === 'string') {
+            itemNormalizado.lineas_usadas = parseInt(itemNormalizado.lineas_usadas) || itemNormalizado.lineas_usadas;
+        }
+        
+        return itemNormalizado;
+    });
+}
+
+/**
  * Carga ejecuciones desde datos.json
  */
 async function cargarDatosDesdeJSON() {
@@ -296,7 +357,11 @@ async function cargarDatosDesdeJSON() {
 
         console.log(`✅ Cargadas ${data.length} ejecuciones desde datos.json`);
         
-        window.ejecucionesData = data;
+        // Normalizar y guardar datos
+        const datosNormalizados = normalizarDatos(data);
+        window.datosOriginales = datosNormalizados;
+        window.ejecucionesData = [...datosNormalizados]; // Copia para trabajar
+        
         window.paginaActual = 0;
         
         cargarPagina(0);
