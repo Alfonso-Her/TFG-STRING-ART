@@ -57,14 +57,15 @@ body {
     position: fixed;
     top:45px;
     height: calc(100vh - 45px); /* ocupa todo el alto menos el menú */
+    min-width: 100%;
 }
 
 .contenedor-imagen {
     width: 25%;
     min-width: 220px;
     padding: 10px;
-    /* position: sticky; */
-    /* height:100%; */
+    position: sticky;
+    height:100%; 
     overflow-y: auto;
     background-color: #30475E;
     opacity: 0.8;

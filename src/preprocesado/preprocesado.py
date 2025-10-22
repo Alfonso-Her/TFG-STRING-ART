@@ -62,7 +62,10 @@ def construir_vector_imagen(img:np.ndarray)->np.ndarray:
     if len(img.shape)==2:
         return (img[:,:].flatten()).astype(np.float64)
 
-
+def marcar_bordes_en_img(img:np.ndarray,num_inf:int=150,num_sup:int=190)->np.ndarray:
+    bordes_inv = 255-cv2.Canny(img,num_inf,num_sup)
+    return np.minimum(img, bordes_inv)
+    
 # ---------------------------------------Generacion de pines----------------------------------
 
 def _distancia_eu(x0,y0,x1,y1):
@@ -119,9 +122,10 @@ def precaluclar_todas_las_posibles_lineas(numero_de_pines: int, coord_xs: np.nda
 
 # ---------------------------------------Tuberia de preprocesado----------------------------------
 def tuberia_preprocesado(ruta_a_la_imagen:Path, numero_de_pines:int = 256,
-                         distancia_minima:int = 0, pasar_a_grises:bool = True,
+                         distancia_minima:int = 0, filtro_bordes_inferior:int =150,
+                         pasar_a_grises:bool = True, filtro_bordes_superior:int = 190,
                          redimensionar:bool = False, recortar:bool = True,
-                         mascara_circular:bool = True,
+                         mascara_circular:bool = True, marcar_bordes:bool = True,
                          **kwargs:Unpack[ParametrosPreprocesado]) -> ReturnPreprocesado:
     
     # print(ruta_a_la_imagen)
@@ -142,6 +146,9 @@ def tuberia_preprocesado(ruta_a_la_imagen:Path, numero_de_pines:int = 256,
     if redimensionar:
         imagen = redimensionar_a_rectangulo(imagen)
     
+    if marcar_bordes:
+
+        imagen = marcar_bordes_en_img(imagen,filtro_bordes_inferior,filtro_bordes_superior)
 
     vector_de_la_imagen = construir_vector_imagen(imagen)
     posiciones_pines =  calcular_posicion_pins(numero_de_pines, ancho = imagen.shape[1], alto = imagen.shape[0])

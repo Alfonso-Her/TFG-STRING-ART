@@ -104,12 +104,15 @@ if __name__ == "__main__":
     #                     verbose=True)
     #
     # fin1=time.time()
-    # revisar_estudio(output_dir=Path("../ejemplos/local/p_19102025_173514/"))
+    # "p_22102025_191144"
+    # "p_19102025_221432"
+    # revisar_estudio(output_dir=Path("../ejemplos/local/p_22102025_191144/"))
     estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
                         ruta_salida=ruta_salida, funcion_calculo_error=mse,
                         funcion_preprocesado=todas_las_funciones_preprocesado,
+                        marcar_bordes=[True,False], filtro_bordes_inferior = [100,150],
+                        filtro_bordes_superior = [150,200],
                         funcion_resolucion=obtener_camino,
-                        funcion_postOpt=cambio_pin_medio,
-                        ruta_a_la_imagen=todas_las_imagenes[0], numero_de_pines=256,
-                        itereaciones_re_optimizado= 1000, decremento_error_minimo=0.000001,
+                        funcion_postOpt=no_reoptimizar,
+                        ruta_a_la_imagen=todas_las_imagenes, numero_de_pines=[256],
                         peso_de_linea=[20], verbose= True)

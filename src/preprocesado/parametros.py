@@ -8,9 +8,12 @@ class ParametrosPreprocesado(TypedDict, total=False):
     ruta_a_la_imagen: str  # Requerido solo aquí
     numero_de_pines: NotRequired[int]
     distancia_minima: NotRequired[float]
+    filtro_bordes_inferior: NotRequired[int]
+    filtro_bordes_superior: NotRequired[int]
     pasar_a_grises: NotRequired[bool]
     redimensionar: NotRequired[bool]
     mascara_circular: NotRequired[bool]
+    marcar_bordes: NotRequired[bool]
     recortar: NotRequired[bool]
     verbose: NotRequired[bool]
 

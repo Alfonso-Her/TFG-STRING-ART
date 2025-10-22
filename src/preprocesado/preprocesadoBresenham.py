@@ -6,7 +6,7 @@ from pathlib import Path
 from .preprocesado import ReturnPreprocesado, ParametrosPreprocesado,recortar_rectangulo,\
                           pasar_img_a_grises, aplicar_mascara_circular,\
                           redimensionar_a_rectangulo, construir_vector_imagen, \
-                          calcular_posicion_pins
+                          calcular_posicion_pins, marcar_bordes_en_img
 
 def bresenham(x0: int, y0: int, x1: int, y1: int) -> Tuple[np.ndarray, np.ndarray]:
 
@@ -62,9 +62,10 @@ def precalcular_todas_las_posibles_lineas_bresenham(numero_de_pines: int, coord_
    
 
 def tuberia_preprocesado_bresenham(ruta_a_la_imagen:Path, numero_de_pines:int = 256,
-                         distancia_minima:int = 0, pasar_a_grises:bool = True,
+                         distancia_minima:int = 0, filtro_bordes_inferior:int =150,
+                         pasar_a_grises:bool = True, filtro_bordes_superior:int = 190,
                          redimensionar:bool = False, recortar:bool = True,
-                         mascara_circular:bool = True,
+                         mascara_circular:bool = True, marcar_bordes:bool = True,
                          **kwargs:Unpack[ParametrosPreprocesado]) -> ReturnPreprocesado:
     
     imagen = cv2.imread(ruta_a_la_imagen)
@@ -84,6 +85,8 @@ def tuberia_preprocesado_bresenham(ruta_a_la_imagen:Path, numero_de_pines:int = 
     if redimensionar:
         imagen = redimensionar_a_rectangulo(imagen)
     
+    if marcar_bordes:
+        imagen = marcar_bordes_en_img(imagen,filtro_bordes_inferior,filtro_bordes_superior)
 
     vector_de_la_imagen = construir_vector_imagen(imagen)
     posiciones_pines =  calcular_posicion_pins(numero_de_pines, ancho = imagen.shape[1], alto = imagen.shape[0])
