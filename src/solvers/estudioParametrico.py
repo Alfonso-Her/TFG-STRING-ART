@@ -78,7 +78,12 @@ def construirParametros(**kwargs):
         nuevo_total = []
         for parametros in parametros_en_construccion:
             for valor in kwargs[clave_iter]:
-                copia_parametro = deepcopy(parametros)
+                copia_parametro = copia_parametro = (
+                                        dict(parametros[0]),
+                                        dict(parametros[1]),
+                                        dict(parametros[2]),
+                                        dict(parametros[3])
+                                    )
                 agregarValor(copia_parametro, clave_iter, valor)
                 nuevo_total.append(copia_parametro)
         parametros_totales = nuevo_total
