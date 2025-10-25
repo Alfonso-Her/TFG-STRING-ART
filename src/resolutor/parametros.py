@@ -1,9 +1,12 @@
+import pandas as pd
+from pathlib import Path
 from typing import TypedDict, NotRequired, Callable
 from numpy import ndarray, float64
 
 from calcular_error import mse, mad
 
 class ParametrosResolucionBasicos(TypedDict, total=False):
+    ruta_a_resultado: str|Path
     numero_de_pines: NotRequired[int]
     distancia_minima: NotRequired[float]
     maximo_lineas: NotRequired[int]
@@ -32,5 +35,6 @@ class ReturnResolutor(TypedDict, total=False):
     imagen_preprocesada: ndarray
     imagen_error_preresolutor: ndarray
     imagen_error_post_resolutor: ndarray
+
 
     

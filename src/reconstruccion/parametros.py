@@ -1,9 +1,13 @@
 from typing import TypedDict, NotRequired, Callable
 from pathlib import Path
-from numpy import ndarray
+
+import numpy as np
 
 
 class ParametrosReconstruccion(TypedDict, total=False):
+    posiciones_pines: np.ndarray
+    secuencia_pines : np.ndarray
+    ruta_a_resultado: str
     funcion_reconstruccion: NotRequired[Callable]
     tamano_lado_px: NotRequired[int]
     ancho_clavos: NotRequired[float]

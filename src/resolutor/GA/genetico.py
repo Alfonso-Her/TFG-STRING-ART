@@ -3,8 +3,10 @@ from typing import Unpack, Callable, Tuple
 import random
 import numpy as np
 
-from .parametros import ParametrosResolucion,ReturnResolutor
-from .utils import secuencia_pines_a_error
+from .visuales import imprimir_poblacion_pandas
+
+from ..parametros import ParametrosResolucion,ReturnResolutor
+from ..utils import secuencia_pines_a_error
 
 from calcular_error import mse
 
@@ -125,11 +127,7 @@ def obtener_camino_ag(linea_cache_x:np.ndarray,
     )
 
     mejor_individuo = hall_of_fame[0]
-    mejor_error = mejor_individuo.fitness.values[0]
-
-    
-    if verbose:
-        imagen_error_final = secuencia_pines_a_error(
+    imagen_error_final = secuencia_pines_a_error(
                             mejor_individuo,
                             error_acumulado.copy(),
                             linea_cache_y,
@@ -138,12 +136,15 @@ def obtener_camino_ag(linea_cache_x:np.ndarray,
                             numero_de_pines,
                             peso_de_linea
                         )
+    
+    if verbose:
         
+        print(logbook)
         return ReturnResolutor(
             peso_de_linea=peso_de_linea,
             distancia_minima=kwargs.get('distancia_minima', 0),
             maximo_lineas=maximo_lineas,
-            error_total=mejor_error,
+            error_total=imagen_error_final,
             secuencia_pines=np.array(mejor_individuo),
             imagen_preprocesada=vector_de_la_imagen.reshape(alto, ancho),
             imagen_error_pre_resolutor=error_acumulado.reshape(alto, ancho),
@@ -154,6 +155,6 @@ def obtener_camino_ag(linea_cache_x:np.ndarray,
             peso_de_linea=peso_de_linea,
             distancia_minima=kwargs.get('distancia_minima', 0),
             maximo_lineas=maximo_lineas,
-            error_total=mejor_error,
+            error_total=imagen_error_final,
             secuencia_pines=np.array(mejor_individuo)
         )

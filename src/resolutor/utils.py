@@ -1,8 +1,8 @@
 import numpy as np
-from typing import List, Unpack, Callable
-import cv2
 
-from calcular_error import mse
+from typing import List
+
+
 
 
 def get_line_err(err: np.ndarray, coords1: np.ndarray, coords2: np.ndarray, ancho: np.float64) ->  np.float64:
@@ -45,3 +45,5 @@ def secuencia_pines_a_error(secuencia_pines:list[int],error_acumulado:np.ndarray
                                        linea_cache_x=linea_cache_x,
                                        ancho=ancho,
                                        peso_de_linea=peso_de_linea)
+
+
