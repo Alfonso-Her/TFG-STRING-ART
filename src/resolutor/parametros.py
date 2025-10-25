@@ -18,7 +18,6 @@ class ParametrosResolucionBasicos(TypedDict, total=False):
 
 class ParametrosResolucion(ParametrosResolucionBasicos, total=False):
     funcion_resolucion: NotRequired[Callable]
-     # Parámetros del AG
     cantidad_poblacion: int 
     numero_generaciones: int 
     probabilidad_cruce: float 
