@@ -15,6 +15,13 @@ class ParametrosResolucionBasicos(TypedDict, total=False):
 
 class ParametrosResolucion(ParametrosResolucionBasicos, total=False):
     funcion_resolucion: NotRequired[Callable]
+     # Parámetros del AG
+    cantidad_poblacion: int 
+    numero_generaciones: int 
+    probabilidad_cruce: float 
+    probabilidad_mutacion: float
+    probabilidad_mutacion_gen: float
+    cantidad_torneo: int
     
 class ReturnResolutor(TypedDict, total=False):
     peso_de_linea: int
