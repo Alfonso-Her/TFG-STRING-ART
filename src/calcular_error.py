@@ -29,10 +29,10 @@ def mae(imagen_error: np.ndarray) -> np.float64:
 #     return np.float64(np.square(np.sum(retomar_grises_original(imagen_error_total))))
 
 # ESTA FALLA PORQUE LA LOGICA ES JUSTO A LA INVERSA YA QUE ESTA DECRE CUANTO MAYOR ERROR HAY
-def psnr(imagen_error: np.ndarray, max_val: float = 255.0) -> np.float64:
-    """Peak Signal-to-Noise Ratio (en decibelios)."""
-    mse_val = np.mean(np.square(imagen_error))
-    if mse_val == 0:
-        return np.float64(np.inf)
-    return np.float64(10 * np.log10((max_val ** 2) / mse_val))
+# def psnr(imagen_error: np.ndarray, max_val: float = 255.0) -> np.float64:
+#     """Peak Signal-to-Noise Ratio (en decibelios)."""
+#     mse_val = np.mean(np.square(imagen_error))
+#     if mse_val == 0:
+#         return np.float64(np.inf)
+#     return np.float64(10 * np.log10((max_val ** 2) / mse_val))
 
