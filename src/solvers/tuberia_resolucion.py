@@ -67,7 +67,9 @@ def tuberia_resolucion(paquete_argumentos,output_dir):
         return
     # RESOLUTOR-----------------------------------------------------------------------
     try:
+
         args_resolucion.update({k:v for k,v in datos_preprocesados.items() if k != "posiciones_pines"})
+        args_resolucion.update({"ruta_a_resultado":output_dir})
 
         datos_solucion_problema = args_resolucion["funcion_resolucion"](**args_resolucion)
 
@@ -148,7 +150,7 @@ def tuberia_resolucion(paquete_argumentos,output_dir):
             datos_totales.update({
                         "ruta_imagen_preprocesada":"",
                         "ruta_imagen_error_preresolutor":"",
-                        "ruta_imagen_error_post_resolutor":""})
+                        "ruta_imagen_post_resolutor":""})
 
     except Exception as e:
         print(f"\n Error{e} mientras actualizabamos valores de la ejecucion para su estudio, \n llegamos a tener los valores: {datos_totales}")

@@ -54,17 +54,16 @@ body {
     display: flex;
     flex: 1;
     min-height: 100vh;
-    position: fixed;
+    min-width:100%;
+    /* position: fixed; */
     top:45px;
     height: calc(100vh - 45px); /* ocupa todo el alto menos el menú */
 }
 
 .contenedor-imagen {
     width: 25%;
-    min-width: 220px;
+    min-width: 20%;
     padding: 10px;
-    /* position: sticky; */
-    /* height:100%; */
     overflow-y: auto;
     background-color: #30475E;
     opacity: 0.8;
@@ -74,7 +73,7 @@ body {
 .ejecuciones {
     flex: 1;
     overflow-y: auto;
-    width: 75%;
+    min-width: 75%;
 }
 
 .contenedor-ejecuciones {

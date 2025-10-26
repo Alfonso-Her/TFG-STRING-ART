@@ -46,7 +46,7 @@ def hilar_secuencia_svg(posiciones_pines, secuencia_pines, ruta_a_resultado="str
         ruta_imagen_preprocesada = str(ruta_a_resultado).replace("procesado.svg","preprocesado.jpg")
         ruta_imagen_error_preresolutor = str(ruta_a_resultado).replace("procesado.svg","error_pre.jpg")
         ruta_imagen_post_resolutor = str(ruta_a_resultado).replace("procesado.svg","error_procesado.jpg")
-
+        print(ruta_imagen_post_resolutor)
         cv2.imwrite(filename=ruta_imagen_preprocesada, img=cv2.flip(kwargs["imagen_preprocesada"],0))
         cv2.imwrite(filename=ruta_imagen_error_preresolutor, img=cv2.flip(kwargs["imagen_error_preresolutor"],0))
         cv2.imwrite(filename=ruta_imagen_post_resolutor, img=cv2.flip(kwargs["imagen_error_post_resolutor"],0))

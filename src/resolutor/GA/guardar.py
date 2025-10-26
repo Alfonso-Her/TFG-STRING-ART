@@ -68,7 +68,6 @@ def guardar_checkpoint_final(
     mejor_individuo: list,
     mejor_fitness: float,
     logbook: tools.Logbook,
-    parametros: dict
 ) -> Path:
 
     resultado_final = directorio / "resultado_final.pkl"

@@ -2,7 +2,7 @@ from typing import Callable, NotRequired
 from pathlib import Path
 from numpy import ndarray, float64
 
-from calcular_error import mse, mad
+from calcular_error import mse
 from preprocesado import ParametrosPreprocesado, ReturnPreprocesado
 from resolutor import ParametrosResolucion, ReturnResolutor
 from postOpt import ParametrosPostOpt, ReturnPostOpt
@@ -21,5 +21,5 @@ class EstudioParametros(ParametrosPreprocesado,
     funcion_resolucion: NotRequired[Callable[[ParametrosResolucion, ReturnPreprocesado], ReturnResolutor]]
     funcion_postOpt: NotRequired[Callable[[ParametrosPostOpt,ReturnResolutor],ReturnPostOpt]]   
     funcion_reconstruccion: NotRequired[Callable[[ParametrosReconstruccion, ReturnPreprocesado, ReturnResolutor], ReturnReconstruccion]]
-    funcion_calculo_error: NotRequired[Callable[[ndarray],float64]] | {mse,mad}
+    funcion_calculo_error: NotRequired[Callable[[ndarray],float64]]
     

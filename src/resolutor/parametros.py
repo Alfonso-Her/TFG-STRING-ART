@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import TypedDict, NotRequired, Callable
 from numpy import ndarray, float64
 
-from calcular_error import mse, mad
+from calcular_error import mse
 
 class ParametrosResolucionBasicos(TypedDict, total=False):
     ruta_a_resultado: str|Path
@@ -12,7 +12,7 @@ class ParametrosResolucionBasicos(TypedDict, total=False):
     maximo_lineas: NotRequired[int]
     peso_de_linea: NotRequired[float]
     numero_de_pines_recientes_a_evitar: NotRequired[int]
-    funcion_calculo_error: NotRequired[Callable[[ndarray],float64]] | {mse,mad}
+    funcion_calculo_error: NotRequired[Callable[[ndarray],float64]]
     verbose: NotRequired[bool]
 
 
