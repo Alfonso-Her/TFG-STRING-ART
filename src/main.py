@@ -105,7 +105,7 @@ if __name__ == "__main__":
     #                     verbose=True)
     #
     # fin1=time.time()
-    # revisar_estudio(output_dir=Path("../ejemplos/local/p_19102025_173514/"))
+    revisar_estudio(output_dir=Path("../ejemplos/local/p_19102025_221432/"))
     # estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
     #                     ruta_salida=ruta_salida, funcion_calculo_error=todas_las_funciones_error,
     #                     funcion_preprocesado=todas_las_funciones_preprocesado,
@@ -115,17 +115,17 @@ if __name__ == "__main__":
     #                     itereaciones_re_optimizado= 0, decremento_error_minimo=0.000001,
     #                     peso_de_linea=[20], verbose= True)
 
-    estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
-                                 ruta_salida=ruta_salida, funcion_calculo_error=mse,
-                                 funcion_preprocesado= tuberia_preprocesado_bresenham,
-                                 funcion_resolucion=[obtener_camino,obtener_camino_ag],
-                                 numero_generaciones=20,
-                                 cantidad_poblacion=100, 
-                                 probabilidad_mutacion = 0.3,
-                                 elitismo_size = 3,
-                                 funcion_postOpt=no_reoptimizar,
-                                 ruta_a_la_imagen=todas_las_imagenes[0],
-                                 numero_de_pines=256,
-                                 maximo_lineas=4000,
-                                 peso_de_linea=20,
-                                 verbose= True)
+    # estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
+    #                              ruta_salida=ruta_salida, funcion_calculo_error=mse,
+    #                              funcion_preprocesado= tuberia_preprocesado_bresenham,
+    #                              funcion_resolucion=[obtener_camino,obtener_camino_ag],
+    #                              numero_generaciones=500,
+    #                              cantidad_poblacion=150, 
+    #                              probabilidad_mutacion = 0.2,
+    #                              elitismo_size = 5,
+    #                              funcion_postOpt=no_reoptimizar,
+    #                              ruta_a_la_imagen=todas_las_imagenes,
+    #                              numero_de_pines=256,
+    #                              maximo_lineas=4000,
+    #                              peso_de_linea=20,
+    #                              verbose= True)

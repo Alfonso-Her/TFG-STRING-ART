@@ -68,7 +68,7 @@ def inicializar_ag(funcion_evaluacion: Callable[[list[int]],Tuple[np.float64,Non
 
     toolbox = base.Toolbox()
 
-    # toolbox.register("map", Pool().map)
+  
 
     def crear_individuo_con_restrucciones(maximo_lineas:int,
                                       numero_de_pines:int,
@@ -199,8 +199,8 @@ def obtener_camino_ag(linea_cache_x:np.ndarray,
     stats.register("min", np.min)     # Mejor fitness (menor error)
     stats.register("max", np.max)     # Peor fitness (mayor error)
 
-    
-
+    # pool = Pool()
+    # toolbox.register("map", poll.map)
     try:
         # Bucle manual de generaciones para control de checkpoints
         for gen in range(generacion_inicial, numero_generaciones):
@@ -218,7 +218,6 @@ def obtener_camino_ag(linea_cache_x:np.ndarray,
             for i, elite in enumerate(hall_of_fame):
                 poblacion[-1 - i] = toolbox.clone(elite)
 
-            print("HOLA PRUEBA EL ERROR ES :",poblacion[0].fitness.values[0],"Y LA FINAL ES: ",poblacion[1].fitness.values[0]) 
 
             hall_of_fame.update(poblacion)
             
@@ -277,7 +276,7 @@ def obtener_camino_ag(linea_cache_x:np.ndarray,
 
             # Reemplazar población
             poblacion[:] = descendencia
-            print("poblacion: ", type(poblacion),poblacion[-1].fitness.values)
+
         
         print("[AG] Evolución completada exitosamente")
         
