@@ -105,6 +105,7 @@ def estudioParametrico(output_dir:Path, estudio_web:bool= True,
         La logica para iterar separa entre parametros de preprocesado, resolucion, reconstruccion por lo que no va a ser un proceso rapido,
         Para gestionar esto modifica las listas de strings del inicio de estudioParametrico (le vendria bien paralelizar pero TODO) 
     """
+
     if "ruta_a_la_imagen" not in kwargs:
         raise ValueError("Introduzca el parametro con la ruta de la imagen (ruta_a_la_imagen)")
     

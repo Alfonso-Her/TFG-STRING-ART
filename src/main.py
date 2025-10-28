@@ -8,13 +8,14 @@ from preprocesado import ParametrosPreprocesado,ReturnPreprocesado,\
                     tuberia_preprocesado, tuberia_preprocesado_bresenham
 
 from resolutor import ParametrosResolucion,ReturnResolutor,\
-                        obtener_camino, obtener_camino_con_error_total
+                        obtener_camino, obtener_camino_con_error_total,\
+                        obtener_camino_ag
 
 from postOpt import ParametrosPostOpt,ReturnPostOpt,\
                     no_reoptimizar, cambio_pin_medio
 
 from solvers import  EstudioParametros,estudioParametrico, estudioParametricoNoParalelo
-from calcular_error import mse, mad, mae, suma_abs, suma_cuad, psnr, nrmse
+from calcular_error import mse, mae, rmse
 from visor import revisar_estudio
 
 def obtener_imagenes_por_carpeta(ruta_carpeta:str):
@@ -82,10 +83,10 @@ def probar_funciones_resolutoras_lista_de_errores(ruta_salida:str, lista_funcion
 if __name__ == "__main__":
 
     np.set_printoptions(threshold=2)
-    nombreEstudio = "p"
+    nombreEstudio = "segunda version del genetico, ahora respeta restricciones y el hall of fame"
     ruta_salida = f"../ejemplos/local/{nombreEstudio}"
     todas_las_imagenes = ["../ejemplos/ae300.jpg","../ejemplos/acue.jpg","../ejemplos/cervantesColor.jpg"]
-    todas_las_funciones_error = [mse, mad, mae, suma_abs, suma_cuad, psnr, nrmse]
+    todas_las_funciones_error = [mse, mae, rmse]
     todas_las_funciones_preprocesado = [tuberia_preprocesado, tuberia_preprocesado_bresenham]
     todas_las_funciones_resolutoras = [obtener_camino, obtener_camino_con_error_total]
     todas_las_funciones_postOpt = [no_reoptimizar,cambio_pin_medio]
@@ -104,15 +105,27 @@ if __name__ == "__main__":
     #                     verbose=True)
     #
     # fin1=time.time()
-    # "p_22102025_191144"
-    # "p_19102025_221432"
-    # revisar_estudio(output_dir=Path("../ejemplos/local/p_22102025_191144/"))
-    estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
-                        ruta_salida=ruta_salida, funcion_calculo_error=mse,
-                        funcion_preprocesado=todas_las_funciones_preprocesado,
-                        marcar_bordes=[True,False], filtro_bordes_inferior = [100,150],
-                        filtro_bordes_superior = [150,200],
-                        funcion_resolucion=obtener_camino,
-                        funcion_postOpt=no_reoptimizar,
-                        ruta_a_la_imagen=todas_las_imagenes, numero_de_pines=[256],
-                        peso_de_linea=[20], verbose= True)
+    revisar_estudio(output_dir=Path("../ejemplos/local/p_19102025_221432/"))
+    # estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
+    #                     ruta_salida=ruta_salida, funcion_calculo_error=todas_las_funciones_error,
+    #                     funcion_preprocesado=todas_las_funciones_preprocesado,
+    #                     funcion_resolucion=[obtener_camino,obtener_camino_con_error_total],
+    #                     funcion_postOpt=no_reoptimizar,
+    #                     ruta_a_la_imagen=todas_las_imagenes, numero_de_pines=256,
+    #                     itereaciones_re_optimizado= 0, decremento_error_minimo=0.000001,
+    #                     peso_de_linea=[20], verbose= True)
+
+    # estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
+    #                              ruta_salida=ruta_salida, funcion_calculo_error=mse,
+    #                              funcion_preprocesado= tuberia_preprocesado_bresenham,
+    #                              funcion_resolucion=[obtener_camino,obtener_camino_ag],
+    #                              numero_generaciones=500,
+    #                              cantidad_poblacion=150, 
+    #                              probabilidad_mutacion = 0.2,
+    #                              elitismo_size = 5,
+    #                              funcion_postOpt=no_reoptimizar,
+    #                              ruta_a_la_imagen=todas_las_imagenes,
+    #                              numero_de_pines=256,
+    #                              maximo_lineas=4000,
+    #                              peso_de_linea=20,
+    #                              verbose= True)

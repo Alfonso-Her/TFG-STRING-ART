@@ -20,24 +20,19 @@ def rmse(imagen_error: np.ndarray) -> np.float64:
 def mae(imagen_error: np.ndarray) -> np.float64:
     """Mean Absolute Error."""
     return np.float64(np.mean(np.abs(retomar_grises_original(imagen_error))))
+# BORRADAS PORQUE NO TIENEN SENTIDO TE EQUIVOCAS EN EL ORDEN EN VEZ DE SUMAR ABS O CUADRADOS
+# HACES ABS/CUADRADOS DE SUMAS => ERROR
+# def suma_abs(imagen_error_total:np.ndarray)->np.float64:
+#     return np.float64(np.abs(np.sum(retomar_grises_original(imagen_error_total))))
 
-def suma_abs(imagen_error_total:np.ndarray)->np.float64:
-    return np.float64(np.abs(np.sum(retomar_grises_original(imagen_error_total))))
+# def suma_cuad(imagen_error_total:np.ndarray)->np.float64:
+#     return np.float64(np.square(np.sum(retomar_grises_original(imagen_error_total))))
 
-def suma_cuad(imagen_error_total:np.ndarray)->np.float64:
-    return np.float64(np.square(np.sum(retomar_grises_original(imagen_error_total))))
+# ESTA FALLA PORQUE LA LOGICA ES JUSTO A LA INVERSA YA QUE ESTA DECRE CUANTO MAYOR ERROR HAY
+# def psnr(imagen_error: np.ndarray, max_val: float = 255.0) -> np.float64:
+#     """Peak Signal-to-Noise Ratio (en decibelios)."""
+#     mse_val = np.mean(np.square(imagen_error))
+#     if mse_val == 0:
+#         return np.float64(np.inf)
+#     return np.float64(10 * np.log10((max_val ** 2) / mse_val))
 
-def psnr(imagen_error: np.ndarray, max_val: float = 255.0) -> np.float64:
-    """Peak Signal-to-Noise Ratio (en decibelios)."""
-    mse_val = np.mean(np.square(imagen_error))
-    if mse_val == 0:
-        return np.float64(np.inf)
-    return np.float64(10 * np.log10((max_val ** 2) / mse_val))
-
-def nrmse(imagen_error: np.ndarray, max_val: float = 255.0) -> np.float64:
-    """Normalized RMSE (relativo al rango máximo)."""
-    return np.float64(np.sqrt(np.mean(np.square(imagen_error))) / max_val)
-
-def mad(imagen_error: np.ndarray) -> np.float64:
-    """Median Absolute Deviation."""
-    return np.float64(np.median(np.abs(imagen_error)))
