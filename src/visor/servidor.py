@@ -7,7 +7,7 @@ import socketserver
 import threading
 import webbrowser
 
-def lanzar_servidor_y_web(output_dir: Path, port: int = 8080):
+def lanzar_servidor_y_web(output_dir: Path, port: int = 8090):
     """
     Lanza un servidor HTTP simple en la carpeta `output_dir`
     y mantiene el proceso activo hasta que el usuario lo cierre.
@@ -33,7 +33,7 @@ def lanzar_servidor_y_web(output_dir: Path, port: int = 8080):
         finally:
             httpd.server_close()
             os.chdir(cwd_anterior)
-def revisar_estudio(output_dir: Path, port: int = 8000):
+def revisar_estudio(output_dir: Path, port: int = 8080):
     """
     Sirve una carpeta de estudio anterior (que contenga index.html y datos.json)
     en un servidor HTTP local y abre el navegador automáticamente.

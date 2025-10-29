@@ -1,6 +1,7 @@
 import numpy as np
 import enum
 
+
 # TODO ?
 def retomar_grises_original(imagen_error_total:np.ndarray)->np.float64:
     """

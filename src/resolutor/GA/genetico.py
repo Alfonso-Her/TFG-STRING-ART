@@ -26,13 +26,14 @@ def _crear_funcion_error(secuencia_pines:list[int],
         Dada la imagen del error y una solucion evalua la solucion mediante funcion_calculo_error
         devuelve una tupla error,_ por necesidad de cudrar tipos con la API de DEAP
     """
-    return funcion_calculo_error(secuencia_pines_a_error(secuencia_pines,
+    error = funcion_calculo_error(secuencia_pines_a_error(secuencia_pines,
                                                          error_acumulado.copy(),
                                                          linea_cache_y,
                                                          linea_cache_x,
                                                          ancho,
                                                          numero_de_pines,
-                                                         peso_de_linea)),
+                                                         peso_de_linea))
+    return (error,)
 
 
 
@@ -62,7 +63,7 @@ def inicializar_ag(funcion_evaluacion: Callable[[list[int]],Tuple[np.float64,Non
     """
     try:
         creator.create("FitnessMin",base.Fitness, weights=(-1.0,))
-        creator.create("individuo", list, fitness=creator.FitnessMin)
+        creator.create("Individuo", list, fitness=creator.FitnessMin)
     except Exception:
         pass # por si acaso multiples llamadas a incializar_ag no es un error se reutilizan
 
@@ -82,7 +83,7 @@ def inicializar_ag(funcion_evaluacion: Callable[[list[int]],Tuple[np.float64,Non
 
         for _ in range(longitud):
             # Get available pins based on constraints
-            pines_disponibles = [p for p in range(numero_de_pines) if (abs(pin_actual-p)%numero_de_pines)>distancia_minima] 
+            pines_disponibles = [p for p in range(numero_de_pines) if min(abs(pin_actual-p), numero_de_pines - abs(pin_actual-p))>distancia_minima] 
             
             if not pines_disponibles:
                 pines_disponibles = [p for p in range(numero_de_pines) if p != pin_actual]
@@ -91,7 +92,7 @@ def inicializar_ag(funcion_evaluacion: Callable[[list[int]],Tuple[np.float64,Non
             individuo.append(siguiente_pin)
             pin_actual = siguiente_pin
         
-        return creator.individuo(individuo)
+        return creator.Individuo(individuo)
     
     # Definimos un individuo como una secuencia de cromosomas
     toolbox.register("individuo",
@@ -142,7 +143,7 @@ def obtener_camino_ag(linea_cache_x:np.ndarray,
                     peso_de_linea:int = 20,
                     verbose:bool = False,
                     reanudar:bool = False,
-                    frecuencia_checkpoint:int = 10,
+                    frecuencia_checkpoint:int = 100,
                     mantener_checkpoints:int = 2,
                     cantidad_poblacion: int = 100,
                     elitismo_size:int = 1,
