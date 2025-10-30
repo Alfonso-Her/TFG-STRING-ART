@@ -154,7 +154,7 @@ def obtener_camino_ag(linea_cache_x:np.ndarray,
                     **kwargs:Unpack[ParametrosResolucion])->ReturnResolutor:
     
     #Creamos imagen error y inicializamos directorios y variables
-    error_acumulado = np.full(ancho*alto, 255.0) - vector_de_la_imagen
+    error_acumulado = vector_de_la_imagen
     funcion_evaluacion = lambda secuencia_solucion: _crear_funcion_error(secuencia_pines=secuencia_solucion,
                                                                    error_acumulado=error_acumulado,
                                                                    linea_cache_y=linea_cache_y,

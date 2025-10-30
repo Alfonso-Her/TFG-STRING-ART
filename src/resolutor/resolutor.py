@@ -14,7 +14,7 @@ def obtener_camino(linea_cache_x:np.ndarray,linea_cache_y:np.ndarray,
                    **kwargs:Unpack[ParametrosResolucion])->ReturnResolutor:
     
     # Haciendo esto basicamente invertimos colores y pintamos de negro los blancos 
-    error_acumulado = np.full(ancho*alto, 255.0) - vector_de_la_imagen
+    error_acumulado = vector_de_la_imagen
 
     if "verbose" in kwargs and kwargs["verbose"]:
         imagen_preprocesada = vector_de_la_imagen.reshape(-1,ancho)

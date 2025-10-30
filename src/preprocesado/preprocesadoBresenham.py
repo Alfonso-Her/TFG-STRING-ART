@@ -3,10 +3,11 @@ import cv2
 from typing import Callable, Tuple, Unpack
 from pathlib import Path
 
-from .preprocesado import ReturnPreprocesado, ParametrosPreprocesado,recortar_rectangulo,\
-                          pasar_img_a_grises, aplicar_mascara_circular,\
-                          redimensionar_a_rectangulo, construir_vector_imagen, \
-                          calcular_posicion_pins, marcar_bordes_en_img
+from calcular_error import mse,ssim
+
+from .preprocesado import ReturnPreprocesado, ParametrosPreprocesado, construir_vector_imagen, \
+                          calcular_posicion_pins
+from .imagen import preprocesar_imagen
 
 def bresenham(x0: int, y0: int, x1: int, y1: int) -> Tuple[np.ndarray, np.ndarray]:
 
@@ -62,6 +63,7 @@ def precalcular_todas_las_posibles_lineas_bresenham(numero_de_pines: int, coord_
    
 
 def tuberia_preprocesado_bresenham(ruta_a_la_imagen:Path, numero_de_pines:int = 256,
+                         funcion_calculo_error: Callable = mse,
                          distancia_minima:int = 0, filtro_bordes_inferior:int =150,
                          pasar_a_grises:bool = True, filtro_bordes_superior:int = 190,
                          redimensionar:bool = False, recortar:bool = True,
@@ -70,33 +72,24 @@ def tuberia_preprocesado_bresenham(ruta_a_la_imagen:Path, numero_de_pines:int = 
     
     imagen = cv2.imread(ruta_a_la_imagen)
     imagen = cv2.flip(imagen,0)
-
-    if pasar_a_grises:
-        imagen = pasar_img_a_grises(imagen)
-
-    imagen = cv2.normalize(imagen,None, 0, 255, cv2.NORM_MINMAX)
-
-    if recortar:
-        imagen = recortar_rectangulo(imagen)
-
-    if mascara_circular:
-        imagen = aplicar_mascara_circular(imagen)
-
-    if redimensionar:
-        imagen = redimensionar_a_rectangulo(imagen)
+    imagen = preprocesar_imagen(imagen, filtro_bordes_inferior,
+                         pasar_a_grises, filtro_bordes_superior,
+                         redimensionar, recortar,
+                         mascara_circular, marcar_bordes)
     
-    if marcar_bordes:
-        imagen = marcar_bordes_en_img(imagen,filtro_bordes_inferior,filtro_bordes_superior)
+    if funcion_calculo_error.__name__ == "ssim":
+        funcion_calculo_error = lambda imagen_resultado: ssim(255-imagen,imagen_resultado.reshape(-1, imagen.shape[1]))
 
+  
     vector_de_la_imagen = construir_vector_imagen(imagen)
     posiciones_pines =  calcular_posicion_pins(numero_de_pines, ancho = imagen.shape[1], alto = imagen.shape[0])
     cache_linea_x, cache_linea_y = precalcular_todas_las_posibles_lineas_bresenham(numero_de_pines,posiciones_pines[0],posiciones_pines[1],distancia_minima)
     return ReturnPreprocesado(ruta_a_la_imagen=ruta_a_la_imagen,
                             numero_de_pines=numero_de_pines, 
+                            funcion_calculo_error=funcion_calculo_error,
                             ancho=imagen.shape[1],
                             alto=imagen.shape[0],
                             vector_de_la_imagen=vector_de_la_imagen,
                             posiciones_pines=np.column_stack(posiciones_pines),
                             linea_cache_x=cache_linea_x,
                             linea_cache_y=cache_linea_y)
-

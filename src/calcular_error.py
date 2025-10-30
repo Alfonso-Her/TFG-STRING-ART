@@ -1,6 +1,7 @@
 import numpy as np
 import enum
 
+from skimage.metrics import structural_similarity 
 
 # TODO ?
 def retomar_grises_original(imagen_error_total:np.ndarray)->np.float64:
@@ -21,6 +22,13 @@ def rmse(imagen_error: np.ndarray) -> np.float64:
 def mae(imagen_error: np.ndarray) -> np.float64:
     """Mean Absolute Error."""
     return np.float64(np.mean(np.abs(retomar_grises_original(imagen_error))))
+
+def ssim(imagen_original:np.ndarray, imagen_resultado:np.ndarray) -> np.float64:
+    """ ssim (Compara como de similares son dos imagenes), OJOOOO Requiere que hagas una lambda para
+        Poder usarla (fijando la imagen original), como da valores entre -1 y 1,
+        al hacer 1 - error obtenemos una funcion de error que cumple que cuanto menor es mas se parece
+    """
+    return 1 - np.float64(structural_similarity(imagen_original,imagen_resultado, data_range=255))
 # BORRADAS PORQUE NO TIENEN SENTIDO TE EQUIVOCAS EN EL ORDEN EN VEZ DE SUMAR ABS O CUADRADOS
 # HACES ABS/CUADRADOS DE SUMAS => ERROR
 # def suma_abs(imagen_error_total:np.ndarray)->np.float64:

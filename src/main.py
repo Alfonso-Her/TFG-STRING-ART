@@ -15,7 +15,7 @@ from postOpt import ParametrosPostOpt,ReturnPostOpt,\
                     no_reoptimizar, cambio_pin_medio
 
 from solvers import  EstudioParametros,estudioParametrico, estudioParametricoNoParalelo
-from calcular_error import mse, mae, rmse
+from calcular_error import mse, mae, rmse, ssim
 from visor import revisar_estudio
 
 def obtener_imagenes_por_carpeta(ruta_carpeta:str):
@@ -83,10 +83,10 @@ def probar_funciones_resolutoras_lista_de_errores(ruta_salida:str, lista_funcion
 if __name__ == "__main__":
 
     np.set_printoptions(threshold=2)
-    nombreEstudio = "segunda version del genetico, fuerza bruta (1500 generaciones 250 individuos cruce 0.7, muta 0.2, elitismo size 10)"
+    nombreEstudio = "refactorizacionPreprocesado"
     ruta_salida = f"../ejemplos/local/{nombreEstudio}"
     todas_las_imagenes = ["../ejemplos/ae300.jpg","../ejemplos/acue.jpg","../ejemplos/cervantesColor.jpg"]
-    todas_las_funciones_error = [mse, mae, rmse]
+    todas_las_funciones_error = [mse, mae, rmse,ssim]
     todas_las_funciones_preprocesado = [tuberia_preprocesado, tuberia_preprocesado_bresenham]
     todas_las_funciones_resolutoras = [obtener_camino, obtener_camino_con_error_total]
     todas_las_funciones_postOpt = [no_reoptimizar,cambio_pin_medio]
@@ -109,9 +109,9 @@ if __name__ == "__main__":
     # revisar_estudio(output_dir=Path("../ejemplos/local/Version que no respeta HoF AG_con_750_poblaciones_250_individuos_mutacion_3_elitismo_3_resto_default/"))
 
     estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
-                        ruta_salida=ruta_salida, funcion_calculo_error=mse, marcar_bordes=[True,False],
+                        ruta_salida=ruta_salida, funcion_calculo_error=ssim,
                         funcion_preprocesado=todas_las_funciones_preprocesado,
-                        funcion_resolucion=obtener_camino,
+                        funcion_resolucion=[obtener_camino, obtener_camino_con_error_total],
                         funcion_postOpt=no_reoptimizar,
                         ruta_a_la_imagen=todas_las_imagenes, numero_de_pines=256,
                         itereaciones_re_optimizado= 0, decremento_error_minimo=0.000001,

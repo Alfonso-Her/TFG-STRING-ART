@@ -71,7 +71,9 @@ def tuberia_resolucion(paquete_argumentos,output_dir):
         args_resolucion.update({k:v for k,v in datos_preprocesados.items() if k != "posiciones_pines"})
         args_resolucion.update({"ruta_a_resultado":output_dir})
 
-        datos_solucion_problema = args_resolucion["funcion_resolucion"](**args_resolucion)
+        datos_totales.update(args_resolucion)
+
+        datos_solucion_problema = args_resolucion["funcion_resolucion"](**datos_totales)
 
         datos_totales.update(datos_solucion_problema)
 
@@ -87,7 +89,9 @@ def tuberia_resolucion(paquete_argumentos,output_dir):
         args_postOpt.update(args_resolucion)
         args_postOpt.update(datos_solucion_problema)
 
-        datos_solucion_problema_postOpt = args_postOpt["funcion_postOpt"](**args_postOpt)
+        datos_totales.update(args_postOpt)
+
+        datos_solucion_problema_postOpt = args_postOpt["funcion_postOpt"](**datos_totales)
 
         ruta_fichero = output_dir.joinpath(Path(nombre_foto_con_ext[0]+hora_proceso+"_procesado.svg"))
         datos_solucion_problema_postOpt.update({"ruta_a_resultado": ruta_fichero })
@@ -105,8 +109,9 @@ def tuberia_resolucion(paquete_argumentos,output_dir):
     try:
         args_reconstruccion.update(datos_solucion_problema_postOpt)
         args_reconstruccion.update({"posiciones_pines": datos_preprocesados["posiciones_pines"]})
+        datos_totales.update(args_reconstruccion)
 
-        datos_sol_final = args_reconstruccion["funcion_reconstruccion"](**args_reconstruccion)
+        datos_sol_final = args_reconstruccion["funcion_reconstruccion"](**datos_totales)
         datos_totales.update(datos_sol_final)
 
         if "verbose" in args_resolucion and args_resolucion["verbose"]:
@@ -125,7 +130,6 @@ def tuberia_resolucion(paquete_argumentos,output_dir):
     fin = time()
     
     try:
-
         datos_totales.update({
             "secuencia_pines" : datos_totales["secuencia_pines"].tolist(),
             "lineas_usadas" : len(datos_totales["secuencia_pines"].tolist())-1,
