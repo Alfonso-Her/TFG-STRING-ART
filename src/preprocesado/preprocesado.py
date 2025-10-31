@@ -77,7 +77,7 @@ def tuberia_preprocesado(ruta_a_la_imagen:Path, funcion_calculo_error:Callable =
                          distancia_minima:int = 0, filtro_bordes_inferior:int =150,
                          pasar_a_grises:bool = True, filtro_bordes_superior:int = 190,
                          redimensionar:bool = False, recortar:bool = True,
-                         mascara_circular:bool = True, marcar_bordes:bool = True,
+                         mascara_circular:bool = True, marcar_bordes:bool = False,
                          **kwargs:Unpack[ParametrosPreprocesado]) -> ReturnPreprocesado:
     
     # print(ruta_a_la_imagen)

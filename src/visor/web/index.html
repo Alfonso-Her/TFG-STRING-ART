@@ -27,20 +27,64 @@
             <option value="lineas_usadas">Líneas usadas</option>
         </select>
 
-        <div class="filtro-checkboxes">
-            <label><input type="checkbox" name="parametro" value="imagen_original" checked> Imagen</label>
-            <label><input type="checkbox" name="parametro" value="numero_de_pines" checked> Pines</label>
-            <label><input type="checkbox" name="parametro" value="distancia_minima" checked> Dist. Mínima</label>
-            <label><input type="checkbox" name="parametro" value="maximo_lineas" checked> Máx. Líneas</label>
-            <label><input type="checkbox" name="parametro" value="lineas_usadas" checked> Líneas Usadas</label>
-            <label><input type="checkbox" name="parametro" value="peso_de_linea" checked> Peso Línea</label>
-            <label><input type="checkbox" name="parametro" value="error_total" checked> Error Total</label>
-            <label><input type="checkbox" name="parametro" value="funciones_usadas" checked> Funciones</label>
-            <label><input type="checkbox" name="parametro" value="tiempo_ejecucion" checked> Tiempo Ejc</label>
-            <label><input type="checkbox" name="parametro" value="tiempo_postOpt" checked> Tiempo ReOptimizacion</label>
-            <label><input type="checkbox" name="parametro" value="iteraciones_postopimizacion" checked> Iteraciones ReOptimizacion</label>
+        <details class="filtro-details">
+            <summary>🧩 Preprocesado</summary>
+            <div class="filtro-checkboxes">
+                <label><input type="checkbox" name="parametro" value="imagen_original" checked> Imagen Original</label>
+                <label><input type="checkbox" name="parametro" value="numero_de_pines" checked> Número de Pines</label>
+                <label><input type="checkbox" name="parametro" value="distancia_minima" checked> Distancia Mínima</label>
+                <label><input type="checkbox" name="parametro" value="funcion_preprocesado"> Función Preprocesado</label>
+                <label><input type="checkbox" name="parametro" value="filtro_bordes_inferior"> Filtro Bordes Inferior</label>
+                <label><input type="checkbox" name="parametro" value="filtro_bordes_superior"> Filtro Bordes Superior</label>
+                <label><input type="checkbox" name="parametro" value="pasar_a_grises"> Pasar a Grises</label>
+                <label><input type="checkbox" name="parametro" value="mascara_circular"> Máscara Circular</label>
+                <label><input type="checkbox" name="parametro" value="marcar_bordes"> Marcar Bordes</label>
+            </div>
+        </details>
 
-        </div>
+        <details class="filtro-details">
+            <summary>⚙️ Resolución</summary>
+            <div class="filtro-checkboxes">
+                <label><input type="checkbox" name="parametro" value="maximo_lineas" checked> Máximo Líneas</label>
+                <label><input type="checkbox" name="parametro" value="lineas_usadas" checked> Líneas Usadas</label>
+                <label><input type="checkbox" name="parametro" value="peso_de_linea" checked> Peso de Línea</label>
+                <label><input type="checkbox" name="parametro" value="error_total" checked> Error Total</label>
+                <label><input type="checkbox" name="parametro" value="funciones_usadas" checked> Funciones Usadas</label>
+                <label><input type="checkbox" name="parametro" value="probabilidad_cruce"> Prob. Cruce</label>
+                <label><input type="checkbox" name="parametro" value="Prob_mutar_gen"> Prob. Mutación Gen</label>
+                <label><input type="checkbox" name="parametro" value="cantidad_toreno"> Cantidad Torneo</label>
+                <label><input type="checkbox" name="parametro" value="Hall_Fama"> Elitismo (Hall of Fame)</label>
+            </div>
+        </details>
+
+        <details class="filtro-details">
+            <summary>🔁 Post-Optimización</summary>
+            <div class="filtro-checkboxes">
+                <label><input type="checkbox" name="parametro" value="tiempo_postOpt" checked> Tiempo Re-Optimización</label>
+                <label><input type="checkbox" name="parametro" value="iteraciones_postopimizacion" checked> Iteraciones Re-Opt</label>
+                <label><input type="checkbox" name="parametro" value="decremento_error_minimo"> Decremento Error Mínimo</label>
+            </div>
+        </details>
+
+        <details class="filtro-details">
+            <summary>🎨 Reconstrucción</summary>
+            <div class="filtro-checkboxes">
+                <label><input type="checkbox" name="parametro" value="ruta_resultado"> Imagen Resultado</label>
+                <label><input type="checkbox" name="parametro" value="ruta_imagen_preprocesada"> Imagen Preprocesada</label>
+                <label><input type="checkbox" name="parametro" value="ruta_imagen_error_preresolutor"> Error Pre-Resolutor</label>
+                <label><input type="checkbox" name="parametro" value="ruta_imagen_error_post_resolutor"> Error Post-Resolutor</label>
+                <label><input type="checkbox" name="parametro" value="verbose"> Verbose</label>
+            </div>
+        </details>
+
+        <details class="filtro-details">
+            <summary>⏱️ Tiempos y Métricas</summary>
+            <div class="filtro-checkboxes">
+                <label><input type="checkbox" name="parametro" value="tiempo_ejecucion" checked> Tiempo Ejecución</label>
+                <label><input type="checkbox" name="parametro" value="error_total" checked> Error Total</label>
+                <label><input type="checkbox" name="parametro" value="lineas_usadas" checked> Líneas Usadas</label>
+            </div>
+        </details>
     </nav>
 
     <!-- CONTENEDOR PRINCIPAL -->
@@ -50,7 +94,5 @@
             <div class="contenedor-ejecuciones"></div>	
         </div>
     </div>
-
-
 </body>
 </html>

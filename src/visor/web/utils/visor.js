@@ -11,6 +11,14 @@ window.parametrosVisibles = [
 ];
 
 /**
+ * Actualiza los parámetros visibles basados en los checkboxes checked
+ */
+function actualizarParametrosVisibles() {
+    const checkboxes = document.querySelectorAll('input[name="parametro"]:checked');
+    window.parametrosVisibles = Array.from(checkboxes).map(cb => cb.value);
+}
+
+/**
  * Crea las tarjetas de ejecución (derecha) y especiales (izquierda)
  */
 function crearTarjetas(item) {
@@ -20,6 +28,13 @@ function crearTarjetas(item) {
     // Crear tarjeta de ejecución (derecha)
     const tarjeta = document.createElement("div");
     tarjeta.className = "tarjeta";
+
+    // Detectar si es bioinspirado (basado en parámetros genéticos)
+    if (item.Prob_mutar_gen > 0 || item.probabilidad_cruce > 0 || item.cantidad_toreno > 0 || item.Hall_Fama > 0) {
+        tarjeta.classList.add('bioinspirado');
+    } else {
+        tarjeta.classList.add('normal');
+    }
 
     // Contenedor de imagen
     const divImagen = document.createElement("div");
@@ -38,12 +53,11 @@ function crearTarjetas(item) {
     textoImagen.textContent = "Imagen: resultado";
     divImagen.appendChild(textoImagen);
 
-    // Propiedades de ejecución (solo las visibles)
+    // Propiedades de ejecución (solo las visibles) - Usando tabla como en Opción 3
     const divPropiedadesEjecucion = document.createElement("div");
     divPropiedadesEjecucion.className = "propiedades-ejecucion";
 
-    let propiedadesHTML = '';
-    
+    let propiedadesHTML = '<table class="prop-table">';
     window.parametrosVisibles.forEach(param => {
         if (item.hasOwnProperty(param)) {
             const nombreFormateado = param.replace(/_/g, ' ')
@@ -53,17 +67,13 @@ function crearTarjetas(item) {
             
             // Formatear valores específicos
             if (param === 'error_total' && typeof valor === 'string') {
-                // Convertir error_total a número para mejor ordenamiento
                 valor = parseFloat(valor) || valor;
             }
             
-            propiedadesHTML += `
-                <p class="Propiedad" data-parametro="${param}">
-                    ${nombreFormateado}: ${valor}
-                </p>
-            `;
+            propiedadesHTML += `<tr><td>${nombreFormateado}:</td><td>${valor}</td></tr>`;
         }
     });
+    propiedadesHTML += '</table>';
 
     divPropiedadesEjecucion.innerHTML = propiedadesHTML;
 
@@ -176,11 +186,13 @@ function configurarFiltros() {
     const filtroOrden = document.getElementById('filtro-orden');
     const checkboxes = document.querySelectorAll('input[name="parametro"]');
 
-    // Actualizar parámetros visibles cuando cambian los checkboxes
+    // Inicializar parámetros visibles
+    actualizarParametrosVisibles();
+
+    // Actualizar al cambiar cualquier checkbox
     checkboxes.forEach(checkbox => {
         checkbox.addEventListener('change', () => {
-            window.parametrosVisibles = Array.from(document.querySelectorAll('input[name="parametro"]:checked'))
-                .map(cb => cb.value);
+            actualizarParametrosVisibles();
             recargarVista();
         });
     });
@@ -334,6 +346,13 @@ function normalizarDatos(data) {
         if (typeof itemNormalizado.lineas_usadas === 'string') {
             itemNormalizado.lineas_usadas = parseInt(itemNormalizado.lineas_usadas) || itemNormalizado.lineas_usadas;
         }
+        
+        // Normalizar valores booleanos
+        ['pasar_a_grises', 'mascara_circular', 'marcar_bordes'].forEach(param => {
+            if (typeof itemNormalizado[param] === 'string') {
+                itemNormalizado[param] = itemNormalizado[param] === 'True';
+            }
+        });
         
         return itemNormalizado;
     });

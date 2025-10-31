@@ -24,6 +24,7 @@ body {
     align-items: center;
     flex-wrap: wrap;
     margin-bottom: 0px;
+    justify-content: space-evenly;
 }
 
 .filtro-select {
@@ -33,20 +34,51 @@ body {
     background: #30475E;
     color: white;
     min-width: 150px;
+    font-size: 16px;
+}
+
+.filtro-details {
+    background-color: #30475E;
+    border: 1px solid #C1A57B;
+    border-radius: 6px;
+    color: white;
+    min-width: 150px;
+}
+
+.filtro-details summary {
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    list-style: none; /* Oculta la flecha default si es necesario */
+}
+
+.filtro-details summary::-webkit-details-marker {
+    display: none; /* Oculta la flecha en WebKit */
+}
+
+.filtro-details[open] summary {
+    background-color: #C1A57B;
+    color: #222831;
 }
 
 .filtro-checkboxes {
+    padding: 8px;
     display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 5px;
 }
 
 .filtro-checkboxes label {
-    color: white;
-    font-size: 14px;
     display: flex;
     align-items: center;
     gap: 5px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.filtro-checkboxes input[type="checkbox"] {
+    accent-color: #C1A57B;
 }
 
 /* LAYOUT PRINCIPAL */
@@ -55,10 +87,10 @@ body {
     flex: 1;
     min-height: 100vh;
     min-width:100%;
-    /* position: fixed; */
     top:45px;
     height: calc(100vh - 45px); /* ocupa todo el alto menos el menú */
     min-width: 100%;
+    padding-top: 60px; /* Margen para evitar corte por el menú fijo */
 }
 
 .contenedor-imagen {
@@ -102,6 +134,31 @@ body {
     box-sizing: border-box;
     margin: 10px;
     cursor: grab;
+    position: relative;
+}
+
+.tarjeta.bioinspirado::before {
+    content: "Bioinspirado";
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: green;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.tarjeta.normal::before {
+    content: "Normal";
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: blue;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
 }
 
 .tarjeta:hover {
@@ -136,20 +193,25 @@ body {
 }
 
 .propiedades-ejecucion {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
     background-color: #C1A57B;
     border-radius: 6px;
+    padding: 5px;
+    overflow-x: auto;
 }
 
-.Propiedad {
-    padding: 3px;
-    border-radius: 8px;
-    flex: 1 2 auto;
-    margin: 3px;
-    justify-content: space-between;
+.prop-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.prop-table td {
+    padding: 5px;
+    border-bottom: 1px solid rgba(255,255,255,0.3);
+}
+
+.prop-table td:first-child {
+    font-weight: bold;
+    width: 50%;
 }
 
 /* TARJETAS ESPECIALES (IZQUIERDA) */

@@ -111,7 +111,7 @@ if __name__ == "__main__":
     estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
                         ruta_salida=ruta_salida, funcion_calculo_error=ssim,
                         funcion_preprocesado=todas_las_funciones_preprocesado,
-                        funcion_resolucion=[obtener_camino, obtener_camino_con_error_total],
+                        funcion_resolucion=[obtener_camino],
                         funcion_postOpt=no_reoptimizar,
                         ruta_a_la_imagen=todas_las_imagenes, numero_de_pines=256,
                         itereaciones_re_optimizado= 0, decremento_error_minimo=0.000001,

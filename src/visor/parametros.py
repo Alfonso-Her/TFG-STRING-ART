@@ -24,6 +24,8 @@ mapaJson = {
     "ruta_imagen_error_preresolutor":"ruta_imagen_error_preresolutor",
     "ruta_imagen_error_post_resolutor":"ruta_imagen_post_resolutor",
     "funciones_usadas":"funciones_usadas",
-    
-
+    "Prob_mutar_gen":"probabilidad_mutacion_gen",
+    "cantidad_toreno":"cantidad_torneo",
+    "probabilidad_cruce":"probabilidad_cruce",
+    "Hall_Fama": "elitismo_size"
 }

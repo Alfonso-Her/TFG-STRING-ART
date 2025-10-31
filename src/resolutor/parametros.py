@@ -34,6 +34,7 @@ class ReturnResolutor(TypedDict, total=False):
     imagen_preprocesada: ndarray
     imagen_error_preresolutor: ndarray
     imagen_error_post_resolutor: ndarray
-
-
-    
+    probabilidad_mutacion_gen:float = 0.
+    cantidad_torneo:int = 0
+    probabilidad_cruce:float = 0.
+    elitismo_size:int = 0

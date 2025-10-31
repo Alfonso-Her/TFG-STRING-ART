@@ -30,6 +30,18 @@ def validacionesSaltoCaso(paquete_de_parametros):
                 return "Has introducido un peso de linea erroneo"
     return ""
 
+def agregar_datos_bioinspirados(datos_totales):
+    actualizacion = {}
+    if "funcion_resolucion" in datos_totales:
+        if "AG" in datos_totales["funcion_resolucion"].__name__.upper():
+            actualizacion.update({
+                "Prob_mutar_gen":datos_totales["probabilidad_mutacion_gen"],
+                "cantidad_toreno":datos_totales["cantidad_torneo"],
+                "probabilidad_cruce":datos_totales["probabilidad_cruce"],
+                "Hall_Fama": datos_totales["elitismo_size"]
+            })
+    datos_totales.update(actualizacion)
+
 def tuberia_resolucion(paquete_argumentos,output_dir):
     inicio = time()
     datos_totales= {}
@@ -52,7 +64,7 @@ def tuberia_resolucion(paquete_argumentos,output_dir):
     # PREPROCESADO--------------------------------------------------------------------
     try:
         nombre_foto_con_ext = args_preprocesado["ruta_a_la_imagen"].split("/")[-1].split(".")
-
+        nombre_funcion_error = args_preprocesado["funcion_calculo_error"].__name__
         datos_preprocesados = args_preprocesado["funcion_preprocesado"](**args_preprocesado)
 
         datos_totales.update({"imagen_original" :".".join(nombre_foto_con_ext)})
@@ -130,6 +142,7 @@ def tuberia_resolucion(paquete_argumentos,output_dir):
     fin = time()
     
     try:
+    
         datos_totales.update({
             "secuencia_pines" : datos_totales["secuencia_pines"].tolist(),
             "lineas_usadas" : len(datos_totales["secuencia_pines"].tolist())-1,
@@ -139,10 +152,13 @@ def tuberia_resolucion(paquete_argumentos,output_dir):
             "verbose": str(True) if "verbose" in args_resolucion and args_resolucion["verbose"] else str(False),
             "funciones_usadas": ", ".join([args_preprocesado["funcion_preprocesado"].__name__,args_resolucion["funcion_resolucion"].__name__,
                                             args_reconstruccion["funcion_reconstruccion"].__name__,args_postOpt["funcion_postOpt"].__name__,
-                                            args_resolucion["funcion_calculo_error"].__name__]),
-
+                                            args_resolucion["funcion_calculo_error"].__name__ , nombre_funcion_error]),
+            "Prob_mutar_gen":0,
+            "cantidad_toreno":0,
+            "probabilidad_cruce":0,
+            "Hall_Fama": 0
         })
-
+        agregar_datos_bioinspirados(datos_totales)
         if "verbose" in args_preprocesado and args_preprocesado["verbose"]:
 
             datos_totales.update({

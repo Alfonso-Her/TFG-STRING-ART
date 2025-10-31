@@ -30,4 +30,13 @@ def tratar_json(datos_totales):
         Renombra para que cuadre con el codigo de index.html
         usando mapaJson como esquema 
     """
-    return {k:datos_totales[v] for k,v in mapaJson.items()}
+    diccionario = {}
+    
+    for k,v in mapaJson.items():
+        valor = 0
+        print(k,v,datos_totales)
+        if v in datos_totales:
+            valor = datos_totales[v]
+        diccionario.update({k:valor})
+
+    return diccionario
