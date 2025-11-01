@@ -34,7 +34,6 @@ def tratar_json(datos_totales):
     
     for k,v in mapaJson.items():
         valor = 0
-        print(k,v,datos_totales)
         if v in datos_totales:
             valor = datos_totales[v]
         diccionario.update({k:valor})

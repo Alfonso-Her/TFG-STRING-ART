@@ -9,7 +9,7 @@ from preprocesado import ParametrosPreprocesado,ReturnPreprocesado,\
 
 from resolutor import ParametrosResolucion,ReturnResolutor,\
                         obtener_camino, obtener_camino_con_error_total,\
-                        obtener_camino_ag
+                        obtener_camino_ag, obtener_camino_ag_con_semilla
 
 from postOpt import ParametrosPostOpt,ReturnPostOpt,\
                     no_reoptimizar, cambio_pin_medio
@@ -83,7 +83,7 @@ def probar_funciones_resolutoras_lista_de_errores(ruta_salida:str, lista_funcion
 if __name__ == "__main__":
 
     np.set_printoptions(threshold=2)
-    nombreEstudio = "refactorizacionPreprocesado"
+    nombreEstudio = "GAconSemillaPC80E5T5M10I100G15"
     ruta_salida = f"../ejemplos/local/{nombreEstudio}"
     todas_las_imagenes = ["../ejemplos/ae300.jpg","../ejemplos/acue.jpg","../ejemplos/cervantesColor.jpg"]
     todas_las_funciones_error = [mse, mae, rmse,ssim]
@@ -108,28 +108,34 @@ if __name__ == "__main__":
     # revisar_estudio(output_dir=Path("../ejemplos/local/Version que no respeta AG con 500 poblaciones resto default Version que no respeta HoF/"))
     # revisar_estudio(output_dir=Path("../ejemplos/local/Version que no respeta HoF AG_con_750_poblaciones_250_individuos_mutacion_3_elitismo_3_resto_default/"))
 
-    estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
-                        ruta_salida=ruta_salida, funcion_calculo_error=ssim,
-                        funcion_preprocesado=todas_las_funciones_preprocesado,
-                        funcion_resolucion=[obtener_camino],
-                        funcion_postOpt=no_reoptimizar,
-                        ruta_a_la_imagen=todas_las_imagenes, numero_de_pines=256,
-                        itereaciones_re_optimizado= 0, decremento_error_minimo=0.000001,
-                        peso_de_linea=[20], verbose= True)
-
     # estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
-    #                              ruta_salida=ruta_salida,
-    #                              funcion_calculo_error=[mse,rmse,mae],
-    #                             #  marcar_bordes=[True,False],
-    #                              funcion_preprocesado= tuberia_preprocesado_bresenham,
-    #                              funcion_resolucion=[obtener_camino,obtener_camino_ag],
-    #                              numero_generaciones=150,
-    #                              cantidad_poblacion=250, 
-    #                              elitismo_size = 10,
-    #                              cantidad_torneo= 6,
-    #                              funcion_postOpt=no_reoptimizar,
-    #                              ruta_a_la_imagen=todas_las_imagenes[0],
-    #                              numero_de_pines=256,
-    #                              maximo_lineas=4000,
-    #                              peso_de_linea=20,
+    #                     ruta_salida=ruta_salida, funcion_calculo_error=ssim,
+    #                     funcion_preprocesado=todas_las_funciones_preprocesado,
+    #                     funcion_resolucion=[obtener_camino],
+    #                     funcion_postOpt=no_reoptimizar,
+    #                     ruta_a_la_imagen=todas_las_imagenes, numero_de_pines=256,
+    #                     itereaciones_re_optimizado= 0, decremento_error_minimo=0.000001,
+    #                     peso_de_linea=[20], verbose= True)
+
+    estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
+                                 ruta_salida=ruta_salida,
+                                 funcion_calculo_error=[mse],
+                                #  marcar_bordes=[True,False],
+                                 funcion_preprocesado= tuberia_preprocesado_bresenham,
+                                 funcion_resolucion=[obtener_camino,obtener_camino_ag_con_semilla],
+                                 numero_generaciones=15,
+                                 cantidad_poblacion=100, 
+                                 probabilidad_cruce=0.8,
+                                 probabilidad_mutacion=0.1,
+                                 elitismo_size = 5,
+                                 cantidad_torneo= 5,
+                                 funcion_postOpt=no_reoptimizar,
+                                 ruta_a_la_imagen=todas_las_imagenes[0],
+                                 numero_de_pines=256,
+                                 maximo_lineas=4000,
+                                 peso_de_linea=20,
+                                 verbose= True)
+    
+    # estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
+    #                              ruta_a_la_imagen=todas_las_imagenes[1], funcion_preprocesado=tuberia_preprocesado_bresenham,
     #                              verbose= True)

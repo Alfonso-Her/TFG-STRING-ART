@@ -67,7 +67,7 @@ def tuberia_preprocesado_bresenham(ruta_a_la_imagen:Path, numero_de_pines:int = 
                          distancia_minima:int = 0, filtro_bordes_inferior:int =150,
                          pasar_a_grises:bool = True, filtro_bordes_superior:int = 190,
                          redimensionar:bool = False, recortar:bool = True,
-                         mascara_circular:bool = True, marcar_bordes:bool = True,
+                         mascara_circular:bool = True, marcar_bordes:bool = False,
                          **kwargs:Unpack[ParametrosPreprocesado]) -> ReturnPreprocesado:
     
     imagen = cv2.imread(ruta_a_la_imagen)

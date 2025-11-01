@@ -11,7 +11,7 @@ from .imagen import preprocesar_imagen
 
 def construir_vector_imagen(img:np.ndarray)->np.ndarray:
 
-    # No pasamos a escala de grises TODO hacer que esto funcione bien
+
     if len(img.shape)==3:
         return (255-img[:,:,2].flatten()).astype(np.float64)
     # Estamos en escala de grises

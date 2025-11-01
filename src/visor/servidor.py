@@ -7,7 +7,7 @@ import socketserver
 import threading
 import webbrowser
 
-def lanzar_servidor_y_web(output_dir: Path, port: int = 8080):
+def lanzar_servidor_y_web(output_dir: Path, port: int = 8085):
     """
     Lanza un servidor HTTP simple en la carpeta `output_dir`
     y mantiene el proceso activo hasta que el usuario lo cierre.

@@ -9,129 +9,18 @@ from multiprocessing import Pool
 from .guardar import guardar_checkpoint,guardar_checkpoint_final,\
                     cargar_checkpoint,limpiar_checkpoints_antiguos,\
                     crear_directorio_temporal
+
+from .genetico import _crear_funcion_error, reparar_individuo,inicializar_ag
 from ..parametros import ParametrosResolucion,ReturnResolutor
 from ..utils import secuencia_pines_a_error
-
+from ..resolutor import obtener_camino
 from calcular_error import mse
 
 
-def _crear_funcion_error(secuencia_pines:list[int],
-                         error_acumulado:np.ndarray,
-                         linea_cache_y:np.ndarray,
-                         linea_cache_x:np.ndarray,
-                         ancho:int,
-                         numero_de_pines,peso_de_linea:int,
-                         funcion_calculo_error:Callable[[np.ndarray],np.float64] = mse):
-    """
-        Dada la imagen del error y una solucion evalua la solucion mediante funcion_calculo_error
-        devuelve una tupla error,_ por necesidad de cudrar tipos con la API de DEAP
-    """
-    error = funcion_calculo_error(secuencia_pines_a_error(secuencia_pines,
-                                                         error_acumulado.copy(),
-                                                         linea_cache_y,
-                                                         linea_cache_x,
-                                                         ancho,
-                                                         numero_de_pines,
-                                                         peso_de_linea))
-    return (error,)
 
 
 
-def reparar_individuo(ind: list[int], numero_de_pines: int, dist_min: int) -> list[int]:
-    """
-    Repara secuencia post-mutación/cruce, ajustando pines inválidos secuencialmente.
-    """
-    for i in range(1, len(ind)):
-        dist = min(abs(ind[i] - ind[i-1]), numero_de_pines - abs(ind[i] - ind[i-1]))
-        while dist < dist_min:
-            ind[i] = random.choice([p for p in range(numero_de_pines) if min(abs(p - ind[i-1]), numero_de_pines - abs(p - ind[i-1])) >= dist_min])
-            dist = min(abs(ind[i] - ind[i-1]), numero_de_pines - abs(ind[i] - ind[i-1]))
-    return ind
-
-
-def inicializar_ag(funcion_evaluacion: Callable[[list[int]],Tuple[np.float64,None]],
-                   numero_de_pines:int = 256,
-                   maximo_lineas:int=4000,
-                   distancia_minima:int = 0,
-                   probabilidad_mutacion_gen: float = 0.3,
-                   cantidad_torneo: int = 3
-                   ) -> base.Toolbox:
-    """
-        Configuramos la API para que nos permita resolver nuestro problema,
-        para ello lo que hacemos es definir cada elemento en una interfaz de
-        alto nivel
-    """
-    try:
-        creator.create("FitnessMin",base.Fitness, weights=(-1.0,))
-        creator.create("Individuo", list, fitness=creator.FitnessMin)
-    except Exception:
-        pass # por si acaso multiples llamadas a incializar_ag no es un error se reutilizan
-
-    toolbox = base.Toolbox()
-
-  
-
-    def crear_individuo_con_restrucciones(maximo_lineas:int,
-                                      numero_de_pines:int,
-                                        distancia_minima:int,
-                                        ):
-        longitud = random.randint(maximo_lineas//2,maximo_lineas)
-
-        pin_actual = random.randint(0,numero_de_pines-1)
-        
-        individuo = [pin_actual] #todas las sol empizan en 0
-
-        for _ in range(longitud):
-            # Get available pins based on constraints
-            pines_disponibles = [p for p in range(numero_de_pines) if min(abs(pin_actual-p), numero_de_pines - abs(pin_actual-p))>distancia_minima] 
-            
-            if not pines_disponibles:
-                pines_disponibles = [p for p in range(numero_de_pines) if p != pin_actual]
-                
-            siguiente_pin = random.choice(pines_disponibles)
-            individuo.append(siguiente_pin)
-            pin_actual = siguiente_pin
-        
-        return creator.Individuo(individuo)
-    
-    toolbox.register("semilla",creator.Individuo)
-    # Definimos un individuo como una secuencia de cromosomas
-    toolbox.register("individuo",
-                     crear_individuo_con_restrucciones,
-                     maximo_lineas=maximo_lineas,
-                     numero_de_pines=numero_de_pines,
-                     distancia_minima=distancia_minima)
-
-    # Definimos una poblacion como un conjunto de indivuduos
-    toolbox.register("poblacion", tools.initRepeat, list, toolbox.individuo)
-
-
-    # Definimos una funcion para medir que tan buenas son nuestras soluciones
-    toolbox.register("evaluar",funcion_evaluacion)
-
-    # Definimos operaciones clave en el algoritmo genetico
-
-    def mutar_reparando(ind:list[int]):
-        ind, = tools.mutUniformInt(ind, low=0, up=numero_de_pines-1, indpb=probabilidad_mutacion_gen)
-        reparar_individuo(ind, numero_de_pines, distancia_minima)
-        del ind.fitness.values
-        return ind,
-
-    def aparear_reparado(ind1, ind2):
-        ind1, ind2 = tools.cxTwoPoint(ind1, ind2)
-        reparar_individuo(ind1, numero_de_pines, distancia_minima)
-        reparar_individuo(ind2, numero_de_pines, distancia_minima)
-        del ind1.fitness.values
-        del ind2.fitness.values
-        return ind1, ind2
-    
-    toolbox.register("aparear", aparear_reparado)
-    toolbox.register("mutar",
-                     mutar_reparando)
-    toolbox.register("seleccionar", tools.selTournament, tournsize=cantidad_torneo)
-    return toolbox
-
-def obtener_camino_ag(linea_cache_x:np.ndarray,
+def obtener_camino_ag_con_semilla(linea_cache_x:np.ndarray,
                     linea_cache_y:np.ndarray,
                     ancho:int,
                     alto:int,
@@ -142,6 +31,7 @@ def obtener_camino_ag(linea_cache_x:np.ndarray,
                     numero_de_pines:int = 256,
                     maximo_lineas:int= 4000,
                     peso_de_linea:int = 20,
+                    numero_de_pines_recientes_a_evitar:int=5,
                     verbose:bool = False,
                     reanudar:bool = False,
                     frecuencia_checkpoint:int = 100,
@@ -150,7 +40,7 @@ def obtener_camino_ag(linea_cache_x:np.ndarray,
                     elitismo_size:int = 1,
                     numero_generaciones: int = 50,
                     probabilidad_cruce: float = 0.7,
-                    probabilidad_mutacion: float = 0.2,
+                    probabilidad_mutacion: float = 0.05,
                     cantidad_torneo: int = 3,
                     **kwargs:Unpack[ParametrosResolucion])->ReturnResolutor:
     
@@ -172,7 +62,18 @@ def obtener_camino_ag(linea_cache_x:np.ndarray,
     
     directorio_checkpoints = crear_directorio_temporal(ruta_a_resultado)
     generacion_inicial=0
-    poblacion = toolbox.poblacion(n= cantidad_poblacion)
+    poblacion = toolbox.poblacion(n= cantidad_poblacion-1)
+    poblacion.append(toolbox.semilla((obtener_camino(linea_cache_x=linea_cache_x,
+                    linea_cache_y=linea_cache_y,
+                    ancho=ancho,
+                    alto=alto,
+                    vector_de_la_imagen=vector_de_la_imagen,
+                    numero_de_pines=numero_de_pines,
+                    maximo_lineas=maximo_lineas,
+                    distancia_minima=distancia_minima,
+                    peso_de_linea=peso_de_linea,
+                    numero_de_pines_recientes_a_evitar=numero_de_pines_recientes_a_evitar,
+                    )["secuencia_pines"].tolist())))
     hall_of_fame  = tools.HallOfFame(maxsize=elitismo_size)
     logbook = tools.Logbook()
     
@@ -215,14 +116,6 @@ def obtener_camino_ag(linea_cache_x:np.ndarray,
                 for ind, fit in zip(individuos_invalidos, fitnesses):
                     ind.fitness.values = fit
             
-            # Usar y actualizar hall of fame
-            poblacion.sort(key=lambda ind: ind.fitness.values[0]) 
-            for i, elite in enumerate(hall_of_fame):
-                poblacion[-1 - i] = toolbox.clone(elite)
-
-
-            hall_of_fame.update(poblacion)
-            
             
             # Registrar estadísticas
             record = stats.compile(poblacion)
@@ -234,8 +127,36 @@ def obtener_camino_ag(linea_cache_x:np.ndarray,
                       f"Min: {record['min']:.6f} | "
                       f"Avg: {record['avg']:.6f} | "
                       f"Max: {record['max']:.6f}")
+      
+            hall_of_fame.update(poblacion)
+
+            # Si es la última generación, no generar descendencia
+            if gen == numero_generaciones - 1:
+                break
             
             
+            # Seleccionar siguiente generación
+            descendencia = toolbox.seleccionar(poblacion, len(poblacion)-len(hall_of_fame))
+            descendencia = list(toolbox.map(toolbox.clone, descendencia))
+            
+            
+            # Aplicar cruce
+            for hijo1, hijo2 in zip(descendencia[::2], descendencia[1::2]):
+                if random.random() < probabilidad_cruce:
+                    toolbox.aparear(hijo1, hijo2)
+            
+            
+            # Aplicar mutación
+            for mutante in descendencia:
+                if random.random() < probabilidad_mutacion:
+                    toolbox.mutar(mutante)
+            
+            elites = [toolbox.clone(ind) for ind in hall_of_fame]
+            descendencia.extend(elites)  
+
+            # Reemplazar población
+            poblacion[:] = descendencia
+
             # Guardar checkpoint periódicamente
             if (gen + 1) % frecuencia_checkpoint == 0:
                 ruta_ckp= guardar_checkpoint(
@@ -254,31 +175,6 @@ def obtener_camino_ag(linea_cache_x:np.ndarray,
                     mantener=mantener_checkpoints
                 )
             
-            # Si es la última generación, no generar descendencia
-            if gen == numero_generaciones - 1:
-                break
-            
-            
-            # Seleccionar siguiente generación
-            descendencia = toolbox.seleccionar(poblacion, len(poblacion))
-            descendencia = list(toolbox.map(toolbox.clone, descendencia))
-            
-            
-            # Aplicar cruce
-            for hijo1, hijo2 in zip(descendencia[::2], descendencia[1::2]):
-                if random.random() < probabilidad_cruce:
-                    toolbox.aparear(hijo1, hijo2)
-            
-            
-            # Aplicar mutación
-            for mutante in descendencia:
-                if random.random() < probabilidad_mutacion:
-                    toolbox.mutar(mutante)
-            
-
-            # Reemplazar población
-            poblacion[:] = descendencia
-
         
         print("[AG] Evolución completada exitosamente")
         

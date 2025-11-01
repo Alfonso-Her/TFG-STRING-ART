@@ -3,7 +3,7 @@ from pathlib import Path
 import shutil
 from .servidor import lanzar_servidor_y_web
 
-def crear_web_con_dir(output_dir:Path, ruta_a_web:Path):
+def crear_web_con_dir(output_dir:Path, ruta_a_web:Path ,puerto :int):
     origen = ruta_a_web.resolve()
     destino = output_dir.resolve()
 
@@ -23,4 +23,4 @@ def crear_web_con_dir(output_dir:Path, ruta_a_web:Path):
         else:
             # Copiar archivo individual como index.html
             shutil.copy2(item, destino_item)
-    lanzar_servidor_y_web(output_dir=output_dir)
+    lanzar_servidor_y_web(output_dir=output_dir, port = puerto)

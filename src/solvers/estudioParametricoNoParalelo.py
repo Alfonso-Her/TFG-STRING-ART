@@ -85,7 +85,7 @@ def construirParametros(**kwargs):
 
     return parametros_totales
 
-def estudioParametrico(output_dir:Path, estudio_web:bool= True,
+def estudioParametrico(output_dir:Path, estudio_web:bool= True, puerto:int = 8080,
                        continuacion_estudio:bool = False,
                        funcion_preprocesado:Callable[[ParametrosPreprocesado], ReturnPreprocesado] = tuberia_preprocesado,
                        funcion_resolucion:Callable[[ParametrosResolucion, ReturnPreprocesado], ReturnResolutor] = obtener_camino,
@@ -143,7 +143,7 @@ def estudioParametrico(output_dir:Path, estudio_web:bool= True,
 
     if estudio_web:
         print(output_dir)
-        crear_web_con_dir(output_dir=output_dir, ruta_a_web=Ruta_a_web)
+        crear_web_con_dir(output_dir=output_dir, ruta_a_web=Ruta_a_web, puerto = puerto)
     
     
 

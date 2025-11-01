@@ -62,7 +62,7 @@ def preprocesar_imagen( imagen:np.ndarray, filtro_bordes_inferior:int =150,
                          pasar_a_grises:bool = True, filtro_bordes_superior:int = 190,
                          redimensionar:bool = False, recortar:bool = True,
                          mascara_circular:bool = True, marcar_bordes:bool = True) -> np.ndarray: 
-    
+
     if pasar_a_grises:
         imagen = pasar_img_a_grises(imagen)
 

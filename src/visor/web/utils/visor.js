@@ -30,7 +30,7 @@ function crearTarjetas(item) {
     tarjeta.className = "tarjeta";
 
     // Detectar si es bioinspirado (basado en parámetros genéticos)
-    if (item.Prob_mutar_gen > 0 || item.probabilidad_cruce > 0 || item.cantidad_toreno > 0 || item.Hall_Fama > 0) {
+    if (item.funciones_usadas.toUpperCase().includes("AG")) {
         tarjeta.classList.add('bioinspirado');
     } else {
         tarjeta.classList.add('normal');
@@ -53,7 +53,7 @@ function crearTarjetas(item) {
     textoImagen.textContent = "Imagen: resultado";
     divImagen.appendChild(textoImagen);
 
-    // Propiedades de ejecución (solo las visibles) - Usando tabla como en Opción 3
+    // Propiedades de ejecución (solo las visibles)
     const divPropiedadesEjecucion = document.createElement("div");
     divPropiedadesEjecucion.className = "propiedades-ejecucion";
 

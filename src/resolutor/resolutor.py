@@ -32,44 +32,49 @@ def obtener_camino(linea_cache_x:np.ndarray,linea_cache_y:np.ndarray,
 
     for i in range(maximo_lineas):
         # Restauramos variables para cada linea a pintar
-        mejor_pin = -1
-        error_eliminado_en_la_linea = np.float64(0)
-        error_maximo = np.float64(0)
+        encontrado = False
+        while not encontrado:
+            mejor_pin = -1
+            error_eliminado_en_la_linea = np.float64(0)
+            error_maximo = np.float64(0)
 
-        for desfase_desde_pin in range(distancia_minima,numero_de_pines-distancia_minima):
-            pin_a_probar = (pin_actual + desfase_desde_pin) % numero_de_pines
-            if pin_a_probar in pines_ya_recorridos:
-                continue
-            else:
-
+            for desfase_desde_pin in range(distancia_minima,numero_de_pines-distancia_minima):
+                pin_a_probar = (pin_actual + desfase_desde_pin) % numero_de_pines
+                if pin_a_probar in pines_ya_recorridos:
+                    continue
                 index_interno = pin_a_probar*numero_de_pines + pin_actual
                 error_eliminado_en_la_linea = get_line_err(error_acumulado, linea_cache_y[index_interno],linea_cache_x[index_interno], ancho)
                 if (error_eliminado_en_la_linea > error_maximo):
                     error_maximo = error_eliminado_en_la_linea
                     mejor_pin = pin_a_probar
                     index = index_interno
-        
-        if mejor_pin == -1:
-            if len(pines_ya_recorridos) > 0:
-                #Probamos con los pines que nos saltabamos por euristica
-                pines_ya_recorridos = pines_ya_recorridos[1:]
+            
+            if mejor_pin != -1:
+                encontrado=True
             else:
-                # evitamos quedarnos atrapados haciendo iteraciones que no salen del pin actual
+                if len(pines_ya_recorridos) > 0:
+                    #Probamos con los pines que nos saltabamos por euristica
+                    pines_ya_recorridos = pines_ya_recorridos[1:]
+                else:
+                    # evitamos quedarnos atrapados haciendo iteraciones que no salen del pin actual
+                    break
+            if not encontrado and mejor_pin ==-1:
                 break
+        
+        
+            secuencia_pines = np.append(secuencia_pines,mejor_pin)
+            coords1 = linea_cache_y[index]
+            coords2 = linea_cache_x[index]
 
-        secuencia_pines = np.append(secuencia_pines,mejor_pin)
-        coords1 = linea_cache_y[index]
-        coords2 = linea_cache_x[index]
+            for i in range(coords1.shape[0]):
+                v = int(coords1[i] * ancho +coords2[i])
+                error_acumulado[v] -= peso_de_linea 
 
-        for i in range(coords1.shape[0]):
-            v = int(coords1[i] * ancho +coords2[i])
-            error_acumulado[v] -= peso_de_linea 
-
-    
-        pines_ya_recorridos= np.append(pines_ya_recorridos, mejor_pin)
-        if len(pines_ya_recorridos)> numero_de_pines_recientes_a_evitar:
-            pines_ya_recorridos = pines_ya_recorridos[1:]
-        pin_actual = mejor_pin
+            
+            pines_ya_recorridos= np.append(pines_ya_recorridos, mejor_pin)
+            if len(pines_ya_recorridos)> numero_de_pines_recientes_a_evitar:
+                pines_ya_recorridos = pines_ya_recorridos[1:]
+            pin_actual = mejor_pin
 
     if "verbose" in kwargs and kwargs["verbose"]:
         imagen_error_post_resolutor = error_acumulado.reshape(-1,ancho)

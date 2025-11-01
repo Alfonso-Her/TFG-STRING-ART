@@ -35,8 +35,8 @@ def agregar_datos_bioinspirados(datos_totales):
     if "funcion_resolucion" in datos_totales:
         if "AG" in datos_totales["funcion_resolucion"].__name__.upper():
             actualizacion.update({
-                "Prob_mutar_gen":datos_totales["probabilidad_mutacion_gen"],
-                "cantidad_toreno":datos_totales["cantidad_torneo"],
+                "probabilidad_mutacion_gen":datos_totales["probabilidad_mutacion_gen"],
+                "cantidad_torneo":datos_totales["cantidad_torneo"],
                 "probabilidad_cruce":datos_totales["probabilidad_cruce"],
                 "Hall_Fama": datos_totales["elitismo_size"]
             })
@@ -70,8 +70,8 @@ def tuberia_resolucion(paquete_argumentos,output_dir):
         datos_totales.update({"imagen_original" :".".join(nombre_foto_con_ext)})
         datos_totales.update(datos_preprocesados)
 
-        if "verbose" in args_preprocesado and args_preprocesado["verbose"]:
-            print(" Del preprocesado obtenemos: ", datos_preprocesados)
+        # if "verbose" in args_preprocesado and args_preprocesado["verbose"]:
+        #     print(" Del preprocesado obtenemos: ", datos_preprocesados)
 
         print("\n Pasamos con exito el preprocesado")
     except Exception as e:
@@ -89,8 +89,8 @@ def tuberia_resolucion(paquete_argumentos,output_dir):
 
         datos_totales.update(datos_solucion_problema)
 
-        if "verbose" in args_resolucion and args_resolucion["verbose"]:
-            print(" Del resolutor obtenemos: ", datos_solucion_problema)
+        # if "verbose" in args_resolucion and args_resolucion["verbose"]:
+        #     print(" Del resolutor obtenemos: ", datos_solucion_problema)
 
         print("\n Pasamos con exito el proceso de resolucion ")
     except Exception as e:
@@ -110,8 +110,8 @@ def tuberia_resolucion(paquete_argumentos,output_dir):
 
         datos_totales.update(datos_solucion_problema_postOpt)
 
-        if "verbose" in args_resolucion and args_resolucion["verbose"]:
-            print(" Del resolutor obtenemos: ", datos_solucion_problema)
+        # if "verbose" in args_resolucion and args_resolucion["verbose"]:
+        #     print(" Del resolutor obtenemos: ", datos_solucion_problema)
 
         print("\n Pasamos con exito el proceso de post-optimizacion ")
     except Exception as e:
@@ -126,8 +126,8 @@ def tuberia_resolucion(paquete_argumentos,output_dir):
         datos_sol_final = args_reconstruccion["funcion_reconstruccion"](**datos_totales)
         datos_totales.update(datos_sol_final)
 
-        if "verbose" in args_resolucion and args_resolucion["verbose"]:
-            print("\n Del reconstructor obtenemos: ", datos_sol_final)
+        # if "verbose" in args_resolucion and args_resolucion["verbose"]:
+        #     print("\n Del reconstructor obtenemos: ", datos_sol_final)
 
         print(f"\n imagen guardada con exito en {datos_sol_final["ruta_resultado"]} !!!")
     except Exception as e:
@@ -152,9 +152,9 @@ def tuberia_resolucion(paquete_argumentos,output_dir):
             "verbose": str(True) if "verbose" in args_resolucion and args_resolucion["verbose"] else str(False),
             "funciones_usadas": ", ".join([args_preprocesado["funcion_preprocesado"].__name__,args_resolucion["funcion_resolucion"].__name__,
                                             args_reconstruccion["funcion_reconstruccion"].__name__,args_postOpt["funcion_postOpt"].__name__,
-                                            args_resolucion["funcion_calculo_error"].__name__ , nombre_funcion_error]),
-            "Prob_mutar_gen":0,
-            "cantidad_toreno":0,
+                                            nombre_funcion_error]),
+            "probabilidad_mutacion_gen":0,
+            "cantidad_torneo":0,
             "probabilidad_cruce":0,
             "Hall_Fama": 0
         })
@@ -176,5 +176,5 @@ def tuberia_resolucion(paquete_argumentos,output_dir):
         print(f"\n Error{e} mientras actualizabamos valores de la ejecucion para su estudio, \n llegamos a tener los valores: {datos_totales}")
         return 
     
-    
+    print("AAAAAAAAAAAAAAAAAAAAAAAAAAA", datos_totales["funcion_resolucion"].__name__.upper())
     return datos_totales

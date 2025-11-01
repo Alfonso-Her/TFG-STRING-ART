@@ -22,4 +22,5 @@ class EstudioParametros(ParametrosPreprocesado,
     funcion_postOpt: NotRequired[Callable[[ParametrosPostOpt,ReturnResolutor],ReturnPostOpt]]   
     funcion_reconstruccion: NotRequired[Callable[[ParametrosReconstruccion, ReturnPreprocesado, ReturnResolutor], ReturnReconstruccion]]
     funcion_calculo_error: NotRequired[Callable[[ndarray],float64]]
-    
+    # Configuracion del server
+    puerto: int    
