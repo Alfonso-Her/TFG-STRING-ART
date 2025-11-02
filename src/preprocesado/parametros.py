@@ -1,11 +1,11 @@
 from typing import TypedDict, NotRequired, Callable
 from pathlib import Path
-from numpy import ndarray,float64
+import numpy as np
 
 
 class ParametrosPreprocesado(TypedDict, total=False):
     funcion_preprocesado: NotRequired[Callable]
-    funcion_calculo_error: NotRequired[Callable[[ndarray],float64]]
+    funcion_calculo_error: NotRequired[Callable[[np.ndarray],np.float64]]
     ruta_a_la_imagen: str  
     numero_de_pines: NotRequired[int]
     distancia_minima: NotRequired[float]
@@ -21,11 +21,11 @@ class ParametrosPreprocesado(TypedDict, total=False):
 class ReturnPreprocesado(TypedDict, total=False):
     ruta_a_la_imagen: Path
     numero_de_pines: int 
-    funcion_calculo_error: NotRequired[Callable[[ndarray],float64]]
+    funcion_calculo_error: NotRequired[Callable[[np.ndarray],np.float64]]
     ancho:int
     alto:int 
-    vector_de_la_imagen:ndarray
-    posiciones_pines:ndarray
-    linea_cache_x:ndarray
-    linea_cache_y:ndarray
+    vector_de_la_imagen:np.ndarray
+    posiciones_pines:np.ndarray
+    linea_cache_x:np.ndarray
+    linea_cache_y:np.ndarray
     

@@ -9,6 +9,9 @@ class ParametrosReconstruccion(TypedDict, total=False):
     secuencia_pines : np.ndarray
     ruta_a_resultado: str
     funcion_reconstruccion: NotRequired[Callable]
+    imagen_preprocesada:np.ndarray
+    imagen_error_preresolutor:np.ndarray
+    imagen_error_post_resolutor:np.ndarray
     tamano_lado_px: NotRequired[int]
     ancho_clavos: NotRequired[float]
     ancho_de_hilo: NotRequired[float]

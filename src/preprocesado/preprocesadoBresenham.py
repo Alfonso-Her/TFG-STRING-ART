@@ -2,6 +2,8 @@ import numpy as np
 import cv2
 from typing import Callable, Tuple, Unpack
 from pathlib import Path
+import gc
+import objgraph
 
 from calcular_error import mse,ssim
 
@@ -69,7 +71,8 @@ def tuberia_preprocesado_bresenham(ruta_a_la_imagen:Path, numero_de_pines:int = 
                          redimensionar:bool = False, recortar:bool = True,
                          mascara_circular:bool = True, marcar_bordes:bool = False,
                          **kwargs:Unpack[ParametrosPreprocesado]) -> ReturnPreprocesado:
-    
+    cv2.ocl.setUseOpenCL(False)
+
     imagen = cv2.imread(ruta_a_la_imagen)
     imagen = cv2.flip(imagen,0)
     imagen = preprocesar_imagen(imagen, filtro_bordes_inferior,
@@ -82,13 +85,18 @@ def tuberia_preprocesado_bresenham(ruta_a_la_imagen:Path, numero_de_pines:int = 
 
   
     vector_de_la_imagen = construir_vector_imagen(imagen)
-    posiciones_pines =  calcular_posicion_pins(numero_de_pines, ancho = imagen.shape[1], alto = imagen.shape[0])
+    alto,ancho = imagen.shape
+    del imagen
+    posiciones_pines =  calcular_posicion_pins(numero_de_pines, ancho = ancho, alto = alto)
     cache_linea_x, cache_linea_y = precalcular_todas_las_posibles_lineas_bresenham(numero_de_pines,posiciones_pines[0],posiciones_pines[1],distancia_minima)
+    gc.collect()
+    objgraph.show_growth(limit=10)
+    cv2.destroyAllWindows()
     return ReturnPreprocesado(ruta_a_la_imagen=ruta_a_la_imagen,
                             numero_de_pines=numero_de_pines, 
                             funcion_calculo_error=funcion_calculo_error,
-                            ancho=imagen.shape[1],
-                            alto=imagen.shape[0],
+                            ancho=ancho,
+                            alto=alto,
                             vector_de_la_imagen=vector_de_la_imagen,
                             posiciones_pines=np.column_stack(posiciones_pines),
                             linea_cache_x=cache_linea_x,

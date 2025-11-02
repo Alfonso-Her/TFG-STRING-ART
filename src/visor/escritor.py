@@ -14,4 +14,5 @@ class Escritor_json(Process):
         while metadatos is not None:
             with self.lock:
                 concatenar_sobre_json(ruta=self.ruta,metadatos=metadatos)
+            del metadatos
             metadatos = self.cola.get()

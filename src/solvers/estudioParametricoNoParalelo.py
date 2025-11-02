@@ -20,7 +20,7 @@ from reconstruccion import ParametrosReconstruccion,ReturnReconstruccion,hilar_s
 from visor import concatenar_sobre_json,tratar_json,crear_web_con_dir, Escritor_json
 from calcular_error import mse
 
-from .parametros import EstudioParametros
+from .parametros import EstudioParametrosInput
 from .tuberia_resolucion import tuberia_resolucion
 
 parametros_preprocesado = list(ParametrosPreprocesado.__annotations__.keys())
@@ -87,6 +87,7 @@ def construirParametros(**kwargs):
 
     return parametros_totales
 
+
 def estudioParametrico(output_dir:Path, estudio_web:bool= True, puerto:int = 8080,
                        continuacion_estudio:bool = False,
                        funcion_preprocesado:Callable[[ParametrosPreprocesado], ReturnPreprocesado] = tuberia_preprocesado,
@@ -94,7 +95,7 @@ def estudioParametrico(output_dir:Path, estudio_web:bool= True, puerto:int = 808
                        funcion_postOpt: Callable[[ParametrosPostOpt, ReturnResolutor], ReturnPostOpt] = no_reoptimizar,
                        funcion_reconstruccion: Callable[[ParametrosReconstruccion, ReturnPreprocesado, ReturnResolutor], ReturnReconstruccion] = hilar_secuencia_svg,
                        funcion_calculo_error: Callable[[np.ndarray],np.float64] = mse,
-                       **kwargs:Unpack[EstudioParametros]):
+                       **kwargs:Unpack[EstudioParametrosInput]):
     """
         Esta funcion toma la imagen y los parametros dados en kwargs y va a construir todas las imagenes con esos parametros
         en caso de estudio_web arma un directorio con un index.html, un json, y todas las fotos, abriendo el index.html se veran
@@ -119,18 +120,14 @@ def estudioParametrico(output_dir:Path, estudio_web:bool= True, puerto:int = 808
 
     output_dir.mkdir( parents= True, exist_ok= True)
     ruta_json = output_dir.joinpath("datos.jsonl")
-    metadatos = []
 
-    if continuacion_estudio:
-        if ruta_json.exists():
-            with open(ruta_json, "r") as f:
-                metadatos = json.load(f)
  
     kwargs.update({"funcion_calculo_error":funcion_calculo_error,
                     "funcion_preprocesado": funcion_preprocesado,
                     "funcion_resolucion":funcion_resolucion,
                     "funcion_postOpt":funcion_postOpt,
-                    "funcion_reconstruccion":funcion_reconstruccion
+                    "funcion_reconstruccion":funcion_reconstruccion,
+                    "ruta_a_resultado":output_dir,
                    })
     # Conseguimos los parametros ya empaquetados para cada parte del problema
     lista_con_todos_los_parametros = construirParametros(**kwargs)

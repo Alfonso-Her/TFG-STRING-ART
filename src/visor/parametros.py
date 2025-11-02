@@ -1,10 +1,4 @@
 
-"""
-    En este fichero vamos a definir el mapa de el json que guardamos por ejeccucion
-    No usamos typed dict usamos un diccionario normal de python para poder definir:
-    clave_en_json = "clave_en_diccionario_datos_totales"
-"""
-
 
 mapaJson = {
     "imagen_original":"imagen_original",

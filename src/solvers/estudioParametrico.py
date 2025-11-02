@@ -18,7 +18,7 @@ from reconstruccion import ParametrosReconstruccion,ReturnReconstruccion,hilar_s
 from visor import concatenar_sobre_json,tratar_json, crear_web_con_dir
 from calcular_error import mse
 
-from .parametros import EstudioParametros
+from .parametros import EstudioParametrosInput
 from .tuberia_resolucion import tuberia_resolucion
 
 parametros_preprocesado = list(ParametrosPreprocesado.__annotations__.keys())
@@ -98,7 +98,7 @@ def estudioParametrico(output_dir:Path, estudio_web:bool= True,
                        funcion_postOpt: Callable[[ParametrosPostOpt, ReturnResolutor], ReturnPostOpt] = no_reoptimizar,
                        funcion_reconstruccion: Callable[[ParametrosReconstruccion, ReturnPreprocesado, ReturnResolutor], ReturnReconstruccion] = hilar_secuencia_svg,
                        funcion_calculo_error: Callable[[np.ndarray],np.float64] = mse,
-                       **kwargs:Unpack[EstudioParametros]):
+                       **kwargs:Unpack[EstudioParametrosInput]):
     """
         Esta funcion toma la imagen y los parametros dados en kwargs y va a construir todas las imagenes con esos parametros
         en caso de estudio_web arma un directorio con un index.html, un json, y todas las fotos, abriendo el index.html se veran

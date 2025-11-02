@@ -14,7 +14,7 @@ from resolutor import ParametrosResolucion,ReturnResolutor,\
 from postOpt import ParametrosPostOpt,ReturnPostOpt,\
                     no_reoptimizar, cambio_pin_medio
 
-from solvers import  EstudioParametros,estudioParametrico, estudioParametricoNoParalelo
+from solvers import  EstudioParametrosInput,estudioParametrico, estudioParametricoNoParalelo
 from calcular_error import mse, mae, rmse, ssim
 from visor import revisar_estudio
 
@@ -37,7 +37,7 @@ def obtener_imagenes_por_carpeta(ruta_carpeta:str):
 def probar_funcion_resolutora(ruta_salida:str,
                               funcion_resolucion: Callable[[ParametrosResolucion, ReturnPreprocesado], ReturnResolutor],
                               continuacion_estudio:bool = False,
-                              **kwargs:Unpack[EstudioParametros]):
+                              **kwargs:Unpack[EstudioParametrosInput]):
     parametros_basicos = {
         "ruta_a_la_imagen": "../ejemplos/ae300.jpg",
         "recortar": True,
@@ -57,7 +57,7 @@ def probar_funcion_resolutora(ruta_salida:str,
 def probar_funciones_resolutoras_lista_de_errores(ruta_salida:str, lista_funciones_error:list[Callable[[np.ndarray],np.float64]],
                               lista_funciones_resolutor: list[Callable[[ParametrosResolucion, ReturnPreprocesado], ReturnResolutor]],
                               continuacion_estudio:bool = False,
-                              **kwargs:Unpack[EstudioParametros]):
+                              **kwargs:Unpack[EstudioParametrosInput]):
     parametros_basicos = {
         "ruta_a_la_imagen": "../ejemplos/ae300.jpg",
         "recortar": True,
