@@ -156,8 +156,8 @@ if __name__ == "__main__":
     #                              maximo_lineas=500,
     #                              peso_de_linea=20,
     #                              verbose= True)
-    estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
-                        funcion_calculo_error=mse,
+    estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
+                        funcion_calculo_error=mse, puerto=8121, numero_procesos=2,
                         funcion_preprocesado=tuberia_preprocesado_bresenham,
                         funcion_resolucion=obtener_camino,
                         ruta_a_la_imagen=todas_las_imagenes,

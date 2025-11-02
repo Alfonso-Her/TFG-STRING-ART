@@ -4,7 +4,7 @@ import cv2
 import webbrowser
 
 from pathlib import Path
-from multiprocessing import Pool
+from multiprocessing import Pool, Queue, Lock, Manager
 from copy import deepcopy
 from numpy import ndarray
 from datetime import datetime
@@ -15,7 +15,7 @@ from preprocesado import ParametrosPreprocesado,ReturnPreprocesado,tuberia_prepr
 from resolutor import ParametrosResolucion,ReturnResolutor,obtener_camino
 from postOpt import ParametrosPostOpt,ReturnPostOpt, no_reoptimizar
 from reconstruccion import ParametrosReconstruccion,ReturnReconstruccion,hilar_secuencia_svg
-from visor import concatenar_sobre_json,tratar_json, crear_web_con_dir
+from visor import concatenar_sobre_json,tratar_json, crear_web_con_dir, Escritor_json
 from calcular_error import mse
 
 from .parametros import EstudioParametrosInput
@@ -27,12 +27,6 @@ parametros_postoprimizacion = list(ParametrosPostOpt.__annotations__.keys())
 parametros_reconstruccion = list(ParametrosReconstruccion.__annotations__.keys())
 
 
-
-parametros_a_guardar_json = ["imagen_original","numero_de_pines","secuencia_pines",
-                             "distancia_minima","maximo_lineas","lineas_usadas","peso_de_linea",
-                             "error_total","funcio_error","tiempo_ejecucion","ruta_resultado",
-                             "verbose","ruta_imagen_preprocesada","ruta_imagen_error_preresolutor",
-                             "ruta_imagen_error_post_resolutor", "funciones_usadas"]
 
 Ruta_a_web = Path("visor/web/index.html")
 
@@ -122,13 +116,8 @@ def estudioParametrico(output_dir:Path, estudio_web:bool= True,
 
     output_dir.mkdir( parents= True, exist_ok= True)
     ruta_json = output_dir.joinpath("datos.json")
-    metadatos = []
 
-    if continuacion_estudio:
-        if ruta_json.exists():
-            with open(ruta_json, "r") as f:
-                metadatos = json.load(f)
- 
+
     kwargs.update({"funcion_calculo_error":funcion_calculo_error,
                     "funcion_preprocesado": funcion_preprocesado,
                     "funcion_resolucion":funcion_resolucion,
@@ -138,17 +127,22 @@ def estudioParametrico(output_dir:Path, estudio_web:bool= True,
     # Conseguimos los parametros ya empaquetados para cada parte del problema
     lista_con_todos_los_parametros = construirParametros(**kwargs)
 
+    manager = Manager()
+    cola_metadatos = manager.Queue() #Cola gestionada para que no de problemas
+    lock_json = Lock()
+    escritor = Escritor_json(lock=lock_json,ruta=ruta_json,Cola_metadatos=cola_metadatos)
+    escritor.start()
     with Pool(processes=numero_procesos) as pool:
-        datos_ejecuciones = pool.starmap(func=tuberia_resolucion,
-                                         iterable=[(paquete_argumentos,output_dir)
-                                                    for paquete_argumentos in lista_con_todos_los_parametros])
+       pool.starmap(func=tuberia_resolucion,
+                    iterable=[(paquete_argumentos,output_dir,cola_metadatos)
+                            for paquete_argumentos in lista_con_todos_los_parametros])
     
-    metadatos = [tratar_json(datos_totales) for datos_totales in datos_ejecuciones]
+    cola_metadatos.put(None)
+    escritor.join()
 
     if estudio_web:
         crear_web_con_dir(output_dir=output_dir, ruta_a_web=Ruta_a_web)
-    
-    concatenar_sobre_json(ruta=ruta_json, metadatos=metadatos)
+
 
 ## TESTING
 

@@ -29,13 +29,6 @@ parametros_postoprimizacion = list(ParametrosPostOpt.__annotations__.keys())
 parametros_reconstruccion = list(ParametrosReconstruccion.__annotations__.keys())
 
 
-
-parametros_a_guardar_json = ["imagen_original","numero_de_pines","secuencia_pines",
-                             "distancia_minima","maximo_lineas","lineas_usadas","peso_de_linea",
-                             "error_total","funcio_error","tiempo_ejecucion","ruta_resultado",
-                             "verbose","ruta_imagen_preprocesada","ruta_imagen_error_preresolutor",
-                             "ruta_imagen_error_post_resolutor", "funciones_usadas"]
-
 Ruta_a_web = Path("visor/web/")
 
 def agregarValor(parametros_fijos,clave,valor):
@@ -137,8 +130,8 @@ def estudioParametrico(output_dir:Path, estudio_web:bool= True, puerto:int = 808
     escritor = Escritor_json(lock=lock_json,ruta=ruta_json,Cola_metadatos=cola_metadatos)
     escritor.start()
     for paquete_argumentos in lista_con_todos_los_parametros:
-        datos_totales = tuberia_resolucion(paquete_argumentos=paquete_argumentos,output_dir=output_dir)
-        cola_metadatos.put(tratar_json(datos_totales))
+       tuberia_resolucion(paquete_argumentos=paquete_argumentos,output_dir=output_dir,cola_metadatos=cola_metadatos)
+        
     cola_metadatos.put(None)
     escritor.join()
 

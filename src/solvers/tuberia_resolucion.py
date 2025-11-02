@@ -46,8 +46,8 @@ def agregar_datos_bioinspirados(datos_totales):
             })
     datos_totales.update(actualizacion)
 
-@profile
-def tuberia_resolucion(paquete_argumentos,output_dir):
+# @profile
+def tuberia_resolucion(paquete_argumentos,output_dir,cola_metadatos):
     inicio = time()
     hora_proceso = "_"+datetime.now().strftime("%d%m%Y_%H%M%S_%f")
     args_preprocesado, args_resolucion,\
@@ -184,6 +184,7 @@ def tuberia_resolucion(paquete_argumentos,output_dir):
     del datos_solucion_problema
     del datos_solucion_problema_postOpt
 
+    cola_metadatos.put(resultado)
     gc.collect()
     cv2.destroyAllWindows()
-    return resultado
+
