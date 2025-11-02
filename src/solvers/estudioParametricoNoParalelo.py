@@ -10,12 +10,14 @@ from numpy import ndarray
 from datetime import datetime
 from typing import Unpack, Callable
 from time import time
+from multiprocessing import Queue,Lock
+
 
 from preprocesado import ParametrosPreprocesado,ReturnPreprocesado,tuberia_preprocesado
 from resolutor import ParametrosResolucion,ReturnResolutor,obtener_camino
 from postOpt import ParametrosPostOpt,ReturnPostOpt, no_reoptimizar
 from reconstruccion import ParametrosReconstruccion,ReturnReconstruccion,hilar_secuencia_svg
-from visor import concatenar_sobre_json,tratar_json,crear_web_con_dir
+from visor import concatenar_sobre_json,tratar_json,crear_web_con_dir, Escritor_json
 from calcular_error import mse
 
 from .parametros import EstudioParametros
@@ -116,7 +118,7 @@ def estudioParametrico(output_dir:Path, estudio_web:bool= True, puerto:int = 808
         output_dir = Path(str(output_dir)+hora_proceso)
 
     output_dir.mkdir( parents= True, exist_ok= True)
-    ruta_json = output_dir.joinpath("datos.json")
+    ruta_json = output_dir.joinpath("datos.jsonl")
     metadatos = []
 
     if continuacion_estudio:
@@ -133,13 +135,15 @@ def estudioParametrico(output_dir:Path, estudio_web:bool= True, puerto:int = 808
     # Conseguimos los parametros ya empaquetados para cada parte del problema
     lista_con_todos_los_parametros = construirParametros(**kwargs)
 
-
+    cola_metadatos = Queue()
+    lock_json = Lock()
+    escritor = Escritor_json(lock=lock_json,ruta=ruta_json,Cola_metadatos=cola_metadatos)
+    escritor.start()
     for paquete_argumentos in lista_con_todos_los_parametros:
         datos_totales = tuberia_resolucion(paquete_argumentos=paquete_argumentos,output_dir=output_dir)
-        metadatos_ejecucion=tratar_json(datos_totales)
-        metadatos.append(metadatos_ejecucion)
-
-    concatenar_sobre_json(ruta=ruta_json, metadatos=metadatos)
+        cola_metadatos.put(tratar_json(datos_totales))
+    cola_metadatos.put(None)
+    escritor.join()
 
     if estudio_web:
         print(output_dir)

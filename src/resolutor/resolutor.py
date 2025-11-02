@@ -17,8 +17,8 @@ def obtener_camino(linea_cache_x:np.ndarray,linea_cache_y:np.ndarray,
     error_acumulado = vector_de_la_imagen
 
     if "verbose" in kwargs and kwargs["verbose"]:
-        imagen_preprocesada = vector_de_la_imagen.reshape(-1,ancho)
-        imagen_error_preresolutor = deepcopy(error_acumulado).reshape(-1,ancho)
+        imagen_preprocesada = vector_de_la_imagen.copy().reshape(-1,ancho)
+        imagen_error_preresolutor = error_acumulado.copy().reshape(-1,ancho)
 
     secuencia_pines =np.empty(0,dtype=int)
     secuencia_pines = np.append(secuencia_pines,0)

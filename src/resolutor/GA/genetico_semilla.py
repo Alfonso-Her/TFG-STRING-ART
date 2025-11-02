@@ -2,7 +2,7 @@ from deap import creator,base,tools,algorithms
 from typing import Unpack, Callable, Tuple
 import random
 import numpy as np
-
+import cv2
 from multiprocessing import Pool
 
 # from .visuales import imprimir_poblacion_pandas
@@ -44,10 +44,13 @@ def obtener_camino_ag_con_semilla(linea_cache_x:np.ndarray,
                     cantidad_torneo: int = 3,
                     **kwargs:Unpack[ParametrosResolucion])->ReturnResolutor:
     
+    
     #Creamos imagen error y inicializamos directorios y variables
-    error_acumulado = vector_de_la_imagen
+    error_acumulado = vector_de_la_imagen.copy()
+    imagen_preprocesada = vector_de_la_imagen.copy().reshape(-1,ancho)
+   
     funcion_evaluacion = lambda secuencia_solucion: _crear_funcion_error(secuencia_pines=secuencia_solucion,
-                                                                   error_acumulado=error_acumulado,
+                                                                   error_acumulado=error_acumulado.copy(),
                                                                    linea_cache_y=linea_cache_y,
                                                                    linea_cache_x=linea_cache_x,
                                                                    ancho= ancho,
@@ -209,14 +212,14 @@ def obtener_camino_ag_con_semilla(linea_cache_x:np.ndarray,
 
     imagen_error_final = secuencia_pines_a_error(
                             mejor_individuo,
-                            error_acumulado.copy(),
+                            error_acumulado,
                             linea_cache_y,
                             linea_cache_x,
                             ancho,
                             numero_de_pines,
                             peso_de_linea
                         )
-
+   
     guardar_checkpoint_final(
         directorio_checkpoints,
         list(mejor_individuo),
@@ -233,7 +236,7 @@ def obtener_camino_ag_con_semilla(linea_cache_x:np.ndarray,
             maximo_lineas=maximo_lineas,
             error_total=imagen_error_final,
             secuencia_pines=np.array(mejor_individuo),
-            imagen_preprocesada=vector_de_la_imagen.reshape(-1, ancho),
+            imagen_preprocesada=imagen_preprocesada,
             imagen_error_preresolutor=error_acumulado.reshape(-1, ancho),
             imagen_error_post_resolutor=imagen_error_final.reshape(-1, ancho)
         )

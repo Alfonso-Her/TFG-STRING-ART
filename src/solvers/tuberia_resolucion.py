@@ -1,7 +1,7 @@
 from pathlib import Path
 from time import time
 from datetime import datetime
-
+from memory_profiler import profile
 import cv2
 
 
@@ -41,7 +41,7 @@ def agregar_datos_bioinspirados(datos_totales):
                 "Hall_Fama": datos_totales["elitismo_size"]
             })
     datos_totales.update(actualizacion)
-
+@profile
 def tuberia_resolucion(paquete_argumentos,output_dir):
     inicio = time()
     datos_totales= {}
@@ -176,5 +176,4 @@ def tuberia_resolucion(paquete_argumentos,output_dir):
         print(f"\n Error{e} mientras actualizabamos valores de la ejecucion para su estudio, \n llegamos a tener los valores: {datos_totales}")
         return 
     
-    print("AAAAAAAAAAAAAAAAAAAAAAAAAAA", datos_totales["funcion_resolucion"].__name__.upper())
     return datos_totales

@@ -9,8 +9,8 @@ from preprocesado import ParametrosPreprocesado,ReturnPreprocesado,\
 
 from resolutor import ParametrosResolucion,ReturnResolutor,\
                         obtener_camino, obtener_camino_con_error_total,\
-                        obtener_camino_ag, obtener_camino_ag_con_semilla
-
+                        obtener_camino_ag, obtener_camino_ag_con_semilla\
+                        #obtener_camino_aco
 from postOpt import ParametrosPostOpt,ReturnPostOpt,\
                     no_reoptimizar, cambio_pin_medio
 
@@ -83,12 +83,12 @@ def probar_funciones_resolutoras_lista_de_errores(ruta_salida:str, lista_funcion
 if __name__ == "__main__":
 
     np.set_printoptions(threshold=2)
-    nombreEstudio = "GAconSemillaPC80E5T5M10I100G15"
+    nombreEstudio = "EjecucionMuchosParametrosIntro"
     ruta_salida = f"../ejemplos/local/{nombreEstudio}"
     todas_las_imagenes = ["../ejemplos/ae300.jpg","../ejemplos/acue.jpg","../ejemplos/cervantesColor.jpg"]
     todas_las_funciones_error = [mse, mae, rmse,ssim]
     todas_las_funciones_preprocesado = [tuberia_preprocesado, tuberia_preprocesado_bresenham]
-    todas_las_funciones_resolutoras = [obtener_camino, obtener_camino_con_error_total]
+    todas_las_funciones_resolutoras = [obtener_camino, obtener_camino_con_error_total, obtener_camino_ag_con_semilla, obtener_camino_ag]#, obtener_camino_aco]
     todas_las_funciones_postOpt = [no_reoptimizar,cambio_pin_medio]
 
     # estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
@@ -117,25 +117,53 @@ if __name__ == "__main__":
     #                     itereaciones_re_optimizado= 0, decremento_error_minimo=0.000001,
     #                     peso_de_linea=[20], verbose= True)
 
-    estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
-                                 ruta_salida=ruta_salida,
-                                 funcion_calculo_error=[mse],
-                                #  marcar_bordes=[True,False],
-                                 funcion_preprocesado= tuberia_preprocesado_bresenham,
-                                 funcion_resolucion=[obtener_camino,obtener_camino_ag_con_semilla],
-                                 numero_generaciones=15,
-                                 cantidad_poblacion=100, 
-                                 probabilidad_cruce=0.8,
-                                 probabilidad_mutacion=0.1,
-                                 elitismo_size = 5,
-                                 cantidad_torneo= 5,
-                                 funcion_postOpt=no_reoptimizar,
-                                 ruta_a_la_imagen=todas_las_imagenes[0],
-                                 numero_de_pines=256,
-                                 maximo_lineas=4000,
-                                 peso_de_linea=20,
-                                 verbose= True)
+    # estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
+    #                              ruta_salida=ruta_salida, puerto=8030,
+    #                              funcion_calculo_error=[mse],
+    #                             #  marcar_bordes=[True,False],
+    #                              funcion_preprocesado= tuberia_preprocesado_bresenham,
+    #                              funcion_resolucion=[obtener_camino,obtener_camino_ag,obtener_camino_ag_con_semilla],
+    #                              numero_generaciones=1500,
+    #                              cantidad_poblacion=300, 
+    #                              probabilidad_cruce=0.8,
+    #                              probabilidad_mutacion=0.15,
+    #                              elitismo_size = 3,
+    #                              cantidad_torneo= 5,
+    #                              funcion_postOpt=no_reoptimizar,
+    #                              ruta_a_la_imagen=todas_las_imagenes[0],
+    #                              numero_de_pines=256,
+    #                              maximo_lineas=3000,
+    #                              peso_de_linea=20,
+    #                              verbose= True)
     
     # estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
     #                              ruta_a_la_imagen=todas_las_imagenes[1], funcion_preprocesado=tuberia_preprocesado_bresenham,
     #                              verbose= True)
+
+    # estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= True,
+    #                              ruta_salida=ruta_salida, puerto=8020,
+    #                              funcion_preprocesado= tuberia_preprocesado_bresenham,
+    #                              funcion_resolucion=obtener_camino_aco,
+    #                              numero_de_hormigas = 5,
+    #                              alpha=1.0,
+    #                              beta=3.0,
+    #                              rho=0.2,
+    #                              q=1.0,
+    #                              iteraciones_aco=10,
+    #                              funcion_postOpt=no_reoptimizar,
+    #                              ruta_a_la_imagen=todas_las_imagenes,
+    #                              numero_de_pines=256,
+    #                              maximo_lineas=500,
+    #                              peso_de_linea=20,
+    #                              verbose= True)
+    estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
+                        funcion_calculo_error=mse,
+                        funcion_preprocesado=tuberia_preprocesado_bresenham,
+                        funcion_resolucion=obtener_camino,
+                        ruta_a_la_imagen=todas_las_imagenes,
+                        numero_de_pines=[128*k for k in range(1,2)],
+                        distancia_minima=[2*k for k in range(1,2)],
+                        numero_de_pines_recientes_a_evitar=[2*k for k in range(1,2)],
+                        maximo_lineas=[1000*k for k in range(1,2)],
+                        peso_de_linea=[10*k for k in range(1,2)],
+                        verbose= True)

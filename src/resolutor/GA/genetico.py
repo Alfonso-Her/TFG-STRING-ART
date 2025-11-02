@@ -2,6 +2,7 @@ from deap import creator,base,tools,algorithms
 from typing import Unpack, Callable, Tuple
 import random
 import numpy as np
+import cv2 
 
 from multiprocessing import Pool
 
@@ -26,8 +27,9 @@ def _crear_funcion_error(secuencia_pines:list[int],
         Dada la imagen del error y una solucion evalua la solucion mediante funcion_calculo_error
         devuelve una tupla error,_ por necesidad de cudrar tipos con la API de DEAP
     """
+
     error = funcion_calculo_error(secuencia_pines_a_error(secuencia_pines,
-                                                         error_acumulado.copy(),
+                                                         error_acumulado,
                                                          linea_cache_y,
                                                          linea_cache_x,
                                                          ancho,
@@ -126,8 +128,7 @@ def inicializar_ag(funcion_evaluacion: Callable[[list[int]],Tuple[np.float64,Non
         return ind1, ind2
     
     toolbox.register("aparear", aparear_reparado)
-    toolbox.register("mutar",
-                     mutar_reparando)
+    toolbox.register("mutar", mutar_reparando)
     toolbox.register("seleccionar", tools.selTournament, tournsize=cantidad_torneo)
     return toolbox
 
@@ -155,9 +156,9 @@ def obtener_camino_ag(linea_cache_x:np.ndarray,
                     **kwargs:Unpack[ParametrosResolucion])->ReturnResolutor:
     
     #Creamos imagen error y inicializamos directorios y variables
-    error_acumulado = vector_de_la_imagen
+    error_acumulado = vector_de_la_imagen.copy()
     funcion_evaluacion = lambda secuencia_solucion: _crear_funcion_error(secuencia_pines=secuencia_solucion,
-                                                                   error_acumulado=error_acumulado,
+                                                                   error_acumulado=error_acumulado.copy(),
                                                                    linea_cache_y=linea_cache_y,
                                                                    linea_cache_x=linea_cache_x,
                                                                    ancho= ancho,
@@ -215,14 +216,6 @@ def obtener_camino_ag(linea_cache_x:np.ndarray,
                 for ind, fit in zip(individuos_invalidos, fitnesses):
                     ind.fitness.values = fit
             
-            # Usar y actualizar hall of fame
-            poblacion.sort(key=lambda ind: ind.fitness.values[0]) 
-            for i, elite in enumerate(hall_of_fame):
-                poblacion[-1 - i] = toolbox.clone(elite)
-
-
-            hall_of_fame.update(poblacion)
-            
             
             # Registrar estadísticas
             record = stats.compile(poblacion)
@@ -234,8 +227,36 @@ def obtener_camino_ag(linea_cache_x:np.ndarray,
                       f"Min: {record['min']:.6f} | "
                       f"Avg: {record['avg']:.6f} | "
                       f"Max: {record['max']:.6f}")
+      
+            hall_of_fame.update(poblacion)
+
+            # Si es la última generación, no generar descendencia
+            if gen == numero_generaciones - 1:
+                break
             
             
+            # Seleccionar siguiente generación
+            descendencia = toolbox.seleccionar(poblacion, len(poblacion)-len(hall_of_fame))
+            descendencia = list(toolbox.map(toolbox.clone, descendencia))
+            
+            
+            # Aplicar cruce
+            for hijo1, hijo2 in zip(descendencia[::2], descendencia[1::2]):
+                if random.random() < probabilidad_cruce:
+                    toolbox.aparear(hijo1, hijo2)
+            
+            
+            # Aplicar mutación
+            for mutante in descendencia:
+                if random.random() < probabilidad_mutacion:
+                    toolbox.mutar(mutante)
+            
+            elites = [toolbox.clone(ind) for ind in hall_of_fame]
+            descendencia.extend(elites)  
+
+            # Reemplazar población
+            poblacion[:] = descendencia
+
             # Guardar checkpoint periódicamente
             if (gen + 1) % frecuencia_checkpoint == 0:
                 ruta_ckp= guardar_checkpoint(
@@ -253,33 +274,8 @@ def obtener_camino_ag(linea_cache_x:np.ndarray,
                     directorio_checkpoints,
                     mantener=mantener_checkpoints
                 )
-            
-            # Si es la última generación, no generar descendencia
-            if gen == numero_generaciones - 1:
-                break
-            
-            
-            # Seleccionar siguiente generación
-            descendencia = toolbox.seleccionar(poblacion, len(poblacion))
-            descendencia = list(toolbox.map(toolbox.clone, descendencia))
-            
-            
-            # Aplicar cruce
-            for hijo1, hijo2 in zip(descendencia[::2], descendencia[1::2]):
-                if random.random() < probabilidad_cruce:
-                    toolbox.aparear(hijo1, hijo2)
-            
-            
-            # Aplicar mutación
-            for mutante in descendencia:
-                if random.random() < probabilidad_mutacion:
-                    toolbox.mutar(mutante)
-            
 
-            # Reemplazar población
-            poblacion[:] = descendencia
 
-        
         print("[AG] Evolución completada exitosamente")
         
     except KeyboardInterrupt:

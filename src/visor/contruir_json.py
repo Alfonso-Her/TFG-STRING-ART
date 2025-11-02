@@ -4,7 +4,7 @@ import numpy as np
 from pathlib import Path
 from .parametros import mapaJson
 
-def concatenar_sobre_json(ruta: Path, metadatos:list):
+def concatenar_sobre_json(ruta: Path, metadatos:dict):
     def convert(o):
         if isinstance(o, np.integer):
             return int(o)
@@ -12,17 +12,21 @@ def concatenar_sobre_json(ruta: Path, metadatos:list):
             return float(o)
         if isinstance(o, np.ndarray):
             return o.tolist()
-        
-    if ruta.exists():
-        with ruta.open("r", encoding="utf-8") as f:
-            data = json.load(f)
-    else:
-        data = []
-    
-    data += metadatos
 
-    with ruta.open("w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=4,default=convert)
+    # Escribimos de vuelta la lista actualizada
+    with ruta.open("a", encoding="utf-8") as f:
+        json.dump(metadatos, f, ensure_ascii=False, indent=4, default=convert)  
+        f.write("\n") 
+    # if ruta.exists():
+    #     with ruta.open("r", encoding="utf-8") as f:
+    #         data = json.load(f)
+    # else:
+    #     data = []
+    
+    # data += metadatos
+
+    # with ruta.open("w", encoding="utf-8") as f:
+    #     json.dump(data, f, ensure_ascii=False, indent=4,default=convert)
 
 
 def tratar_json(datos_totales):
