@@ -11,7 +11,7 @@ from .parametros import ParametrosPostOpt, ReturnPostOpt
 def cambioPinMedio(error_acumulado:np.ndarray,secuencia_pines:List[int],
                    ancho:int, alto:int, numero_de_pines:int,
                    distancia_minima: int ,peso_de_linea: np.float64,
-                    linea_cache_x:np.ndarray,linea_cache_y:np.ndarray):
+                    linea_cache_x:list,linea_cache_y:list):
     """
         Recorremos toda la solucion obtenida sacando ternas de pines, buscamos obtener una mejor solucion replazando
         el pin del medio
@@ -70,7 +70,7 @@ def cambioPinMedio(error_acumulado:np.ndarray,secuencia_pines:List[int],
 
     return error_acumulado_local,secuencia_pines_local
 
-def cambio_pin_medio(linea_cache_x:np.ndarray,linea_cache_y:np.ndarray,
+def cambio_pin_medio(linea_cache_x:list,linea_cache_y:list,
                    ancho:int,alto:int,vector_de_la_imagen:np.ndarray,
                    secuencia_pines:List[int],error_total:np.ndarray,
                    imagen_preprocesada:np.ndarray, imagen_error_preresolutor: np.ndarray,

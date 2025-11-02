@@ -6,7 +6,7 @@ from ..utils import get_line_err
 
     
 def generar_grafo(numero_de_pines:int,error_acumulado:np.ndarray,distancia_minima:int,
-                  ancho:int,linea_cache_y:np.ndarray,linea_cache_x:np.ndarray)->nx.Graph:
+                  ancho:int,linea_cache_y:list,linea_cache_x:list)->nx.Graph:
     
     """
         Devuelve un grafo completo con todas las aristas y sus pesos calculados en funcion las

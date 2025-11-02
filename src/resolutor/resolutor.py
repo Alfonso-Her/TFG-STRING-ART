@@ -6,7 +6,7 @@ import cv2
 from .parametros import ReturnResolutor, ParametrosResolucion
 from .utils import get_line_err
 
-def obtener_camino(linea_cache_x:np.ndarray,linea_cache_y:np.ndarray,
+def obtener_camino(linea_cache_x:list,linea_cache_y:list,
                    ancho:int,alto:int,vector_de_la_imagen:np.ndarray,
                    numero_de_pines:int = 256 ,maximo_lineas:int= 4000,
                    distancia_minima:int = 0,peso_de_linea:int = 20,

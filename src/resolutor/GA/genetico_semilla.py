@@ -20,8 +20,8 @@ from calcular_error import mse
 
 
 
-def obtener_camino_ag_con_semilla(linea_cache_x:np.ndarray,
-                    linea_cache_y:np.ndarray,
+def obtener_camino_ag_con_semilla(linea_cache_x:list,
+                    linea_cache_y:list,
                     ancho:int,
                     alto:int,
                     vector_de_la_imagen:np.ndarray,

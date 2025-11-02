@@ -9,7 +9,7 @@ from .utils import agregar_lineas_al_error,eliminar_lineas_del_error
 
 
 def get_error_general(indice_linea:int, error_acumulado:np.ndarray,
-                      linea_cache_y:np.ndarray, linea_cache_x:np.ndarray,
+                      linea_cache_y:list, linea_cache_x:list,
                       ancho:int, peso_de_linea:int,
                       funcion_calculo_error :Callable[[np.ndarray],np.float64]):
     """
@@ -23,7 +23,7 @@ def get_error_general(indice_linea:int, error_acumulado:np.ndarray,
     
     return error, error_acumulado
 
-def obtener_camino_con_error_total(linea_cache_x:np.ndarray,linea_cache_y:np.ndarray,
+def obtener_camino_con_error_total(linea_cache_x:list,linea_cache_y:list,
                    ancho:int,alto:int,vector_de_la_imagen:np.ndarray,
                    funcion_calculo_error :Callable[[np.ndarray],np.float64] = mse,
                    numero_de_pines:int = 256 ,maximo_lineas:int= 4000,

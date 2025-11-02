@@ -18,8 +18,8 @@ from calcular_error import mse
 
 def _crear_funcion_error(secuencia_pines:list[int],
                          error_acumulado:np.ndarray,
-                         linea_cache_y:np.ndarray,
-                         linea_cache_x:np.ndarray,
+                         linea_cache_y:list,
+                         linea_cache_x:list,
                          ancho:int,
                          numero_de_pines,peso_de_linea:int,
                          funcion_calculo_error:Callable[[np.ndarray],np.float64] = mse):
@@ -132,8 +132,8 @@ def inicializar_ag(funcion_evaluacion: Callable[[list[int]],Tuple[np.float64,Non
     toolbox.register("seleccionar", tools.selTournament, tournsize=cantidad_torneo)
     return toolbox
 
-def obtener_camino_ag(linea_cache_x:np.ndarray,
-                    linea_cache_y:np.ndarray,
+def obtener_camino_ag(linea_cache_x:list,
+                    linea_cache_y:list,
                     ancho:int,
                     alto:int,
                     vector_de_la_imagen:np.ndarray,

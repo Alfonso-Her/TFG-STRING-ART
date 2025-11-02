@@ -26,6 +26,6 @@ class ReturnPreprocesado(TypedDict, total=False):
     alto:int 
     vector_de_la_imagen:np.ndarray
     posiciones_pines:np.ndarray
-    linea_cache_x:np.ndarray
-    linea_cache_y:np.ndarray
+    linea_cache_x:list
+    linea_cache_y:list
     
