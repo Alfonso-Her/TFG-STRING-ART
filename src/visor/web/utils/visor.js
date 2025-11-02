@@ -30,7 +30,8 @@ function crearTarjetas(item) {
     tarjeta.className = "tarjeta";
 
     // Detectar si es bioinspirado (basado en parámetros genéticos)
-    if (item.funciones_usadas.toUpperCase().includes("AG")) {
+    if (item.funciones_usadas.toUpperCase().includes("AG") ||
+        item.funciones_usadas.toUpperCase().includes("ACO")) {
         tarjeta.classList.add('bioinspirado');
     } else {
         tarjeta.classList.add('normal');
