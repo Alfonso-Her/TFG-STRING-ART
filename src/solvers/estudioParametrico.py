@@ -28,7 +28,7 @@ parametros_reconstruccion = list(ParametrosReconstruccion.__annotations__.keys()
 
 
 
-Ruta_a_web = Path("visor/web/index.html")
+Ruta_a_web = Path("visor/web")
 
 def agregarValor(parametros_fijos,clave,valor):
     if clave in parametros_preprocesado:
@@ -84,7 +84,7 @@ def construirParametros(**kwargs):
 
     return parametros_totales
 
-def estudioParametrico(output_dir:Path, estudio_web:bool= True,
+def estudioParametrico(output_dir:Path, estudio_web:bool= True,puerto:int = 8080,
                        continuacion_estudio:bool = False,
                        numero_procesos:int=4,
                        funcion_preprocesado:Callable[[ParametrosPreprocesado], ReturnPreprocesado] = tuberia_preprocesado,
@@ -115,14 +115,16 @@ def estudioParametrico(output_dir:Path, estudio_web:bool= True,
         output_dir = Path(str(output_dir)+hora_proceso)
 
     output_dir.mkdir( parents= True, exist_ok= True)
-    ruta_json = output_dir.joinpath("datos.json")
+    ruta_json = output_dir.joinpath("datos.jsonl")
+
 
 
     kwargs.update({"funcion_calculo_error":funcion_calculo_error,
                     "funcion_preprocesado": funcion_preprocesado,
                     "funcion_resolucion":funcion_resolucion,
                     "funcion_postOpt":funcion_postOpt,
-                    "funcion_reconstruccion":funcion_reconstruccion
+                    "funcion_reconstruccion":funcion_reconstruccion,
+                    "ruta_a_resultado":output_dir,
                    })
     # Conseguimos los parametros ya empaquetados para cada parte del problema
     lista_con_todos_los_parametros = construirParametros(**kwargs)
@@ -141,8 +143,8 @@ def estudioParametrico(output_dir:Path, estudio_web:bool= True,
     escritor.join()
 
     if estudio_web:
-        crear_web_con_dir(output_dir=output_dir, ruta_a_web=Ruta_a_web)
-
+        print(output_dir)
+        crear_web_con_dir(output_dir=output_dir, ruta_a_web=Ruta_a_web, puerto = puerto)
 
 ## TESTING
 

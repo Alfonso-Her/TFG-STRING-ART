@@ -27,9 +27,8 @@ def _crear_funcion_error(secuencia_pines:list[int],
         Dada la imagen del error y una solucion evalua la solucion mediante funcion_calculo_error
         devuelve una tupla error,_ por necesidad de cudrar tipos con la API de DEAP
     """
-
     error = funcion_calculo_error(secuencia_pines_a_error(secuencia_pines,
-                                                         error_acumulado,
+                                                         error_acumulado.copy(),
                                                          linea_cache_y,
                                                          linea_cache_x,
                                                          ancho,
@@ -51,8 +50,7 @@ def reparar_individuo(ind: list[int], numero_de_pines: int, dist_min: int) -> li
     return ind
 
 
-def inicializar_ag(funcion_evaluacion: Callable[[list[int]],Tuple[np.float64,None]],
-                   numero_de_pines:int = 256,
+def inicializar_ag(numero_de_pines:int = 256,
                    maximo_lineas:int=4000,
                    distancia_minima:int = 0,
                    probabilidad_mutacion_gen: float = 0.3,
@@ -107,10 +105,6 @@ def inicializar_ag(funcion_evaluacion: Callable[[list[int]],Tuple[np.float64,Non
     # Definimos una poblacion como un conjunto de indivuduos
     toolbox.register("poblacion", tools.initRepeat, list, toolbox.individuo)
 
-
-    # Definimos una funcion para medir que tan buenas son nuestras soluciones
-    toolbox.register("evaluar",funcion_evaluacion)
-
     # Definimos operaciones clave en el algoritmo genetico
 
     def mutar_reparando(ind:list[int]):
@@ -157,19 +151,21 @@ def obtener_camino_ag(linea_cache_x:list,
     
     #Creamos imagen error y inicializamos directorios y variables
     error_acumulado = vector_de_la_imagen.copy()
-    funcion_evaluacion = lambda secuencia_solucion: _crear_funcion_error(secuencia_pines=secuencia_solucion,
-                                                                   error_acumulado=error_acumulado.copy(),
-                                                                   linea_cache_y=linea_cache_y,
-                                                                   linea_cache_x=linea_cache_x,
-                                                                   ancho= ancho,
-                                                                   numero_de_pines=numero_de_pines,
-                                                                   peso_de_linea=peso_de_linea,
-                                                                   funcion_calculo_error=funcion_calculo_error)
+
+    
     toolbox = inicializar_ag(numero_de_pines=numero_de_pines,
                              maximo_lineas=maximo_lineas,
-                             funcion_evaluacion=funcion_evaluacion,
                              distancia_minima=distancia_minima,
                              cantidad_torneo=cantidad_torneo)
+    
+    toolbox.register("evaluar", _crear_funcion_error,
+                     error_acumulado=error_acumulado,
+                     linea_cache_y=linea_cache_y,
+                     linea_cache_x=linea_cache_x,
+                     ancho=ancho,
+                     numero_de_pines=numero_de_pines,
+                     peso_de_linea=peso_de_linea,
+                     funcion_calculo_error=funcion_calculo_error)
     
     directorio_checkpoints = crear_directorio_temporal(ruta_a_resultado)
     generacion_inicial=0
@@ -202,8 +198,8 @@ def obtener_camino_ag(linea_cache_x:list,
     stats.register("min", np.min)     # Mejor fitness (menor error)
     stats.register("max", np.max)     # Peor fitness (mayor error)
 
-    # pool = Pool()
-    # toolbox.register("map", poll.map)
+    pool = Pool()
+    toolbox.register("map", pool.map)
     try:
         # Bucle manual de generaciones para control de checkpoints
         for gen in range(generacion_inicial, numero_generaciones):

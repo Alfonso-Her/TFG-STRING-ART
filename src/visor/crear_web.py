@@ -7,7 +7,6 @@ def crear_web_con_dir(output_dir:Path, ruta_a_web:Path ,puerto :int):
     origen = ruta_a_web.resolve()
     destino = output_dir.resolve()
 
-    
     if not ruta_a_web.exists():
         raise FileNotFoundError(f"No encontramos la web")
 

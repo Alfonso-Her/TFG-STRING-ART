@@ -364,18 +364,35 @@ function normalizarDatos(data) {
  */
 async function cargarDatosDesdeJSON() {
     try {
-        const respuesta = await fetch("datos.json", { cache: "no-store" });
+        const respuesta = await fetch("datos.jsonl", { cache: "no-store" });
         if (!respuesta.ok) {
             throw new Error(`Error HTTP ${respuesta.status}`);
         }
+        const texto = await respuesta.text();
+        const ejecuciones = texto.split("}");
+        var lineas_reales = []
 
-        const data = await respuesta.json();
-
-        if (!Array.isArray(data)) {
-            throw new Error("El contenido de datos.json no es una lista de ejecuciones.");
+        for (const linea in ejecuciones){
+            lineas_reales.push((ejecuciones[linea].split("\n").filter(linea => linea.trim() !== "")).join("")+"}");
         }
 
-        console.log(`✅ Cargadas ${data.length} ejecuciones desde datos.json`);
+
+        let data = [];
+        for (const linea of lineas_reales) {
+            try {
+                // Cada línea debe ser un objeto JSON válido
+                data.push(JSON.parse(linea));
+            } catch (err) {
+                // Si alguna línea está corrupta no detiene el proceso
+                console.warn("Línea JSON mal formada omitida:", linea);
+            }
+        }
+
+        if (data.length === 0) {
+            throw new Error("El archivo no contiene ejecuciones válidas.");
+        }
+
+        console.log(`✅ Cargadas ${data.length} ejecuciones desde datos.jsonl`);
         
         // Normalizar y guardar datos
         const datosNormalizados = normalizarDatos(data);
@@ -390,11 +407,11 @@ async function cargarDatosDesdeJSON() {
         configurarDragAndDrop();
         
     } catch (error) {
-        console.error("❌ Error al cargar datos.json:", error);
+        console.error("❌ Error al cargar datos.jsonl:", error);
         const contenedor = document.querySelector(".contenedor-ejecuciones");
         contenedor.innerHTML = `
             <div style="color:white; text-align:center; padding:2em;">
-                <h2>Error al cargar <code>datos.json</code></h2>
+                <h2>Error al cargar <code>datos.jsonl</code></h2>
                 <p>Verifica que estás sirviendo la carpeta con <code>python main.py</code>.</p>
                 <p>Detalle del error: ${error.message}</p>
             </div>

@@ -83,7 +83,7 @@ def probar_funciones_resolutoras_lista_de_errores(ruta_salida:str, lista_funcion
 if __name__ == "__main__":
 
     np.set_printoptions(threshold=2)
-    nombreEstudio = "EjecucionMuchosParametrosIntro"
+    nombreEstudio = "GA_G750_P400_PC80_PM_20_HF5_T7"
     ruta_salida = f"../ejemplos/local/{nombreEstudio}"
     todas_las_imagenes = ["../ejemplos/ae300.jpg","../ejemplos/acue.jpg","../ejemplos/cervantesColor.jpg"]
     todas_las_funciones_error = [mse, mae, rmse,ssim]
@@ -106,7 +106,7 @@ if __name__ == "__main__":
     #
     # fin1=time.time()
     # revisar_estudio(output_dir=Path("../ejemplos/local/Version que no respeta AG con 500 poblaciones resto default Version que no respeta HoF/"))
-    # revisar_estudio(output_dir=Path("../ejemplos/local/Version que no respeta HoF AG_con_750_poblaciones_250_individuos_mutacion_3_elitismo_3_resto_default/"))
+    # revisar_estudio(output_dir=Path("../ejemplos/local/EjecucionMuchosParametrosIntro/"))
 
     # estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
     #                     ruta_salida=ruta_salida, funcion_calculo_error=ssim,
@@ -117,24 +117,24 @@ if __name__ == "__main__":
     #                     itereaciones_re_optimizado= 0, decremento_error_minimo=0.000001,
     #                     peso_de_linea=[20], verbose= True)
 
-    # estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
-    #                              ruta_salida=ruta_salida, puerto=8030,
-    #                              funcion_calculo_error=[mse],
-    #                             #  marcar_bordes=[True,False],
-    #                              funcion_preprocesado= tuberia_preprocesado_bresenham,
-    #                              funcion_resolucion=[obtener_camino,obtener_camino_ag,obtener_camino_ag_con_semilla],
-    #                              numero_generaciones=1500,
-    #                              cantidad_poblacion=300, 
-    #                              probabilidad_cruce=0.8,
-    #                              probabilidad_mutacion=0.15,
-    #                              elitismo_size = 3,
-    #                              cantidad_torneo= 5,
-    #                              funcion_postOpt=no_reoptimizar,
-    #                              ruta_a_la_imagen=todas_las_imagenes[0],
-    #                              numero_de_pines=256,
-    #                              maximo_lineas=3000,
-    #                              peso_de_linea=20,
-    #                              verbose= True)
+    estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
+                                 ruta_salida=ruta_salida, puerto=8030,
+                                 funcion_calculo_error=[mse],
+                                #  marcar_bordes=[True,False],
+                                 funcion_preprocesado= tuberia_preprocesado_bresenham,
+                                 funcion_resolucion=[obtener_camino,obtener_camino_ag,obtener_camino_ag_con_semilla],
+                                 numero_generaciones=750,
+                                 cantidad_poblacion=400, 
+                                 probabilidad_cruce=0.8,
+                                 probabilidad_mutacion=0.15,
+                                 elitismo_size = 5,
+                                 cantidad_torneo= 7,
+                                 funcion_postOpt=no_reoptimizar,
+                                 ruta_a_la_imagen=todas_las_imagenes[0],
+                                 numero_de_pines=256,
+                                 maximo_lineas=3000,
+                                 peso_de_linea=20,
+                                 verbose= True)
     
     # estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
     #                              ruta_a_la_imagen=todas_las_imagenes[1], funcion_preprocesado=tuberia_preprocesado_bresenham,
@@ -156,14 +156,14 @@ if __name__ == "__main__":
     #                              maximo_lineas=500,
     #                              peso_de_linea=20,
     #                              verbose= True)
-    estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
-                        funcion_calculo_error=mse, puerto=8121, numero_procesos=2,
-                        funcion_preprocesado=tuberia_preprocesado_bresenham,
-                        funcion_resolucion=obtener_camino,
-                        ruta_a_la_imagen=todas_las_imagenes,
-                        numero_de_pines=[128*k for k in range(1,4)],
-                        distancia_minima=[2*k for k in range(1,6)],
-                        numero_de_pines_recientes_a_evitar=[2*k for k in range(1,4)],
-                        maximo_lineas=[1000*k for k in range(1,5)],
-                        peso_de_linea=[10*k for k in range(1,10)],
-                        verbose= True)
+    # estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
+    #                     funcion_calculo_error=mse, puerto=8121, numero_procesos=4,
+    #                     funcion_preprocesado=tuberia_preprocesado_bresenham,
+    #                     funcion_resolucion=obtener_camino,
+    #                     ruta_a_la_imagen=todas_las_imagenes,
+    #                     numero_de_pines=[128*k for k in range(1,3)],
+    #                     distancia_minima=[2*k for k in range(1,4)],
+    #                     numero_de_pines_recientes_a_evitar=[2*k for k in range(1,4)],
+    #                     maximo_lineas=[1000*k for k in range(1,5)],
+    #                     peso_de_linea=[10*k for k in range(1,9)],
+    #                     verbose= True)

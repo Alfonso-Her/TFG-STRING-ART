@@ -80,19 +80,19 @@ def tuberia_resolucion(paquete_argumentos,output_dir,cola_metadatos):
         print(f"\n Error {e} al hacer el preprocesado con la funcion {args_preprocesado["funcion_preprocesado"]}, continuando con el siguiente")
         return
     # RESOLUTOR-----------------------------------------------------------------------
-    try:
+    # try:
 
-        args_resolucion.update({k:v for k,v in datos_preprocesados.items() if k in ParametrosResolucion.__annotations__})
+    args_resolucion.update({k:v for k,v in datos_preprocesados.items() if k in ParametrosResolucion.__annotations__})
 
-        datos_solucion_problema = args_resolucion["funcion_resolucion"](**args_resolucion)
+    datos_solucion_problema = args_resolucion["funcion_resolucion"](**args_resolucion)
 
-        # if "verbose" in args_resolucion and args_resolucion["verbose"]:
-        #     print(" Del resolutor obtenemos: ", datos_solucion_problema)
+    # if "verbose" in args_resolucion and args_resolucion["verbose"]:
+    #     print(" Del resolutor obtenemos: ", datos_solucion_problema)
 
-        print("\n Pasamos con exito el proceso de resolucion ")
-    except Exception as e:
-        print(f"\n Error {e} al solucionar con la funcion {args_resolucion["funcion_resolucion"]}, continuando con el siguiente")
-        return
+    print("\n Pasamos con exito el proceso de resolucion ")
+    # except Exception as e:
+    #     print(f"\n Error {e} al solucionar con la funcion {args_resolucion["funcion_resolucion"]}, continuando con el siguiente")
+    #     return
     # POSTOPTIMIZADO------------------------------------------------------------------
     try:
         args_postOpt.update({k:v for k,v in datos_preprocesados.items() if k in ParametrosResolucion.__annotations__})
