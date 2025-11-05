@@ -83,7 +83,7 @@ def probar_funciones_resolutoras_lista_de_errores(ruta_salida:str, lista_funcion
 if __name__ == "__main__":
 
     np.set_printoptions(threshold=2)
-    nombreEstudio = "TESTINGgAoBTENERcAMINO_GE10_I50"
+    nombreEstudio = "GA_con_obtener_camino_GEX_P100"
     ruta_salida = f"../ejemplos/local/{nombreEstudio}"
     todas_las_imagenes = ["../ejemplos/ae300.jpg","../ejemplos/acue.jpg","../ejemplos/cervantesColor.jpg"]
     todas_las_funciones_error = [mse, mae, rmse,ssim]
@@ -125,7 +125,7 @@ if __name__ == "__main__":
                                  funcion_preprocesado= tuberia_preprocesado_bresenham,
                                  funcion_resolucion=[obtener_camino,obtener_camino_ag_cultivado],
                                  numero_generaciones=10,
-                                 cantidad_poblacion=26, 
+                                 cantidad_poblacion=100, 
                                 #  probabilidad_cruce=0.8,
                                 #  probabilidad_mutacion=0.15,
                                 #  elitismo_size = 5,

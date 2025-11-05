@@ -59,12 +59,12 @@ def inicializar_ag_con_obtener_camino(
                                                         linea_cache_y:list,
                                                         ancho:int,
                                                         alto:int):
-        maximo_lineas_ind = random.randint(maximo_lineas//2,maximo_lineas)
-        peso_de_linea_ind = random.randint(max(10,peso_de_linea),min(peso_de_linea,160))
+        maximo_lineas_ind = random.randint(maximo_lineas-100,maximo_lineas)
+        peso_de_linea_ind = random.randint(max(10,peso_de_linea-5),min(peso_de_linea+5,80))
         distancia_minima_ind = random.randint(max(0,distancia_minima),min(10,distancia_minima))
         numero_de_pines_recientes_a_evitar_ind = random.randint(max(0,numero_de_pines_recientes_a_evitar),min(numero_de_pines_recientes_a_evitar,20))
         
-        individuo = obtener_camino(vector_de_la_imagen= vector_de_la_imagen,
+        individuo = obtener_camino(vector_de_la_imagen= vector_de_la_imagen.copy(),
                                    linea_cache_x=linea_cache_x,
                                    linea_cache_y=linea_cache_y,
                                    ancho=ancho,
@@ -74,7 +74,7 @@ def inicializar_ag_con_obtener_camino(
                                    maximo_lineas=maximo_lineas_ind,
                                    peso_de_linea=peso_de_linea_ind,
                                    distancia_minima = distancia_minima_ind,
-                                   verbose = False)["secuencia_pines"]
+                                   verbose = False)["secuencia_pines"].tolist()
         
         return creator.Individuo(individuo)
     
@@ -105,7 +105,6 @@ def inicializar_ag_con_obtener_camino(
         return ind,
 
     def aparear_reparado(ind1, ind2):
-        print(ind1,ind2)
         ind1, ind2 = tools.cxTwoPoint(ind1, ind2)
         reparar_individuo(ind1, numero_de_pines, distancia_minima)
         reparar_individuo(ind2, numero_de_pines, distancia_minima)
