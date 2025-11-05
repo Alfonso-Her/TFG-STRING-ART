@@ -9,8 +9,8 @@ from preprocesado import ParametrosPreprocesado,ReturnPreprocesado,\
 
 from resolutor import ParametrosResolucion,ReturnResolutor,\
                         obtener_camino, obtener_camino_con_error_total,\
-                        obtener_camino_ag, obtener_camino_ag_con_semilla\
-                        #obtener_camino_aco
+                        obtener_camino_ag, obtener_camino_ag_con_semilla,\
+                        obtener_camino_ag_cultivado#obtener_camino_aco
 from postOpt import ParametrosPostOpt,ReturnPostOpt,\
                     no_reoptimizar, cambio_pin_medio
 
@@ -83,7 +83,7 @@ def probar_funciones_resolutoras_lista_de_errores(ruta_salida:str, lista_funcion
 if __name__ == "__main__":
 
     np.set_printoptions(threshold=2)
-    nombreEstudio = "GA_G750_P400_PC80_PM_20_HF5_T7"
+    nombreEstudio = "TESTINGgAoBTENERcAMINO_GE10_I50"
     ruta_salida = f"../ejemplos/local/{nombreEstudio}"
     todas_las_imagenes = ["../ejemplos/ae300.jpg","../ejemplos/acue.jpg","../ejemplos/cervantesColor.jpg"]
     todas_las_funciones_error = [mse, mae, rmse,ssim]
@@ -107,7 +107,7 @@ if __name__ == "__main__":
     # fin1=time.time()
     # revisar_estudio(output_dir=Path("../ejemplos/local/Version que no respeta AG con 500 poblaciones resto default Version que no respeta HoF/"))
     # revisar_estudio(output_dir=Path("../ejemplos/local/GA_G750_P400_PC80_PM_20_HF5_T7_03112025_214306/"))
-    revisar_estudio(output_dir=Path("../ejemplos/local/EjecucionMuchosParametrosIntro/"))
+    # revisar_estudio(output_dir=Path("../ejemplos/local/EjecucionMuchosParametrosIntro/"))
 
     # estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
     #                     ruta_salida=ruta_salida, funcion_calculo_error=ssim,
@@ -123,17 +123,17 @@ if __name__ == "__main__":
                                  funcion_calculo_error=[mse],
                                 #  marcar_bordes=[True,False],
                                  funcion_preprocesado= tuberia_preprocesado_bresenham,
-                                 funcion_resolucion=[obtener_camino,obtener_camino_ag,obtener_camino_ag_con_semilla],
-                                 numero_generaciones=750,
-                                 cantidad_poblacion=400, 
-                                 probabilidad_cruce=0.8,
-                                 probabilidad_mutacion=0.15,
-                                 elitismo_size = 5,
-                                 cantidad_torneo= 7,
+                                 funcion_resolucion=[obtener_camino,obtener_camino_ag_cultivado],
+                                 numero_generaciones=10,
+                                 cantidad_poblacion=26, 
+                                #  probabilidad_cruce=0.8,
+                                #  probabilidad_mutacion=0.15,
+                                #  elitismo_size = 5,
+                                #  cantidad_torneo= 7,
                                  funcion_postOpt=no_reoptimizar,
                                  ruta_a_la_imagen=todas_las_imagenes[0],
                                  numero_de_pines=256,
-                                 maximo_lineas=3000,
+                                 maximo_lineas=4000,
                                  peso_de_linea=20,
                                  verbose= True)
     

@@ -105,6 +105,7 @@ def inicializar_ag_con_obtener_camino(
         return ind,
 
     def aparear_reparado(ind1, ind2):
+        print(ind1,ind2)
         ind1, ind2 = tools.cxTwoPoint(ind1, ind2)
         reparar_individuo(ind1, numero_de_pines, distancia_minima)
         reparar_individuo(ind2, numero_de_pines, distancia_minima)
