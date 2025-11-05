@@ -1,2 +1,3 @@
 from .genetico import obtener_camino_ag
 from .genetico_semilla import obtener_camino_ag_con_semilla
+from .genetico_sol_buenas import obtener_camino_ag_cultivado

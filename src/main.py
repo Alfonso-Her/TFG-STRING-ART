@@ -106,7 +106,8 @@ if __name__ == "__main__":
     #
     # fin1=time.time()
     # revisar_estudio(output_dir=Path("../ejemplos/local/Version que no respeta AG con 500 poblaciones resto default Version que no respeta HoF/"))
-    # revisar_estudio(output_dir=Path("../ejemplos/local/EjecucionMuchosParametrosIntro/"))
+    # revisar_estudio(output_dir=Path("../ejemplos/local/GA_G750_P400_PC80_PM_20_HF5_T7_03112025_214306/"))
+    revisar_estudio(output_dir=Path("../ejemplos/local/EjecucionMuchosParametrosIntro/"))
 
     # estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
     #                     ruta_salida=ruta_salida, funcion_calculo_error=ssim,
