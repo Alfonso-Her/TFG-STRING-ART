@@ -201,9 +201,10 @@ def obtener_camino_ag_cultivado(linea_cache_x:list,
     pool = Pool()
     toolbox.register("map", pool.map)
     try:
+        gen = 0
         # Bucle manual de generaciones para control de checkpoints
-        for gen in range(generacion_inicial, numero_generaciones):
-            
+        # for gen in range(generacion_inicial, numero_generaciones): OJO
+        while True:
             
             # Evaluar individuos sin fitness
             individuos_invalidos = [ind for ind in poblacion if not ind.fitness.valid]
@@ -226,9 +227,9 @@ def obtener_camino_ag_cultivado(linea_cache_x:list,
       
             hall_of_fame.update(poblacion)
 
-            # Si es la última generación, no generar descendencia
-            if gen == numero_generaciones - 1:
-                break
+            # Si es la última generación, no generar descendencia OJO
+            # if gen == numero_generaciones - 1:
+            #     break
             
             
             # Seleccionar siguiente generación
@@ -270,7 +271,8 @@ def obtener_camino_ag_cultivado(linea_cache_x:list,
                     directorio_checkpoints,
                     mantener=mantener_checkpoints
                 )
-
+            #OJO
+            gen += 1
 
         print("[AG] Evolución completada exitosamente")
         
@@ -285,7 +287,6 @@ def obtener_camino_ag_cultivado(linea_cache_x:list,
             random_state=random.getstate()
         )
         print("[AG] Checkpoint guardado. Puedes reanudar con reanudar=True")
-        raise
 
 
     mejor_individuo = hall_of_fame[0]
