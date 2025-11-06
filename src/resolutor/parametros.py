@@ -29,6 +29,8 @@ class ParametrosResolucion(ParametrosResolucionBasicos, total=False):
     probabilidad_mutacion: float
     probabilidad_mutacion_gen: float
     cantidad_torneo: int
+    max_iter:int
+    reanudar:bool
     
 class ReturnResolutor(TypedDict, total=False):
     peso_de_linea: int

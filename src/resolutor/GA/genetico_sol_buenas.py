@@ -166,13 +166,10 @@ def obtener_camino_ag_cultivado(linea_cache_x:list,
                      numero_de_pines=numero_de_pines,
                      peso_de_linea=peso_de_linea,
                      funcion_calculo_error=funcion_calculo_error)
-    
+
     directorio_checkpoints = crear_directorio_temporal(ruta_a_resultado)
-    generacion_inicial=0
-    poblacion = toolbox.poblacion(n= cantidad_poblacion)
-    hall_of_fame  = tools.HallOfFame(maxsize=elitismo_size)
-    logbook = tools.Logbook()
     
+
     if reanudar:
         try:
             ckp_data = cargar_checkpoint(directorio_checkpoints)
@@ -190,6 +187,11 @@ def obtener_camino_ag_cultivado(linea_cache_x:list,
             print(f"[AG] Reanudando desde generación {generacion_inicial}")
         else:
             print(f"[AG] Iniciando nueva ejecución")
+    else:
+        generacion_inicial=0
+        poblacion = toolbox.poblacion(n= cantidad_poblacion)
+        hall_of_fame  = tools.HallOfFame(maxsize=elitismo_size)
+        logbook = tools.Logbook()
 
     # Estadisticas para el logbook
     stats = tools.Statistics(lambda ind: ind.fitness.values)
@@ -201,10 +203,10 @@ def obtener_camino_ag_cultivado(linea_cache_x:list,
     pool = Pool()
     toolbox.register("map", pool.map)
     try:
-        gen = 0
+        # gen = 0
         # Bucle manual de generaciones para control de checkpoints
-        # for gen in range(generacion_inicial, numero_generaciones): OJO
-        while True:
+        for gen in range(generacion_inicial, numero_generaciones): 
+        # while True:
             
             # Evaluar individuos sin fitness
             individuos_invalidos = [ind for ind in poblacion if not ind.fitness.valid]
@@ -272,7 +274,7 @@ def obtener_camino_ag_cultivado(linea_cache_x:list,
                     mantener=mantener_checkpoints
                 )
             #OJO
-            gen += 1
+            # gen += 1
 
         print("[AG] Evolución completada exitosamente")
         
