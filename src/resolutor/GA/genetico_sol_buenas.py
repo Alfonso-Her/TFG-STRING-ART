@@ -59,9 +59,9 @@ def inicializar_ag_con_obtener_camino(
                                                         linea_cache_y:list,
                                                         ancho:int,
                                                         alto:int):
-        maximo_lineas_ind = random.randint(maximo_lineas-100,maximo_lineas)
-        peso_de_linea_ind = random.randint(max(10,peso_de_linea-5),min(peso_de_linea+5,80))
-        distancia_minima_ind = random.randint(max(0,distancia_minima),min(10,distancia_minima))
+        maximo_lineas_ind = random.randint(maximo_lineas//3,maximo_lineas)
+        peso_de_linea_ind = random.randint(max(10,peso_de_linea-25),min(peso_de_linea+25,80))
+        distancia_minima_ind = random.randint(max(0,distancia_minima-10),min(10,distancia_minima))
         numero_de_pines_recientes_a_evitar_ind = random.randint(max(0,numero_de_pines_recientes_a_evitar),min(numero_de_pines_recientes_a_evitar,20))
         
         individuo = obtener_camino(vector_de_la_imagen= vector_de_la_imagen.copy(),
@@ -168,7 +168,10 @@ def obtener_camino_ag_cultivado(linea_cache_x:list,
                      funcion_calculo_error=funcion_calculo_error)
 
     directorio_checkpoints = crear_directorio_temporal(ruta_a_resultado)
-    
+    generacion_inicial=0
+    poblacion = toolbox.poblacion(n= cantidad_poblacion)
+    hall_of_fame  = tools.HallOfFame(maxsize=elitismo_size)
+    logbook = tools.Logbook()
 
     if reanudar:
         try:
@@ -187,11 +190,8 @@ def obtener_camino_ag_cultivado(linea_cache_x:list,
             print(f"[AG] Reanudando desde generación {generacion_inicial}")
         else:
             print(f"[AG] Iniciando nueva ejecución")
-    else:
-        generacion_inicial=0
-        poblacion = toolbox.poblacion(n= cantidad_poblacion)
-        hall_of_fame  = tools.HallOfFame(maxsize=elitismo_size)
-        logbook = tools.Logbook()
+
+        
 
     # Estadisticas para el logbook
     stats = tools.Statistics(lambda ind: ind.fitness.values)

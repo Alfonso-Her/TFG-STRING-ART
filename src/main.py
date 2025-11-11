@@ -10,7 +10,7 @@ from preprocesado import ParametrosPreprocesado,ReturnPreprocesado,\
 from resolutor import ParametrosResolucion,ReturnResolutor,\
                         obtener_camino, obtener_camino_con_error_total,\
                         obtener_camino_ag, obtener_camino_ag_con_semilla,\
-                        obtener_camino_ag_cultivado#obtener_camino_aco
+                        obtener_camino_ag_cultivado, obtener_camino_aco
 from postOpt import ParametrosPostOpt,ReturnPostOpt,\
                     no_reoptimizar, cambio_pin_medio
 
@@ -83,7 +83,7 @@ def probar_funciones_resolutoras_lista_de_errores(ruta_salida:str, lista_funcion
 if __name__ == "__main__":
 
     np.set_printoptions(threshold=2)
-    nombreEstudio = "GA_con_obtener_camino_GEX_P100"
+    nombreEstudio = "ACO"
     ruta_salida = f"../ejemplos/local/{nombreEstudio}"
     todas_las_imagenes = ["../ejemplos/ae300.jpg","../ejemplos/acue.jpg","../ejemplos/cervantesColor.jpg"]
     todas_las_funciones_error = [mse, mae, rmse,ssim]
@@ -137,27 +137,14 @@ if __name__ == "__main__":
     #                              maximo_lineas=4000,
     #                              peso_de_linea=20,
     #                              verbose= True)
-    
-    # estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
-    #                              ruta_a_la_imagen=todas_las_imagenes[1], funcion_preprocesado=tuberia_preprocesado_bresenham,
-    #                              verbose= True)
 
-    # estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= True,
-    #                              ruta_salida=ruta_salida, puerto=8020,
-    #                              funcion_preprocesado= tuberia_preprocesado_bresenham,
-    #                              funcion_resolucion=obtener_camino_aco,
-    #                              numero_de_hormigas = 5,
-    #                              alpha=1.0,
-    #                              beta=3.0,
-    #                              rho=0.2,
-    #                              q=1.0,
-    #                              iteraciones_aco=10,
-    #                              funcion_postOpt=no_reoptimizar,
-    #                              ruta_a_la_imagen=todas_las_imagenes,
-    #                              numero_de_pines=256,
-    #                              maximo_lineas=500,
-    #                              peso_de_linea=20,
-    #                              verbose= True)
+
+    estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= True,
+                                 ruta_salida=ruta_salida, puerto=8020,
+                                 funcion_preprocesado= tuberia_preprocesado_bresenham,
+                                 funcion_resolucion=[obtener_camino,obtener_camino_aco],
+                                 ruta_a_la_imagen=todas_las_imagenes,
+                                 verbose= True)
     # estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
     #                     funcion_calculo_error=mse, puerto=8121, numero_procesos=4,
     #                     funcion_preprocesado=tuberia_preprocesado_bresenham,
