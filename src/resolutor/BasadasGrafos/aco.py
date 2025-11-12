@@ -10,225 +10,195 @@ from calcular_error import mse
 
 from ..utils import secuencia_pines_a_error
 
-class OCH_StringArt:
+class OCH_StringArt_Error_aprox:
     def __init__(
-        self,
-        _error_de_secuencia: Callable[[np.ndarray], float],
-        numero_de_pines: int,
-        vector_de_la_imagen: np.ndarray,
-        linea_cache_x: List[Optional[np.ndarray]],
-        linea_cache_y: List[Optional[np.ndarray]],
-        ancho: int,
-        peso_de_linea: int = 20,
-        maximo_lineas: int = 1000,
-        cantidad_poblacion: int = 10,
-        max_iter: int = 100,
-        alpha: float = 1.0,
-        beta: float = 0.0,
-        rho: float = 0.1,
-        q:float=1.0,
-        distancia_minima: int = 0,
-        verbose:bool =False):
+            self,
+            _error_de_secuencia: Callable[[np.ndarray], float],
+            numero_de_pines: int,
+            vector_de_la_imagen: np.ndarray,
+            linea_cache_x: List[Optional[np.ndarray]],
+            linea_cache_y: List[Optional[np.ndarray]],
+            ancho: int,
+            peso_de_linea: int = 20,
+            maximo_lineas: int = 1000,
+            cantidad_poblacion: int = 10,
+            max_iter: int = 50,
+            alpha: float = 1.0, # Peso de la feromona (experiencia)
+            beta: float = 3.0,  # Peso de la heurística (visión voraz) -> Auméntalo para String Art
+            rho: float = 0.1,   # Evaporación
+            q: float = 10.0,    # Cantidad de feromona a depositar
+            distancia_minima: int = 0,
+            verbose: bool = False
+        ):
+            self._error_de_secuencia = _error_de_secuencia
+            self.numero_de_pines = numero_de_pines
+            # Trabajamos con float para precisión en cálculos de error
+            self.vector_de_la_imagen = vector_de_la_imagen.astype(np.float64)
+            self.linea_cache_x = linea_cache_x
+            self.linea_cache_y = linea_cache_y
+            self.ancho = ancho
+            self.peso_de_linea = float(peso_de_linea)
+            
+            self.maximo_lineas = int(maximo_lineas)
+            self.cantidad_poblacion = int(cantidad_poblacion)
+            self.max_iter = int(max_iter)
+            
+            self.alpha = float(alpha)
+            self.beta = float(beta)
+            self.rho = float(rho)
+            self.q = float(q)
+            self.distancia_minima = int(distancia_minima)
+            self.verbose = verbose
 
-        self._error_de_secuencia = _error_de_secuencia # ojo
-
-        self.funcion_error_bruto =\
-            lambda secuencia: secuencia_pines_a_error(secuencia_pines=secuencia,
-                                                      error_acumulado=vector_de_la_imagen.copy(),
-                                                      linea_cache_x=linea_cache_x,
-                                                      linea_cache_y=linea_cache_y,
-                                                      ancho=ancho,
-                                                      numero_de_pines=numero_de_pines,
-                                                      peso_de_linea=peso_de_linea)  
-        
-        self.funcion_fitness =\
-              lambda secuencia: _error_de_secuencia(self.funcion_error_bruto(secuencia=secuencia))
-        
-        self.numero_de_pines =  numero_de_pines
-        self.vector_de_la_imagen = vector_de_la_imagen
-        self.linea_cache_x = linea_cache_x
-        self.linea_cache_y = linea_cache_y
-        self.ancho = ancho
-        self.peso_de_linea = peso_de_linea
-        self.verbose = verbose
-        self.maximo_lineas = int(maximo_lineas)
-        self.cantidad_poblacion = int(cantidad_poblacion)
-        self.max_iter = int(max_iter)
-        self.alpha = float(alpha)
-        self.beta = float(beta) 
-        self.rho = float(rho)
-        self.q = q
-        self.distancia_minima = int(distancia_minima)
-        self.pin_comienzo = 0
-
-
-        self.Tau = np.ones((self.numero_de_pines, self.numero_de_pines), dtype=float)
-
-        self.Table = -np.ones((self.cantidad_poblacion, self.maximo_lineas), dtype=int) # ojo
-
-        self.mejores_soluciones: List[np.ndarray] = []
-        self.mejores_errores: List[float] = []
-        self.mejor_solucion: Optional[np.ndarray] = None
-        self.mejor_error: Optional[float] = None
+            # Matriz de feromonas: Arista [i][j]
+            self.Tau = np.ones((self.numero_de_pines, self.numero_de_pines), dtype=np.float64)
+            
+            # Historial
+            self.mejores_errores: List[float] = []
+            self.solucion_global_mejor = None
+            self.error_global_mejor = float('inf')
 
     def _obtener_indice(self, pin_a: int, pin_b: int) -> int:
         return pin_b * self.numero_de_pines + pin_a
 
     def _es_arista_valida(self, a: int, b: int) -> bool:
+        # Distancia circular mínima
         dist = min(abs(a - b), self.numero_de_pines - abs(a - b))
-        idx = self._obtener_indice(a, b)
-        if a == b:
-            return False  # evitar auto-bucle
-        if dist < self.distancia_minima:
+        if a == b or dist < self.distancia_minima:
             return False
+        
+        idx = self._obtener_indice(a, b)
+        # Verificar cache
         if idx < 0 or idx >= len(self.linea_cache_x):
             return False
-        if self.linea_cache_x[idx] is None or self.linea_cache_y[idx] is None:
+        if self.linea_cache_x[idx] is None:
             return False
         return True
-    
-    def _normalizar_prob(self, probs: np.ndarray) -> np.ndarray:
-        total = probs.sum()
-        if total <= 0 or np.isnan(total):
-            if probs.size == 0:
-                return probs
-            return np.ones_like(probs) / probs.size
-        return probs / total
-    
-    def run(self) -> Tuple[np.ndarray,np.ndarray, float]:
 
-        eps = 1e-12
-
+    def run(self) -> Tuple[np.ndarray, np.ndarray, float]:
+        
         for iteration in range(self.max_iter):
+            
+            soluciones_hormigas = []
+            errores_hormigas = []
 
-            for j in range(self.cantidad_poblacion):
-                print(f"Entramos a rellenar otra hormiga {j}")
-                vector_actual = self.vector_de_la_imagen.copy() 
-                error_actual = float(self._error_de_secuencia(vector_actual))
+            # --- CONSTRUCCIÓN DE SOLUCIONES (Hormigas) ---
+            for k in range(self.cantidad_poblacion):
+                
+                # Cada hormiga empieza con una copia fresca de la imagen (o el residuo actual)
+                # NOTA: En ACO puro para String Art, esto es computacionalmente muy caro.
+                # Se suele usar un enfoque constructivo donde el "estado" cambia.
+                # Aquí asumiremos que cada hormiga intenta resolver la imagen completa desde 0.
+                
+                imagen_actual_hormiga = self.vector_de_la_imagen.copy()
+                camino = []
+                
+                # Pin inicial aleatorio
+                pin_actual = randint(0, self.numero_de_pines - 1)
+                camino.append(pin_actual)
 
-                # inicio
-                if self.pin_comienzo is None:
-                    pin_actual = randint(0, self.numero_de_pines-1)
-                else:
-                    pin_actual = self.pin_comienzo
-                self.Table[j, 0] = pin_actual
-
-                # pasos restantes
-                pasos = 0 
-                for k in range(self.maximo_lineas - 1):
-
-                    indices_validos = []
-                    pesos_validos = []
-
-                    fila_tau = self.Tau[pin_actual, :]
-
-
-                    for pin_candidato in range(self.numero_de_pines):
-
-                        if not self._es_arista_valida(pin_actual, pin_candidato):
+                # Construir camino paso a paso
+                for _ in range(self.maximo_lineas):
+                    # Calcular probabilidades para el siguiente paso
+                    probs = np.zeros(self.numero_de_pines)
+                    candidatos_validos = []
+                    
+                    for pin_siguiente in range(self.numero_de_pines):
+                        if not self._es_arista_valida(pin_actual, pin_siguiente):
                             continue
-
-                        tau_val = fila_tau[pin_candidato] ** self.alpha
                         
-                        if self.beta == 0.0:
-                            eta_val = 1.0
-                        else:
-                            idx = self._obtener_indice(pin_actual, pin_candidato)
-                            x_coords = self.linea_cache_x[idx]
-                            y_coords = self.linea_cache_y[idx]
-                      
-                            if x_coords is None or y_coords is None:
-                                continue
+                        idx_linea = self._obtener_indice(pin_actual, pin_siguiente)
+                        coords_x = self.linea_cache_x[idx_linea]
+                        coords_y = self.linea_cache_y[idx_linea]
+                        
+                        intensidad_linea = get_line_err(imagen_actual_hormiga, coords_y, coords_x, self.ancho)
+                        
+                        # eta = intensidad de la línea (cuanto más negro, mejor)
+                        eta = max(intensidad_linea, 1e-6) 
+                        
+                        tau = self.Tau[pin_actual, pin_siguiente]
+                        
+                        # Formula ACO
+                        p = (tau ** self.alpha) * (eta ** self.beta)
+                        probs[pin_siguiente] = p
+                        candidatos_validos.append(pin_siguiente)
+                    
 
-                            indices = (y_coords * self.ancho + x_coords).astype(int)
-                            valor_antiguo = vector_actual[indices].copy()
-                            vector_actual[indices] = np.maximum(vector_actual[indices] - self.peso_de_linea, 0.0)
-                            nuevo_error = float(self._error_de_secuencia(vector_actual))
-                            mejoria = error_actual - nuevo_error
-                            vector_actual[indices] = valor_antiguo
-                            eta_val = max(mejoria, eps)
-
-                        weight = tau_val * (eta_val ** self.beta)
-                        if weight > 0:
-                            indices_validos.append(pin_candidato)
-                            pesos_validos.append(weight)
-                        else:
-                            indices_validos.append(pin_candidato)
-                            pesos_validos.append(0.0)
-
-                    if len(indices_validos) == 0:
-                        break
-
-                    pesos_validos = np.array(pesos_validos, dtype=float)
-                    probs = self._normalizar_prob(pesos_validos)
-
-                    # elegir siguiente pin entre indices_validos
-                    siguiente_pin = int(np.random.choice(indices_validos, p=probs))
-                    pasos += 1
-                    self.Table[j, pasos] = siguiente_pin
-
-                    # aplicar línea realmente al vector local
-                    idx_line = self._obtener_indice(pin_actual, siguiente_pin)
-                    x_coords = self.linea_cache_x[idx_line]
-                    y_coords = self.linea_cache_y[idx_line]
-
-                    indices = (y_coords * self.ancho + x_coords).astype(int)
-                    vector_actual[indices] = np.maximum(vector_actual[indices] - self.peso_de_linea, 0.0)
-                    # actualizar error actual
-                    error_actual = float(self._error_de_secuencia(vector_actual))
-                    # avanzar
+                    suma_probs = np.sum(probs)
+                    if suma_probs == 0 or len(candidatos_validos) == 0:
+                        break 
+                    
+                    probs = probs / suma_probs
+                    
+                    # Elegir siguiente pin
+                    siguiente_pin = np.random.choice(range(self.numero_de_pines), p=probs)
+                    
+                    # ACTUALIZAr ESTADO DE LA HORMIGA
+                    idx_linea_elegida = self._obtener_indice(pin_actual, siguiente_pin)
+                    cx = self.linea_cache_x[idx_linea_elegida]
+                    cy = self.linea_cache_y[idx_linea_elegida]
+                    
+                    # Actualización vectorizada (rápida)
+                    indices_pixel = (cy * self.ancho + cx).astype(np.int64)
+                    # Restamos peso (simulando hilo negro sobre fondo blanco -> invertido: restamos error)
+                    imagen_actual_hormiga[indices_pixel] = np.maximum(
+                        imagen_actual_hormiga[indices_pixel] - self.peso_de_linea, 0
+                    )
+                    
+                    camino.append(siguiente_pin)
                     pin_actual = siguiente_pin
 
+                # Fin de la hormiga k
+                soluciones_hormigas.append(np.array(camino))
+                
+                # Calculamos el error final real de esta hormiga
+                error_final_hormiga = self._error_de_secuencia(imagen_actual_hormiga)
+                errores_hormigas.append(error_final_hormiga)
+                
+                if self.verbose:
+                    print(f"  > Hormiga {k}: Error {error_final_hormiga:.2f}, Líneas {len(camino)}")
 
-            # Evaluación de la población: calcular error por cada fila (recortar -1)
-            errores = np.zeros(self.cantidad_poblacion, dtype=float)
-            for j in range(self.cantidad_poblacion):
-                secuencia_inicial = self.Table[j, :]
-                secuencia_limpia = secuencia_inicial[secuencia_inicial >= 0].astype(int).tolist()
-                error = float(self.funcion_fitness(secuencia_limpia))
-                errores[j] = error
+            # --- ACTUALIZACIÓN DE FEROMONAS (Global) ---
+            
+            # 1. Evaporación
+            self.Tau *= (1.0 - self.rho)
+            
+            # 2. Depósito Elitista (Solo la mejor hormiga de esta iteración deposita)
+            mejor_idx_iter = np.argmin(errores_hormigas)
+            mejor_error_iter = errores_hormigas[mejor_idx_iter]
+            mejor_camino_iter = soluciones_hormigas[mejor_idx_iter]
+            
+            # Guardamos el mejor global
+            if mejor_error_iter < self.error_global_mejor:
+                self.error_global_mejor = mejor_error_iter
+                self.solucion_global_mejor = mejor_camino_iter
+                if self.verbose:
+                    print(f"*** Nuevo mejor global: {self.error_global_mejor:.4f} ***")
 
-            # guardar mejor de la generación
-            inidice_mejor_gen = int(errores.argmin())
-            mejor_solucion = self.Table[inidice_mejor_gen, :].copy()
-            mejor_error = float(errores[inidice_mejor_gen])
-            self.mejores_soluciones.append(mejor_solucion)
-            self.mejores_errores.append(mejor_error)
-
+            # Depósito: La cantidad depende de la calidad fija
+            deposito = self.q 
+            
+            for i in range(len(mejor_camino_iter) - 1):
+                u, v = mejor_camino_iter[i], mejor_camino_iter[i+1]
+                # Matriz simétrica
+                self.Tau[u, v] += deposito
+                self.Tau[v, u] += deposito
+            
             if self.verbose:
-                print(f"[iter {iteration+1}/{self.max_iter}] best_gen_error={mejor_error:.6f}")
+                print(f"Iteración {iteration}: Mejor error iteración: {mejor_error_iter:.4f}")
 
-            # Actualización de feromonas: delta_tau en función de la calidad (inversa del error)
-            delta_tau = np.zeros_like(self.Tau, dtype=float)
-
-            for j in range(self.cantidad_poblacion):
-                secuencia_inicial = self.Table[j, :]
-                secuencia_limpia = secuencia_inicial[secuencia_inicial >= 0].astype(int).tolist()
-                error = errores[j]
-                contrib = self.q / (error + eps)
-                for k in range(len(secuencia_limpia) - 1):
-                    n1 = secuencia_limpia[k]
-                    n2 = secuencia_limpia[k + 1]
-                    if self._es_arista_valida(n1, n2):
-                        delta_tau[n1, n2] += contrib
-                        delta_tau[n2, n1] += contrib  # mantener simetría
-
-            # evaporación + depósito
-            self.Tau = (1.0 - self.rho) * self.Tau + delta_tau
-            # simetria
-            self.Tau = (self.Tau + self.Tau.T) / 2.0
-
-        # seleccionar la mejor generación global
-        mejor_idx = int(np.argmin(np.array(self.mejores_errores)))
-        self.solucion_final = self.mejores_soluciones[mejor_idx].copy()
-
-        # construir el vector de error post-resolutor aplicando la secuencia final
-        seq_final = self.solucion_final
-        secuencia_limpia = seq_final[seq_final >= 0].astype(int).tolist()
-        imagen_error_post_resolutor = self.funcion_error_bruto(secuencia_limpia)
-        self.error_final = float(self._error_de_secuencia(imagen_error_post_resolutor))
-
-        return self.solucion_final, imagen_error_post_resolutor, self.error_final
+        # Reconstruir resultado final
+        imagen_final_error = secuencia_pines_a_error(
+            secuencia_pines=self.solucion_global_mejor.tolist(),
+            error_acumulado=self.vector_de_la_imagen.copy(),
+            linea_cache_y=self.linea_cache_y,
+            linea_cache_x=self.linea_cache_x,
+            ancho=self.ancho,
+            numero_de_pines=self.numero_de_pines,
+            peso_de_linea=self.peso_de_linea
+        )
+        
+        return self.solucion_global_mejor, imagen_final_error, self.error_global_mejor
 
 def obtener_camino_aco(
                         linea_cache_x: np.ndarray,
@@ -257,7 +227,7 @@ def obtener_camino_aco(
         imagen_error_preresolutor = error_acumulado.copy().reshape(alto, ancho)
     
     
-    resolutor = OCH_StringArt(_error_de_secuencia =_error_de_secuencia,
+    resolutor = OCH_StringArt_Error_aprox(_error_de_secuencia =_error_de_secuencia,
                                 numero_de_pines =numero_de_pines,
                                 vector_de_la_imagen =vector_de_la_imagen,
                                 linea_cache_x = linea_cache_x,
