@@ -102,7 +102,7 @@ class OCH_StringArt:
         for iteration in range(self.max_iter):
 
             for j in range(self.cantidad_poblacion):
-                print("Entramos a rellenar otra hormiga")
+                print(f"Entramos a rellenar otra hormiga {j}")
                 vector_actual = self.vector_de_la_imagen.copy() 
                 error_actual = float(self._error_de_secuencia(vector_actual))
 
@@ -242,7 +242,7 @@ def obtener_camino_aco(
                         peso_de_linea: int = 20,
                         _error_de_secuencia: Callable[[np.ndarray], np.float64] = mse,
                         cantidad_poblacion: int = 20, 
-                        max_iter: int = 100, 
+                        max_iter: int = 50, 
                         alpha: float = 1.0,
                         beta: float = 2.0,
                         rho: float = 0.1,
