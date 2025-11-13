@@ -10,7 +10,7 @@ from calcular_error import mse
 
 from ..utils import secuencia_pines_a_error
 
-class OCH_StringArt_Error_aprox_cultivado:
+class OCH_StringArt_Error_aprox:
     def __init__(
             self,
             _error_de_secuencia: Callable[[np.ndarray], float],
@@ -108,8 +108,10 @@ class OCH_StringArt_Error_aprox_cultivado:
                         coords_y = self.linea_cache_y[idx_linea]
                         
                         intensidad_linea = get_line_err(imagen_actual_hormiga, coords_y, coords_x, self.ancho)
-                        
-                        # eta = intensidad de la línea (cuanto más negro, mejor)
+                        # no queremos quemar la imagen con lineas extras
+                        if intensidad_linea <= 0:
+                            continue
+
                         eta = max(intensidad_linea, 1e-6) 
                         
                         tau = self.Tau[pin_actual, pin_siguiente]
@@ -194,7 +196,7 @@ class OCH_StringArt_Error_aprox_cultivado:
         
         return self.solucion_global_mejor, imagen_final_error, self.error_global_mejor
 
-def obtener_camino_aco_cultivado(
+def obtener_camino_aco(
                         linea_cache_x: np.ndarray,
                         linea_cache_y: np.ndarray,
                         ancho: int,

@@ -83,7 +83,7 @@ def probar_funciones_resolutoras_lista_de_errores(ruta_salida:str, lista_funcion
 if __name__ == "__main__":
 
     np.set_printoptions(threshold=2)
-    nombreEstudio = "ACO_testing_default"
+    nombreEstudio = "ACO_testing_condicion_parada_default"
     ruta_salida = f"../ejemplos/local/{nombreEstudio}"
     todas_las_imagenes = ["../ejemplos/ae300.jpg","../ejemplos/acue.jpg","../ejemplos/cervantesColor.jpg"]
     todas_las_funciones_error = [mse, mae, rmse,ssim]
@@ -140,7 +140,7 @@ if __name__ == "__main__":
 
 
     estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= True,
-                                 ruta_salida=ruta_salida, puerto=8020,
+                                 ruta_salida=ruta_salida, puerto=8029,
                                  funcion_preprocesado= tuberia_preprocesado_bresenham,
                                  funcion_resolucion=[obtener_camino, obtener_camino_aco],
                                  ruta_a_la_imagen=todas_las_imagenes[0],
