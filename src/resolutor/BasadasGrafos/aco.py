@@ -10,7 +10,7 @@ from calcular_error import mse
 
 from ..utils import secuencia_pines_a_error
 
-class OCH_StringArt_Error_aprox:
+class OCH_StringArt_Error_aprox_cultivado:
     def __init__(
             self,
             _error_de_secuencia: Callable[[np.ndarray], float],
@@ -85,11 +85,7 @@ class OCH_StringArt_Error_aprox:
             # --- CONSTRUCCIÓN DE SOLUCIONES (Hormigas) ---
             for k in range(self.cantidad_poblacion):
                 
-                # Cada hormiga empieza con una copia fresca de la imagen (o el residuo actual)
-                # NOTA: En ACO puro para String Art, esto es computacionalmente muy caro.
-                # Se suele usar un enfoque constructivo donde el "estado" cambia.
-                # Aquí asumiremos que cada hormiga intenta resolver la imagen completa desde 0.
-                
+        
                 imagen_actual_hormiga = self.vector_de_la_imagen.copy()
                 camino = []
                 
@@ -141,9 +137,7 @@ class OCH_StringArt_Error_aprox:
                     # Actualización vectorizada (rápida)
                     indices_pixel = (cy * self.ancho + cx).astype(np.int64)
                     # Restamos peso (simulando hilo negro sobre fondo blanco -> invertido: restamos error)
-                    imagen_actual_hormiga[indices_pixel] = np.maximum(
-                        imagen_actual_hormiga[indices_pixel] - self.peso_de_linea, 0
-                    )
+                    imagen_actual_hormiga[indices_pixel] = imagen_actual_hormiga[indices_pixel] - self.peso_de_linea
                     
                     camino.append(siguiente_pin)
                     pin_actual = siguiente_pin
@@ -200,7 +194,7 @@ class OCH_StringArt_Error_aprox:
         
         return self.solucion_global_mejor, imagen_final_error, self.error_global_mejor
 
-def obtener_camino_aco(
+def obtener_camino_aco_cultivado(
                         linea_cache_x: np.ndarray,
                         linea_cache_y: np.ndarray,
                         ancho: int,

@@ -83,7 +83,7 @@ def probar_funciones_resolutoras_lista_de_errores(ruta_salida:str, lista_funcion
 if __name__ == "__main__":
 
     np.set_printoptions(threshold=2)
-    nombreEstudio = "ACO_testing"
+    nombreEstudio = "ACO_testing_default"
     ruta_salida = f"../ejemplos/local/{nombreEstudio}"
     todas_las_imagenes = ["../ejemplos/ae300.jpg","../ejemplos/acue.jpg","../ejemplos/cervantesColor.jpg"]
     todas_las_funciones_error = [mse, mae, rmse,ssim]
@@ -105,8 +105,8 @@ if __name__ == "__main__":
     #                     verbose=True)
     #
     # fin1=time.time()
-    # revisar_estudio(output_dir=Path("../ejemplos/local/Version que no respeta AG con 500 poblaciones resto default Version que no respeta HoF/"))
-    # revisar_estudio(output_dir=Path("../ejemplos/local/GA_G750_P400_PC80_PM_20_HF5_T7_03112025_214306/"))
+    # revisar_estudio(output_dir=Path("../ejemplos/local/ag_cultivado_ITE200_IND100_PC90_PM50_E5_T7/"))
+    # revisar_estudio(output_dir=Path("../ejemplos/local/ag_cultivado_ITE200_IND100_PC90_PM50_E5_T7_2_08112025_174645/"))
     # revisar_estudio(output_dir=Path("../ejemplos/local/EjecucionMuchosParametrosIntro/"))
 
     # estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
@@ -142,7 +142,7 @@ if __name__ == "__main__":
     estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= True,
                                  ruta_salida=ruta_salida, puerto=8020,
                                  funcion_preprocesado= tuberia_preprocesado_bresenham,
-                                 funcion_resolucion=[obtener_camino,obtener_camino_aco],
+                                 funcion_resolucion=[obtener_camino, obtener_camino_aco],
                                  ruta_a_la_imagen=todas_las_imagenes[0],
                                  verbose= True)
     # estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
