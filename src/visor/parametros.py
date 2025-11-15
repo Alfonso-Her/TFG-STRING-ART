@@ -21,5 +21,9 @@ mapaJson = {
     "probabilidad_mutacion_gen":"probabilidad_mutacion_gen",
     "cantidad_torneo":"cantidad_torneo",
     "probabilidad_cruce":"probabilidad_cruce",
-    "Hall_Fama": "elitismo_size"
+    "Hall_Fama": "elitismo_size",
+    "alpha": "alpha",
+    "beta": "beta",
+    "rho": "rho",
+    "q": "q"
 }

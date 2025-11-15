@@ -75,7 +75,7 @@ class OCH_StringArt_Error_aprox:
             return False
         return True
 
-    def run(self) -> Tuple[np.ndarray, np.ndarray, float]:
+    def run(self) -> Tuple[np.ndarray, np.ndarray]:
         
         for iteration in range(self.max_iter):
             
@@ -194,7 +194,7 @@ class OCH_StringArt_Error_aprox:
             peso_de_linea=self.peso_de_linea
         )
         
-        return self.solucion_global_mejor, imagen_final_error, self.error_global_mejor
+        return self.solucion_global_mejor, imagen_final_error
 
 def obtener_camino_aco(
                         linea_cache_x: np.ndarray,
@@ -241,7 +241,7 @@ def obtener_camino_aco(
                                 verbose=verbose
                               )
     
-    secuencia_sol,imagen_error_post_resolutor,error_final = resolutor.run()
+    secuencia_sol,imagen_error_post_resolutor = resolutor.run()
 
     imagen_error_post_resolutor 
     if verbose:
@@ -250,17 +250,25 @@ def obtener_camino_aco(
             peso_de_linea=peso_de_linea,
             distancia_minima=distancia_minima,
             maximo_lineas=maximo_lineas,
-            error_total=error_final,
+            error_total=imagen_error_post_resolutor,
             secuencia_pines=np.array(secuencia_sol),
             imagen_preprocesada=imagen_preprocesada,
             imagen_error_preresolutor=imagen_error_preresolutor,
             imagen_error_post_resolutor=imagen_error_post_resolutor,
+            alpha= alpha,
+            beta= beta,
+            rho= rho,
+            q=q
         )
     
     return ReturnResolutor(
         peso_de_linea=peso_de_linea,
         distancia_minima=distancia_minima,
         maximo_lineas=maximo_lineas,
-        error_total=error_final,
-        secuencia_pines=np.array(secuencia_sol)
-    )
+        error_total=imagen_error_post_resolutor,
+        secuencia_pines=np.array(secuencia_sol),
+        alpha = alpha,
+        beta = beta,
+        rho = rho,
+        q = q
+)

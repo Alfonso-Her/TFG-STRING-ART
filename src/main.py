@@ -10,7 +10,8 @@ from preprocesado import ParametrosPreprocesado,ReturnPreprocesado,\
 from resolutor import ParametrosResolucion,ReturnResolutor,\
                         obtener_camino, obtener_camino_con_error_total,\
                         obtener_camino_ag, obtener_camino_ag_con_semilla,\
-                        obtener_camino_ag_cultivado, obtener_camino_aco
+                        obtener_camino_ag_cultivado, obtener_camino_aco,\
+                        obtener_camino_aco_semilla
 from postOpt import ParametrosPostOpt,ReturnPostOpt,\
                     no_reoptimizar, cambio_pin_medio
 
@@ -83,12 +84,15 @@ def probar_funciones_resolutoras_lista_de_errores(ruta_salida:str, lista_funcion
 if __name__ == "__main__":
 
     np.set_printoptions(threshold=2)
-    nombreEstudio = "ACO_testing_condicion_parada_default"
+    nombreEstudio = "ACO_SEMILLA_CP75_MI100_beta_10"
     ruta_salida = f"../ejemplos/local/{nombreEstudio}"
     todas_las_imagenes = ["../ejemplos/ae300.jpg","../ejemplos/acue.jpg","../ejemplos/cervantesColor.jpg"]
     todas_las_funciones_error = [mse, mae, rmse,ssim]
     todas_las_funciones_preprocesado = [tuberia_preprocesado, tuberia_preprocesado_bresenham]
-    todas_las_funciones_resolutoras = [obtener_camino, obtener_camino_con_error_total, obtener_camino_ag_con_semilla, obtener_camino_ag]#, obtener_camino_aco]
+    todas_las_funciones_resolutoras = [obtener_camino, obtener_camino_con_error_total,
+                                        obtener_camino_ag_con_semilla, obtener_camino_ag,
+                                        obtener_camino_ag_cultivado, obtener_camino_aco,
+                                        obtener_camino_aco_semilla]
     todas_las_funciones_postOpt = [no_reoptimizar,cambio_pin_medio]
 
     # estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
@@ -139,12 +143,28 @@ if __name__ == "__main__":
     #                              verbose= True)
 
 
-    estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= True,
-                                 ruta_salida=ruta_salida, puerto=8029,
+    # estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
+    #                              ruta_salida=ruta_salida, puerto=8027,
+    #                              funcion_preprocesado= tuberia_preprocesado_bresenham,
+    #                              funcion_resolucion=[obtener_camino, obtener_camino_aco],
+    #                              ruta_a_la_imagen=todas_las_imagenes[0],
+    #                              max_iter=100,
+    #                              cantidad_poblacion=75,
+    #                              alpha=0.9,
+    #                              beta=15.0,
+    #                              verbose= True)
+
+    estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
+                                 ruta_salida=ruta_salida, puerto=8080,
                                  funcion_preprocesado= tuberia_preprocesado_bresenham,
-                                 funcion_resolucion=[obtener_camino, obtener_camino_aco],
+                                 funcion_resolucion=[obtener_camino, obtener_camino_aco_semilla],
                                  ruta_a_la_imagen=todas_las_imagenes[0],
+                                 max_iter=100,
+                                 cantidad_poblacion=75,
+                                #  alpha=0.9,
+                                 beta=10.0,
                                  verbose= True)
+
     # estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
     #                     funcion_calculo_error=mse, puerto=8121, numero_procesos=4,
     #                     funcion_preprocesado=tuberia_preprocesado_bresenham,
