@@ -19,6 +19,30 @@ from solvers import  EstudioParametrosInput,estudioParametrico, estudioParametri
 from calcular_error import mse, mae, rmse, ssim
 from visor import revisar_estudio
 
+
+
+def visualizar_resultados(seccion:list[int] = [4,5,6,7,8]):
+    PUERTO = 8080
+
+    if isinstance(seccion,int):
+        seccion = [seccion]
+
+    if 4 in seccion: # Resolutor voraz
+        revisar_estudio(output_dir=Path("../ejemplos/entrega/voraz/", port= PUERTO))
+        PUERTO +=1
+    if 5 in seccion: # Resolutor voraz con error individual
+        revisar_estudio(output_dir=Path("../ejemplos/entrega/voraz_error/", port= PUERTO))
+        PUERTO +=1
+    if 6 in seccion: # Refinamiento de soluciones
+        revisar_estudio(output_dir=Path("../ejemplos/entrega/pin_medio/", port= PUERTO))
+        PUERTO +=1
+    if 7 in seccion: # GA
+        revisar_estudio(output_dir=Path("../ejemplos/entrega/GA/", port= PUERTO))
+        PUERTO +=1
+    if 8 in seccion: # ACO
+        revisar_estudio(output_dir=Path("../ejemplos/entrega/ACO/", port= PUERTO))
+        PUERTO +=1
+
 def obtener_imagenes_por_carpeta(ruta_carpeta:str):
     extensiones_validas = {".jpg", ".jpeg", ".png", ".bmp", ".tiff", ".gif", ".webp"}
     carpeta = Path(ruta_carpeta)
@@ -84,7 +108,7 @@ def probar_funciones_resolutoras_lista_de_errores(ruta_salida:str, lista_funcion
 if __name__ == "__main__":
 
     np.set_printoptions(threshold=2)
-    nombreEstudio = "ACO_SEMILLA_CP75_MI100_beta_10"
+    nombreEstudio = "basura"
     ruta_salida = f"../ejemplos/local/{nombreEstudio}"
     todas_las_imagenes = ["../ejemplos/ae300.jpg","../ejemplos/acue.jpg","../ejemplos/cervantesColor.jpg"]
     todas_las_funciones_error = [mse, mae, rmse,ssim]
@@ -154,25 +178,24 @@ if __name__ == "__main__":
     #                              beta=15.0,
     #                              verbose= True)
 
-    estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
-                                 ruta_salida=ruta_salida, puerto=8080,
-                                 funcion_preprocesado= tuberia_preprocesado_bresenham,
-                                 funcion_resolucion=[obtener_camino, obtener_camino_aco_semilla],
-                                 ruta_a_la_imagen=todas_las_imagenes[0],
-                                 max_iter=100,
-                                 cantidad_poblacion=75,
-                                #  alpha=0.9,
-                                 beta=10.0,
-                                 verbose= True)
+    # estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
+    #                              ruta_salida=ruta_salida, puerto=8080,
+    #                              funcion_preprocesado= tuberia_preprocesado_bresenham,
+    #                              funcion_resolucion=[obtener_camino, obtener_camino_aco_semilla],
+    #                              ruta_a_la_imagen=todas_las_imagenes[0],
+    #                              max_iter=100,
+    #                              cantidad_poblacion=75,
+    #                             #  alpha=0.9,
+    #                              beta=10.0,
+    #                              verbose= True)
 
-    # estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
-    #                     funcion_calculo_error=mse, puerto=8121, numero_procesos=4,
-    #                     funcion_preprocesado=tuberia_preprocesado_bresenham,
-    #                     funcion_resolucion=obtener_camino,
-    #                     ruta_a_la_imagen=todas_las_imagenes,
-    #                     numero_de_pines=[128*k for k in range(1,3)],
-    #                     distancia_minima=[2*k for k in range(1,4)],
-    #                     numero_de_pines_recientes_a_evitar=[2*k for k in range(1,4)],
-    #                     maximo_lineas=[1000*k for k in range(1,5)],
-    #                     peso_de_linea=[10*k for k in range(1,9)],
-    #                     verbose= True)
+    estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
+                        funcion_calculo_error=mse, puerto=8122, numero_procesos=1,
+                        funcion_preprocesado=todas_las_funciones_preprocesado[1],
+                        funcion_resolucion=[obtener_camino],
+                        peso_de_linea=20,
+                        ruta_a_la_imagen=todas_las_imagenes,
+                        distancia_minima=[0,10,30],
+                        numero_de_pines=256,
+                        maximo_lineas=4000,
+                        verbose= True)

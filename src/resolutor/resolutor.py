@@ -13,6 +13,7 @@ def obtener_camino(linea_cache_x:list,linea_cache_y:list,
                    numero_de_pines_recientes_a_evitar:int=5,
                    **kwargs:Unpack[ParametrosResolucion])->ReturnResolutor:
     
+    
     # Haciendo esto basicamente invertimos colores y pintamos de negro los blancos 
     error_acumulado = vector_de_la_imagen
 

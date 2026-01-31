@@ -10,7 +10,7 @@ paseo/
 __pycache__/
 *.py[codz]
 *$py.class
-
+sucio/
 
 # C extensions
 *.so
