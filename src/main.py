@@ -83,7 +83,7 @@ def probar_funciones_resolutoras_lista_de_errores(ruta_salida:str, lista_funcion
 if __name__ == "__main__":
 
     np.set_printoptions(threshold=2)
-    nombreEstudio = "ACO_testing_condicion_parada_default"
+    nombreEstudio = "sucio"
     ruta_salida = f"../ejemplos/local/{nombreEstudio}"
     todas_las_imagenes = ["../ejemplos/ae300.jpg","../ejemplos/acue.jpg","../ejemplos/cervantesColor.jpg"]
     todas_las_funciones_error = [mse, mae, rmse,ssim]
@@ -105,9 +105,12 @@ if __name__ == "__main__":
     #                     verbose=True)
     #
     # fin1=time.time()
-    # revisar_estudio(output_dir=Path("../ejemplos/local/ag_cultivado_ITE200_IND100_PC90_PM50_E5_T7/"))
-    # revisar_estudio(output_dir=Path("../ejemplos/local/ag_cultivado_ITE200_IND100_PC90_PM50_E5_T7_2_08112025_174645/"))
-    # revisar_estudio(output_dir=Path("../ejemplos/local/EjecucionMuchosParametrosIntro/"))
+    # revisar_estudio(output_dir=Path("../ejemplos/local/ACO_CP100_MI200/"))
+    # revisar_estudio(output_dir=Path("../ejemplos/local/ACO_CP50_MI100_beta4_rho0.25/"))
+    # revisar_estudio(output_dir=Path("../ejemplos/local/ACO_CP50_MI100_beta10/"))
+    # revisar_estudio(output_dir=Path("../ejemplos/local/ACO_CP75_MI100_beta_15_alpha0-9/"))
+    # revisar_estudio(output_dir=Path("../ejemplos/local/ACO_SEMILLA_CP75_MI100_beta_10/"))
+    # revisar_estudio(output_dir=Path("../ejemplos/local/ACO_SEMILLA_CP75_MI100_beta_15_alpha0-9/"))
 
     # estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
     #                     ruta_salida=ruta_salida, funcion_calculo_error=ssim,
@@ -140,12 +143,12 @@ if __name__ == "__main__":
 
 
     estudioParametricoNoParalelo(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= True,
-                                 ruta_salida=ruta_salida, puerto=8029,
+                                 ruta_salida=ruta_salida, puerto=8029, maximo_lineas = 10, numero_de_pines=3,
                                  funcion_preprocesado= tuberia_preprocesado_bresenham,
-                                 funcion_resolucion=[obtener_camino, obtener_camino_aco],
+                                 funcion_resolucion=[obtener_camino],
                                  ruta_a_la_imagen=todas_las_imagenes[0],
                                  verbose= True)
-    # estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
+    # # estudioParametrico(output_dir=Path(ruta_salida),estudio_web= True, continuacion_estudio= False,
     #                     funcion_calculo_error=mse, puerto=8121, numero_procesos=4,
     #                     funcion_preprocesado=tuberia_preprocesado_bresenham,
     #                     funcion_resolucion=obtener_camino,

@@ -91,7 +91,8 @@ def tuberia_preprocesado_bresenham(ruta_a_la_imagen:Path, numero_de_pines:int = 
 
     cache_linea_x, cache_linea_y,posiciones_pines = precalcular_todas_las_posibles_lineas_bresenham(ancho=ancho, alto=alto,
                                                                                                      numero_de_pines=numero_de_pines,distancia_minima=distancia_minima)
-
+    print("cache linea x: ",cache_linea_x," \n cache linea y", cache_linea_y)
+    print(len(cache_linea_x), len(cache_linea_y))
     # objgraph.show_growth(limit=10)
     return ReturnPreprocesado(ruta_a_la_imagen=ruta_a_la_imagen,
                             numero_de_pines=numero_de_pines, 

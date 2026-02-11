@@ -68,7 +68,7 @@ def precaluclar_todas_las_posibles_lineas(numero_de_pines: int, coord_xs: np.nda
             linea_cache_y[i*numero_de_pines+j] = pasamos_por_ys
             linea_cache_x[j*numero_de_pines+i] = pasamos_por_xs
             linea_cache_x[i*numero_de_pines+j] = pasamos_por_xs
-
+    print(linea_cache_x)
     return linea_cache_x, linea_cache_y
 
 
@@ -119,9 +119,6 @@ if __name__ == "__main__":
     # print(cerva[0:15])
     # cv2.imwrite(filename="AAAAAA.jpg",img=cerva)
 
-    img = cv2.imread("../../ejemplos/cervantesColor.jpg", cv2.IMREAD_GRAYSCALE)
-    # cv2.imwrite(filename="AAAAAA.jpg",img=img)
-    # imagen_normalizada = cv2.normalize(img,None, 0, 255, cv2.NORM_MINMAX)
-    # cv2.imwrite(filename="AAAdAAA.jpg",img=imagen_normalizada)
-    a = np.full(shape =img.shape, fill_value=np.float64(255.0)) - img
-    cv2.imwrite(filename="AAAdAAA.jpg",img=a)
+    # img = cv2.imread("../../ejemplos/cervantesColor.jpg", cv2.IMREAD_GRAYSCALE)
+    tuberia_preprocesado("../../ejemplos/cervantesColor.jpg")
+    # cv2.imwrite(filename="AAAdAAA.jpg",img=a)

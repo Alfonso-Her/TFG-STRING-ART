@@ -100,7 +100,7 @@ class OCH_StringArt_Error_aprox:
                     candidatos_validos = []
                     
                     for pin_siguiente in range(self.numero_de_pines):
-                        if not self._es_arista_valida(pin_actual, pin_siguiente):
+                        if not self._es_arista_vaslida(pin_actual, pin_siguiente):
                             continue
                         
                         idx_linea = self._obtener_indice(pin_actual, pin_siguiente)
