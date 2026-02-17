@@ -78,7 +78,6 @@ def tuberia_resolucion(paquete_argumentos,output_dir,cola_metadatos):
         nombre_funcion_error = args_preprocesado["funcion_calculo_error"].__name__
 
         datos_preprocesados = args_preprocesado["funcion_preprocesado"](**args_preprocesado)
-        print(datos_preprocesados["linea_cache_x"], len(datos_preprocesados["linea_cache_x"]))
 
         # if "verbose" in args_preprocesado and args_preprocesado["verbose"]:
         #     print(" Del preprocesado obtenemos: ", datos_preprocesados)
@@ -122,7 +121,7 @@ def tuberia_resolucion(paquete_argumentos,output_dir,cola_metadatos):
     try:
         args_reconstruccion.update({k:v for k,v in datos_solucion_problema_postOpt.items() if k in ParametrosReconstruccion.__annotations__})
         args_reconstruccion.update({k:v for k,v in datos_preprocesados.items() if k in ParametrosReconstruccion.__annotations__})
-
+        
 
         datos_sol_final = args_reconstruccion["funcion_reconstruccion"](**args_reconstruccion)
 

@@ -40,37 +40,38 @@ def calculo_lineas_real(x0: int, y0: int, x1: int, y1: int):
 
     return list(zip(pasamos_por_xs, pasamos_por_ys))
 
-
-def generar_comparativa_cv2(width: int, height: int, p0: tuple, p1: tuple):
-    """
-    Genera dos imágenes JPG usando OpenCV para comparar los algoritmos.
-    """
+def generar_comparativa_cv2(width: int, height: int, p0: tuple, p1: tuple, scale: int = 10):
     x0, y0 = p0
     x1, y1 = p1
 
     puntos_bresenham = bresenham(x0, y0, x1, y1)
     puntos_real = calculo_lineas_real(x0, y0, x1, y1)
 
-    img_bresenham = np.zeros((height, width), dtype=np.uint8)
-    img_real = np.zeros((height, width), dtype=np.uint8)
+    img_bresenham = np.ones((height, width, 3), dtype=np.uint8) * 255
+    img_real = np.ones((height, width, 3), dtype=np.uint8) * 255
 
     for px, py in puntos_bresenham:
         if 0 <= px < width and 0 <= py < height:
-            img_bresenham[py, px] = 255  
-
+            img_bresenham[py, px] = [255, 0, 0] 
 
     for px, py in puntos_real:
         if 0 <= px < width and 0 <= py < height:
-            img_real[py, px] = 255 
+            img_real[py, px] = [0, 0, 255]
 
-    cv2.imwrite("linea_bresenham_cv2.jpg", img_bresenham)
-    cv2.imwrite("linea_real_cv2.jpg", img_real)
+    # --- EL TRUCO PARA LATEX ---
+    # Escalamos la imagen para que cada píxel sea un bloque de scale x scale
+    new_dims = (width * scale, height * scale)
     
-    print("Imágenes guardadas: 'linea_bresenham_cv2.jpg' y 'linea_real_cv2.jpg'")
+    img_bresenham_big = cv2.resize(img_bresenham, new_dims, interpolation=cv2.INTER_NEAREST)
+    img_real_big = cv2.resize(img_real, new_dims, interpolation=cv2.INTER_NEAREST)
 
+    cv2.imwrite("linea_bresenham.jpg", img_bresenham_big)
+    cv2.imwrite("linea_real.jpg", img_real_big)
+    
+    print(f"Imágenes guardadas con escalado {scale}x.")
 
 if __name__ == "__main__":
-    x0 = 0; y0 = 24
-    x1 = 50; y1 = 0
+    x0 = 3; y0 = 24
+    x1 = 98; y1 = 70
 
-    generar_comparativa_cv2(50, 50, (x0, y0), (x1, y1))
+    generar_comparativa_cv2(100, 100, (x0, y0), (x1, y1))

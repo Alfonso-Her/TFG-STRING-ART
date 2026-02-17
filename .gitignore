@@ -6,6 +6,7 @@ ejecuciones/
 *.png
 sucio.py
 paseo/
+entrega/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
