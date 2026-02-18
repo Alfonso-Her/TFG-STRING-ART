@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visor de Ejecuciones</title>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script src="utils/visor.js" defer></script>
+    <script src="utils/zoom.js" defer></script>
+    <link rel="stylesheet" href="utils/style.css">
+</head>
+<body>
+    <!-- MENÚ SUPERIOR -->
+    <nav class="menu-superior">
+        <select id="filtro-grupo" class="filtro-select">
+            <option value="">Agrupar por...</option>
+            <option value="imagen_original">Imagen original</option>
+            <option value="funciones_usadas">Funciones usadas</option>
+            <option value="numero_de_pines">Número de pines</option>
+            <option value="funcio_error">Función error</option>
+        </select>
+        
+        <select id="filtro-orden" class="filtro-select">
+            <option value="">Ordenar por...</option>
+            <option value="error_total">Error total (menor primero)</option>
+            <option value="tiempo_ejecucion">Tiempo ejecución</option>
+            <option value="lineas_usadas">Líneas usadas</option>
+        </select>
+
+        <details class="filtro-details">
+            <summary>🧩 Preprocesado</summary>
+            <div class="filtro-checkboxes">
+                <label><input type="checkbox" name="parametro" value="imagen_original" checked> Imagen Original</label>
+                <label><input type="checkbox" name="parametro" value="numero_de_pines" checked> Número de Pines</label>
+                <label><input type="checkbox" name="parametro" value="distancia_minima" checked> Distancia Mínima</label>
+                <label><input type="checkbox" name="parametro" value="funcion_preprocesado"> Función Preprocesado</label>
+                <label><input type="checkbox" name="parametro" value="filtro_bordes_inferior"> Filtro Bordes Inferior</label>
+                <label><input type="checkbox" name="parametro" value="filtro_bordes_superior"> Filtro Bordes Superior</label>
+                <label><input type="checkbox" name="parametro" value="pasar_a_grises"> Pasar a Grises</label>
+                <label><input type="checkbox" name="parametro" value="mascara_circular"> Máscara Circular</label>
+                <label><input type="checkbox" name="parametro" value="marcar_bordes"> Marcar Bordes</label>
+            </div>
+        </details>
+
+        <details class="filtro-details">
+            <summary>⚙️ Resolución</summary>
+            <div class="filtro-checkboxes">
+                <label><input type="checkbox" name="parametro" value="maximo_lineas" checked> Máximo Líneas</label>
+                <label><input type="checkbox" name="parametro" value="lineas_usadas" checked> Líneas Usadas</label>
+                <label><input type="checkbox" name="parametro" value="peso_de_linea" checked> Peso de Línea</label>
+                <label><input type="checkbox" name="parametro" value="error_total" checked> Error Total</label>
+                <label><input type="checkbox" name="parametro" value="funciones_usadas" checked> Funciones Usadas</label>
+                <label><input type="checkbox" name="parametro" value="probabilidad_cruce"> Prob. Cruce</label>
+                <label><input type="checkbox" name="parametro" value="Prob_mutar_gen"> Prob. Mutación Gen</label>
+                <label><input type="checkbox" name="parametro" value="cantidad_torneo"> Cantidad Torneo</label>
+                <label><input type="checkbox" name="parametro" value="Hall_Fama"> Elitismo (Hall of Fame)</label>
+                <label><input type="checkbox" name="parametro" value="Alpha"> Alpha</label>
+                <label><input type="checkbox" name="parametro" value="Beta"> Beta</label>
+                <label><input type="checkbox" name="parametro" value="Rho"> Rho</label>
+                <label><input type="checkbox" name="parametro" value="q"> q</label>
+            </div>
+        </details>
+
+        <details class="filtro-details">
+            <summary>🔁 Post-Optimización</summary>
+            <div class="filtro-checkboxes">
+                <label><input type="checkbox" name="parametro" value="tiempo_postOpt" checked> Tiempo Re-Optimización</label>
+                <label><input type="checkbox" name="parametro" value="iteraciones_postopimizacion" checked> Iteraciones Re-Opt</label>
+                <label><input type="checkbox" name="parametro" value="decremento_error_minimo"> Decremento Error Mínimo</label>
+            </div>
+        </details>
+
+        <details class="filtro-details">
+            <summary>🎨 Reconstrucción</summary>
+            <div class="filtro-checkboxes">
+                <label><input type="checkbox" name="parametro" value="ruta_resultado"> Imagen Resultado</label>
+                <label><input type="checkbox" name="parametro" value="ruta_imagen_preprocesada"> Imagen Preprocesada</label>
+                <label><input type="checkbox" name="parametro" value="ruta_imagen_error_preresolutor"> Error Pre-Resolutor</label>
+                <label><input type="checkbox" name="parametro" value="ruta_imagen_error_post_resolutor"> Error Post-Resolutor</label>
+                <label><input type="checkbox" name="parametro" value="verbose"> Verbose</label>
+            </div>
+        </details>
+
+        <details class="filtro-details">
+            <summary>⏱️ Tiempos y Métricas</summary>
+            <div class="filtro-checkboxes">
+                <label><input type="checkbox" name="parametro" value="tiempo_ejecucion" checked> Tiempo Ejecución</label>
+                <label><input type="checkbox" name="parametro" value="error_total" checked> Error Total</label>
+                <label><input type="checkbox" name="parametro" value="lineas_usadas" checked> Líneas Usadas</label>
+            </div>
+        </details>
+    </nav>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <div class="main">
+        <div class="contenedor-imagen"></div>
+        <div class="ejecuciones">
+            <div class="contenedor-ejecuciones"></div>	
+        </div>
+    </div>
+</body>
+</html>
