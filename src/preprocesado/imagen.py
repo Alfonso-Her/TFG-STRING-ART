@@ -82,3 +82,25 @@ def preprocesar_imagen( imagen:np.ndarray, filtro_bordes_inferior:int =150,
         imagen = marcar_bordes_en_img(imagen,filtro_bordes_inferior,filtro_bordes_superior)
 
     return imagen
+
+if __name__ == "__main__":
+    # a = _construir_vector_imagen_bucles(cv2.imread("../../ejemplos/ae300.jpg"))
+    # b = construir_vector_imagen(cv2.imread("../../ejemplos/ae300.jpg"))
+    # _construir_vector_imagen_bucles(cv2.imread("../../ejemplos/ae300.jpg"))
+    # construir_vector_imagen(cv2.imread("../../ejemplos/ae300.jpg"))
+    # print((a == b).all())
+
+    # print(tuberia_preprocesado(ruta_a_la_imagen="../../ejemplos/acue.jpg"))
+    # foto =cv2.imread("../../ejemplos/cervantesColor.jpg") 
+    # print(foto[0:15])
+    # cerva= pasar_a_grises(foto)
+    # print(cerva[0:15])
+    # cv2.imwrite(filename="AAAAAA.jpg",img=cerva)
+
+    img = cv2.imread("../../ejemplos/cervantesColor.jpg")
+    # cv2.imwrite(filename="AAAAAA.jpg",img=img)
+    # imagen_normalizada = cv2.normalize(img,None, 0, 255, cv2.NORM_MINMAX)
+    # cv2.imwrite(filename="AAAdAAA.jpg",img=imagen_normalizada)
+    a = preprocesar_imagen(img, mascara_circular=True, marcar_bordes=False)
+    # a = np.full(shape =a.shape, fill_value=np.float64(255.0)) - a
+    cv2.imwrite(filename="AAAdAAA.jpg",img=a)

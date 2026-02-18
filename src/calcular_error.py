@@ -28,7 +28,7 @@ def ssim(imagen_original:np.ndarray, imagen_resultado:np.ndarray) -> np.float64:
         Poder usarla (fijando la imagen original), como da valores entre -1 y 1,
         al hacer 1 - error obtenemos una funcion de error que cumple que cuanto menor es mas se parece
     """
-    return 1 - np.float64(structural_similarity(imagen_original,imagen_resultado, data_range=255))
+    return  np.float64(structural_similarity(imagen_original,imagen_resultado, data_range=255))
 # BORRADAS PORQUE NO TIENEN SENTIDO TE EQUIVOCAS EN EL ORDEN EN VEZ DE SUMAR ABS O CUADRADOS
 # HACES ABS/CUADRADOS DE SUMAS => ERROR
 # def suma_abs(imagen_error_total:np.ndarray)->np.float64:

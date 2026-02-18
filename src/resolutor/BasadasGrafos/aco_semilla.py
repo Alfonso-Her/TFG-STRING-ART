@@ -9,8 +9,9 @@ from ..utils import get_line_err, agregar_lineas_al_error
 from calcular_error import mse
 
 from ..utils import secuencia_pines_a_error
+from ..resolutor import obtener_camino
 
-class OCH_StringArt_Error_aprox:
+class OCH_StringArt_Error_aprox_semilla:
     def __init__(
             self,
             _error_de_secuencia: Callable[[np.ndarray], float],
@@ -19,6 +20,7 @@ class OCH_StringArt_Error_aprox:
             linea_cache_x: List[Optional[np.ndarray]],
             linea_cache_y: List[Optional[np.ndarray]],
             ancho: int,
+            alto:int,
             peso_de_linea: int = 20,
             maximo_lineas: int = 1000,
             cantidad_poblacion: int = 10,
@@ -39,20 +41,30 @@ class OCH_StringArt_Error_aprox:
             self.ancho = ancho
             self.peso_de_linea = float(peso_de_linea)
             
-            self.maximo_lineas = int(maximo_lineas)
-            self.cantidad_poblacion = int(cantidad_poblacion)
-            self.max_iter = int(max_iter)
+            self.maximo_lineas = maximo_lineas
+            self.cantidad_poblacion = cantidad_poblacion
+            self.max_iter = max_iter
             
             self.alpha = float(alpha)
             self.beta = float(beta)
             self.rho = float(rho)
             self.q = float(q)
-            self.distancia_minima = int(distancia_minima)
+            self.distancia_minima = distancia_minima
             self.verbose = verbose
 
             # Matriz de feromonas: Arista [i][j]
             self.Tau = np.ones((self.numero_de_pines, self.numero_de_pines), dtype=np.float64)
-            
+            semilla = obtener_camino(linea_cache_x=linea_cache_x,
+                                     linea_cache_y=linea_cache_y,
+                                     ancho=ancho,
+                                     alto=alto,
+                                     vector_de_la_imagen=vector_de_la_imagen,
+                                     numero_de_pines=  numero_de_pines, 
+                                     maximo_lineas= maximo_lineas,
+                                     distancia_minima= distancia_minima,
+                                     peso_de_linea= peso_de_linea)["secuencia_pines"]
+            for i,j in zip(semilla, semilla[1:]):
+                self.Tau[i][j] = 1.4
             # Historial
             self.mejores_errores: List[float] = []
             self.solucion_global_mejor = None
@@ -100,7 +112,7 @@ class OCH_StringArt_Error_aprox:
                     candidatos_validos = []
                     
                     for pin_siguiente in range(self.numero_de_pines):
-                        if not self._es_arista_vaslida(pin_actual, pin_siguiente):
+                        if not self._es_arista_valida(pin_actual, pin_siguiente):
                             continue
                         
                         idx_linea = self._obtener_indice(pin_actual, pin_siguiente)
@@ -196,7 +208,7 @@ class OCH_StringArt_Error_aprox:
         
         return self.solucion_global_mejor, imagen_final_error
 
-def obtener_camino_aco(
+def obtener_camino_aco_semilla(
                         linea_cache_x: np.ndarray,
                         linea_cache_y: np.ndarray,
                         ancho: int,
@@ -223,12 +235,13 @@ def obtener_camino_aco(
         imagen_error_preresolutor = error_acumulado.copy().reshape(alto, ancho)
     
     
-    resolutor = OCH_StringArt_Error_aprox(_error_de_secuencia =_error_de_secuencia,
+    resolutor = OCH_StringArt_Error_aprox_semilla(_error_de_secuencia =_error_de_secuencia,
                                 numero_de_pines =numero_de_pines,
                                 vector_de_la_imagen =vector_de_la_imagen,
                                 linea_cache_x = linea_cache_x,
                                 linea_cache_y = linea_cache_y,
                                 ancho = ancho,
+                                alto = alto,
                                 peso_de_linea = peso_de_linea, 
                                 maximo_lineas = maximo_lineas, 
                                 cantidad_poblacion = cantidad_poblacion, 

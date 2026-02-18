@@ -128,7 +128,7 @@ def estudioParametrico(output_dir:Path, estudio_web:bool= True,puerto:int = 8080
                    })
     # Conseguimos los parametros ya empaquetados para cada parte del problema
     lista_con_todos_los_parametros = construirParametros(**kwargs)
-
+    print(lista_con_todos_los_parametros)
     manager = Manager()
     cola_metadatos = manager.Queue() #Cola gestionada para que no de problemas
     lock_json = Lock()

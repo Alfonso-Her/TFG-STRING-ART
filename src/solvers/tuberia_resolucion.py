@@ -34,15 +34,22 @@ def validacionesSaltoCaso(paquete_de_parametros):
                 return "Has introducido un peso de linea erroneo"
     return ""
 
-def agregar_datos_bioinspirados(datos_totales):
+def agregar_datos_bioinspirados(datos_totales,datos_solucion_problema):
     actualizacion = {}
     if "funcion_resolucion" in datos_totales:
         if "AG" in datos_totales["funcion_resolucion"].__name__.upper():
             actualizacion.update({
-                "probabilidad_mutacion_gen":datos_totales["probabilidad_mutacion_gen"],
-                "cantidad_torneo":datos_totales["cantidad_torneo"],
-                "probabilidad_cruce":datos_totales["probabilidad_cruce"],
-                "Hall_Fama": datos_totales["elitismo_size"]
+                "probabilidad_mutacion_gen":datos_solucion_problema["probabilidad_mutacion_gen"],
+                "cantidad_torneo":datos_solucion_problema["cantidad_torneo"],
+                "probabilidad_cruce":datos_solucion_problema["probabilidad_cruce"],
+                "Hall_Fama": datos_solucion_problema["elitismo_size"]
+            })
+        if "ACO" in datos_totales["funcion_resolucion"].__name__.upper():
+            actualizacion.update({
+                "alpha":datos_solucion_problema["alpha"],
+                "beta":datos_solucion_problema["beta"],
+                "rho":datos_solucion_problema["rho"],
+                "q": datos_solucion_problema["q"]
             })
     datos_totales.update(actualizacion)
 
@@ -114,7 +121,7 @@ def tuberia_resolucion(paquete_argumentos,output_dir,cola_metadatos):
     try:
         args_reconstruccion.update({k:v for k,v in datos_solucion_problema_postOpt.items() if k in ParametrosReconstruccion.__annotations__})
         args_reconstruccion.update({k:v for k,v in datos_preprocesados.items() if k in ParametrosReconstruccion.__annotations__})
-
+        
 
         datos_sol_final = args_reconstruccion["funcion_reconstruccion"](**args_reconstruccion)
 
@@ -160,9 +167,13 @@ def tuberia_resolucion(paquete_argumentos,output_dir,cola_metadatos):
             cantidad_torneo=0,
             probabilidad_cruce=0.0,
             elitismo_size=0,
+            alpha=0,
+            beta=0,
+            rho=0,
+            q=0
         )
 
-        agregar_datos_bioinspirados(resultado)
+        agregar_datos_bioinspirados(resultado,datos_solucion_problema)
         if "verbose" in args_preprocesado and args_preprocesado["verbose"]:
 
             resultado.update({

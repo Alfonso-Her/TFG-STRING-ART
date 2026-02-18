@@ -3,13 +3,18 @@ import cv2
 from typing import Callable, Tuple, Unpack
 from pathlib import Path
 from functools import lru_cache
-import objgraph
+from functools import partial
+
 
 from calcular_error import mse,ssim
 
 from .preprocesado import ReturnPreprocesado, ParametrosPreprocesado, construir_vector_imagen, \
                           calcular_posicion_pins
 from .imagen import preprocesar_imagen
+
+def wrapper_calculo_error(imagen_ref, imagen_resultado):
+    # Replicates the logic: ssim(255-imagen, ...)
+    return ssim(255 - imagen_ref, imagen_resultado.reshape(-1, imagen_ref.shape[1]))
 
 def bresenham(x0: int, y0: int, x1: int, y1: int) -> Tuple[np.ndarray, np.ndarray]:
 
@@ -82,8 +87,7 @@ def tuberia_preprocesado_bresenham(ruta_a_la_imagen:Path, numero_de_pines:int = 
                          mascara_circular, marcar_bordes)
     
     if funcion_calculo_error.__name__ == "ssim":
-        funcion_calculo_error = lambda imagen_resultado: ssim(255-imagen,imagen_resultado.reshape(-1, imagen.shape[1]))
-
+        funcion_calculo_error = funcion_calculo_error = partial(wrapper_calculo_error, imagen)
   
     vector_de_la_imagen = construir_vector_imagen(imagen)
     alto,ancho = imagen.shape

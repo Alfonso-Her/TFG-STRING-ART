@@ -29,6 +29,10 @@ class ParametrosResolucion(ParametrosResolucionBasicos, total=False):
     probabilidad_mutacion: float
     probabilidad_mutacion_gen: float
     cantidad_torneo: int
+    alpha: float
+    beta: float
+    rho: float
+    q: float
     max_iter:int
     reanudar:bool
     
@@ -45,3 +49,7 @@ class ReturnResolutor(TypedDict, total=False):
     cantidad_torneo:int = 0
     probabilidad_cruce:float = 0.
     elitismo_size:int = 0
+    alpha: float = 0
+    beta: float = 0
+    rho: float = 0
+    q: float = 0

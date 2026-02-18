@@ -21,6 +21,7 @@ def get_error_general(indice_linea:int, error_acumulado:np.ndarray,
     error_acumulado = eliminar_lineas_del_error([indice_linea], error_acumulado, linea_cache_y,
                                                 linea_cache_x, ancho, peso_de_linea)
     
+    
     return error, error_acumulado
 
 def obtener_camino_con_error_total(linea_cache_x:list,linea_cache_y:list,
@@ -49,6 +50,7 @@ def obtener_camino_con_error_total(linea_cache_x:list,linea_cache_y:list,
     index_interno = 0
 
     for i in range(maximo_lineas):
+        print(f"estamos en el {i} de {maximo_lineas}" )
         # Restauramos variables para cada linea a pintar
         mejor_pin = -1
         error_al_agregar_la_linea = np.float64(0)
